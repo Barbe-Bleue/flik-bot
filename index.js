@@ -680,6 +680,7 @@ bot.on('message', message => {
   }
 });
 
+bot.login(config.token);
 
 /*//Suppression de message
 bot.on('messageDelete', message => {
