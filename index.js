@@ -93,19 +93,9 @@ bot.on('message', message => {
       nbR += 1;
     }
   }
-
   //decide choix1 choix2...
-  if (message.content.includes("!decide")){
-    var choix = message.content.split(" ");
-    choix.splice(choix.indexOf("!decide"), 1);
-    if(choix.indexOf("noir") == -1){
-      message.channel.send("Le choix est : " + choix[Math.floor(Math.random() * choix.length)]);
-    }
-    else{
-       choix.splice(choix.indexOf("noir"), 1);
-       message.channel.send("lol c'est pas noir déjà. La réponse est : " + choix[Math.floor(Math.random() * choix.length)]);
-    }
-  }
+  if (command === ("decide"))
+    message.channel.send("Le choix est : " + args[Math.floor(Math.random() * args.length)]);
 
   //spam "string" nbRepetitions
   if (message.content.includes("!spam")){
