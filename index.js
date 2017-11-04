@@ -22,7 +22,7 @@ bot.login(auth.token);
 //CONNEXION
 bot.on('ready', () => {
   console.log('bot ok!');
-  bot.channels.first().send("Salut");
+  bot.channels.first().send("Salut moi c'est Flik, le meilleur bot du monde :ok_hand:");
 });
 
 
@@ -32,7 +32,7 @@ bot.on('message', message => {
   //Variables
   var tousLeMonde = message.guild.members;
 
-  //COMMANDES /
+  //COMMANDES !
   //kick au hasard de la part de l'admin
   if (message.content === ("!kick")){
     if(message.member.kickable == false){
@@ -370,11 +370,11 @@ bot.on('message', message => {
   }
 
   //beauf
-  if(message.content === "/beauf") {
+  if(message.content === "!beauf") {
     fs.readFile(beaufTXT, 'utf8', function(err, data) {
       if (!err) {
         var beauf = data.toString().split('\n');
-        if(beauf !='') message.channel.send(beauf[Math.floor(Math.random() * beauf.length)]);
+        if(beauf !='') message.channel.send('Le beauf '+beauf[Math.floor(Math.random() * beauf.length)]);
         else message.channel.send("Hey, flemme me casse pas les couilles");
       } else console.log(err);
     });
