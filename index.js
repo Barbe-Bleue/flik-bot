@@ -24,6 +24,10 @@ bot.on('ready', () => {
   bot.channels.first().send("Salut moi c'est Flik, le meilleur bot du monde :ok_hand:");
 });
 
+bot.on("guildMemberAdd", (member) => {
+  console.log(`New User "${member.user.username}" has joined "${member.guild.name}"` );
+  member.guild.channels.get("welcome").send(`"${member.user.username}" has joined this server`);
+});
 
 //Message
 bot.on('message', message => {
