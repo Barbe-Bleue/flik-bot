@@ -6,6 +6,7 @@ var request = require('request');
 var google = require('google')
 var feed = require('rss-to-json');
 
+var nbR = 1; //pour la roulette
 var punitions = ["kick", "Changement de pseudo"]; //Textes des punitions
 var fs = require("fs"); //obligtoire pour des fonctions
 var cancerJSON = require('./cancer.json');
@@ -15,9 +16,7 @@ var meteoJSON = require("./meteo.json");
 var cerveauTXT = "./cerveau.txt";
 var docTXT = "./doc.txt";
 var beaufTXT = "./beauf.txt";
-var nbR = 1; //pour la roulette
-var auth = require('./auth.json');
-bot.login(auth.token);
+var config = require('./config.json');
 
 //CONNEXION
 bot.on('ready', () => {
