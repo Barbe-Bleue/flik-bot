@@ -55,14 +55,13 @@ bot.on('message', message => {
   }
   //COMMANDES !
   //kick au hasard de la part de l'admin
-  if (message.content === ("!kick")){
+  if (command === "kick"){
     if(message.member.kickable == false){
+      var perdant = message.guild.members.random();
       message.channel.send("Roulette russe de l'admin ! Un kick au hasard !");
-      var perdant = tousLeMonde.random();
       if(perdant.kickable == false){
         message.channel.send("Ok ça tombe sur l'admin on peut rien faire.");
-      }
-      else{
+      }else{
         message.channel.send('<@'+perdant.id+"> a perdu.");
         var count = 5;
         var timer = setInterval(function() { handleTimer(count); }, 1000);
@@ -287,11 +286,11 @@ bot.on('message', message => {
   }
 
   //pause gouter pour chaque membres
-  if(message.content === ("!pause")) {
+  if(command === "pause") {
     var userID,manger,boire;
     message.channel.send('Aight c\'est l\'heure de la pause :ok_hand: :coffee: :chocolate_bar: ');
-    for(var branleur in tousLeMonde.array()){
-      userID =  tousLeMonde.array()[branleur]['user'].id;
+    for(var member in message.guild.members.array()){
+      userID =  message.guild.members.array()[member]['user'].id;
       manger = pauseJSON['manger'][Math.floor(Math.random() * pauseJSON['manger'].length)];
       boire = pauseJSON['boire'][Math.floor(Math.random() * pauseJSON['boire'].length)];
       message.channel.send('<@'+userID+'> : '+manger+' | '+boire);
