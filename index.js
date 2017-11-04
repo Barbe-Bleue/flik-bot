@@ -70,17 +70,17 @@ bot.on('message', message => {
   }
 
   //roulette russe
-  if(message.content === "!roulette") {
+  if(command === "roulette") {
     message.channel.send("Jeu de la roulette russe : "+ nbR +"/6 chance d'avoir une punition.");
     if(Math.floor(Math.random() * (6-nbR)) == 0) {
       var puni = Math.floor(Math.random()*punitions.length);
-      message.channel.send("PAN");
-      message.channel.send("Punition : " + punitions[puni]);
+
+      message.channel.send("PAN \nPunition : " + punitions[puni]);
 
       switch(puni) {
         case 0:
           message.member.kick("Vous avez perdu la roulette");
-            break;
+          break;
         case 1:
           message.member.setNickname(pseudoJSON['pseudos'][Math.floor(Math.random() * pseudoJSON['pseudos'].length)]);
           break;
