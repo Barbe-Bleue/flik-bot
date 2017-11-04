@@ -97,20 +97,6 @@ bot.on('message', message => {
   if (command === ("decide"))
     message.channel.send("Le choix est : " + args[Math.floor(Math.random() * args.length)]);
 
-  //spam "string" nbRepetitions
-  if (message.content.includes("!spam")){
-    var choix = message.content.split(" ");
-    var taille = choix.length;
-    var phrase = "";
-    for (var j = 1; j < taille-1; j++){
-      phrase = phrase + " " + choix[j];
-    }
-    if(choix[taille-1] <= 100 && choix.length >= 3){
-      for (var i = 0; i < choix[taille-1]; i++) {
-        message.channel.send(phrase);
-      }
-    }
-  }
 
   //suicide du bot
   if (message.content === "!suicide"){
