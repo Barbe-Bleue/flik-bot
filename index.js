@@ -144,16 +144,17 @@ bot.on('message', message => {
   }
 
   //trafic
-  if(message.content.includes("!trafic")){
+  if(command === "trafic"){
 
-    var traf = message.content.split(" ");
     if(traf.length > 1){
-      var code = traf[1];
+      var code = args[1];
       var type = "";
+
       if(code.toUpperCase() != code.toLowerCase()) type = "rers";
       else type = "metros";
 
       var transports = leTrafic(type, code);
+
       transports(function(err, previsions){
       	if(err) return console.log(err);
       	if(previsions.status != null){
@@ -167,7 +168,7 @@ bot.on('message', message => {
   }
 
   //chien
-  if(message.content === "!chien"){
+  if(command === "chien"){
     var leChien = leChien(type, code);
     leChien(function(err, previsions){
     	if(err) return console.log(err);
@@ -176,12 +177,11 @@ bot.on('message', message => {
   }
 
   //gif
-  if(message.content.includes("!gif")){
-    var phrase = message.content.split(" ");
+  if(command === "gif"){
     var recherche = "";
     for(var i = 1; i<phrase.length; i++){
-      if(i==1) recherche = phrase[i];
-      else recherche = recherche + "+" + phrase[i];
+      if(i==1) recherche = args[i];
+      else recherche = recherche + "+" + args[i];
     }
     var leGif = gif(recherche);
     leGif(function(err, previsions){
@@ -191,8 +191,8 @@ bot.on('message', message => {
 }
 
   //apprend une phrase
-  if(message.content.includes("!apprend")) {
-    var sentence = message.content.split("!apprend ").pop();
+  if(command === "apprend") {
+    var sentence = message.content.split("apprend ").pop();
     fs.readFile(cerveauTXT, 'utf8', function(err, data) {
       if (!err || sentence !='') {
         var savoir = data.toString().split('\n');
@@ -214,7 +214,7 @@ bot.on('message', message => {
   }
 
   //savoir exprime 1 savoir
-  if(message.content === ("!savoir")) {
+  if(command === "savoir") {
     fs.readFile(cerveauTXT, 'utf8', function(err, data) {
       if (!err) {
         var savoir = data.toString().split('\n');
@@ -229,7 +229,7 @@ bot.on('message', message => {
   }
 
   //malou exprime tout le savoir
-  if(message.content ===("!malou")) {
+  if(command === "malou") {
     fs.readFile(cerveauTXT, 'utf8', function(err, data) {
       if (!err) {
         var grandSavoir = data.toString().split('\n');
@@ -245,7 +245,7 @@ bot.on('message', message => {
   }
 
   //doc
-  if(message.content ===("!doc")) {
+  if(command === "doc") {
     fs.readFile(docTXT, 'utf8', function(err, data) {
       if (!err) {
         var laDoc = data.toString().split('\n');
@@ -273,7 +273,7 @@ bot.on('message', message => {
   }
 
   //top
-  if(message.content === ("!top")){
+  if(command === "h1z1"){
     var reaction,top,kill;
     var prediction = "";
     var nbGame = Math.floor((Math.random() * 5) + 1);
@@ -293,19 +293,19 @@ bot.on('message', message => {
   }
 
   //google recherche google
-  if(message.content.includes("!google")){
+  if(command === "google"){
     var keyword = message.content.split(" ");
     keyword.splice(keyword.indexOf("/google"), 1);
     google.l
     //var nextCounter = 0;
-    google.resultsPerPage = 10;
+    google.resultsPerPage = 5;
     google.lang = 'fr';
     google.tld = 'fr';
     google.nextText='Plus';
     google.protocol = 'https';
     var resultat,link ="";
 
-    google(keyword, function (err, res){
+    google(args, function (err, res){
       if (err) console.error(err);
 
       for (var i = 0; i < res.links.length; ++i) {
@@ -316,7 +316,7 @@ bot.on('message', message => {
   }
 
   //pic image random sur imgur
-  if(message.content === ("!pic")){
+  if(command === "pic"){
     var anysize = 5;//the size of string
     var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPKRSTUVWXYZ";
     var result="";
@@ -327,7 +327,7 @@ bot.on('message', message => {
   }
 
   //actu
-  if(message.content === ("/actu")){
+  if(command === "actu"){
     var actu = "";
     feed.load('http://www.bfmtv.com/rss/info/flux-rss/flux-toutes-les-actualites/', function(err, rss){
       console.log(rss);
@@ -337,7 +337,7 @@ bot.on('message', message => {
   }
 
   //chuck
-  if(message.content.includes("/chuck")){
+  if(command === "chuck"){
     var nbChuck = message.content.split(" ");
     nbChuck.splice(nbChuck.indexOf("/chuck"), 1);
 
@@ -350,7 +350,7 @@ bot.on('message', message => {
   }
 
   //sexe
-  if(message.content.includes("/sexe")){
+  if(command === "sexe"){
     var nom = message.content.split(" ");
     nom.splice(nom.indexOf("/sexe"),1);
     var url = "https://gender-api.com/get?name="+nom[0]+"&country=FR&key=kXRfKPCeGsNKcUwseW";
@@ -365,7 +365,7 @@ bot.on('message', message => {
   }
 
   //beauf
-  if(message.content === "!beauf") {
+  if(command === "beauf") {
     fs.readFile(beaufTXT, 'utf8', function(err, data) {
       if (!err) {
         var beauf = data.toString().split('\n');
@@ -426,13 +426,13 @@ bot.on('message', message => {
   }
 
   //difference avec une heure
-  if(message.content.includes("/diff")){
+  if(command === "diff"){
     var now = new Date();
     var heure = now.getHours()+2;
     var minute = now.getMinutes();
 
     var phrase = message.content.split(" ");
-    phrase = phrase[phrase.indexOf("/diff")+1];
+    phrase = phrase[phrase.indexOf("!diff")+1];
     var diff = diff(phrase);
     var diffH = Math.floor(diff / 60);
     var diffM = diff % 60;
