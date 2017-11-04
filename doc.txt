@@ -1,0 +1,33 @@
+
+Commandes admin :
+!kick -- kick un utilisateur au hasard
+!suicide -- fin du bot
+
+Commandes utilisateurs :
+!roulette -- Jeu de la roulette russe
+!decide *choix1* *choix2* *choix3* etc.. -- Quand on arrive pas à se décider
+!spam *phrase* x -- Spam x fois la phrase
+!meteo *ville*!*code postal,code pays* (demain) -- Meteo de la ville aujourd'hui, ou demain si "demain" est ajouté à la fin de la phrase
+!trafic *ligne* -- état du trafic pour la ligne en question
+!chien -- photo de chien
+!gif *mot(s)-clé(s)* -- gif au hasard selon mot(s)-clé(s)
+!apprend -- apprend une phrase
+!malou -- déverse le savoir
+!savoir -- balance un savoir
+!pause -- choix du snack pour la pause
+!top -- choix du nombre de jeux et prévisions
+!google *recherche* -- recherche google
+!pic -- photo au hasard
+!actu -- actualités
+!chuck -- Chuck norris
+!steam *steamID ou steamID64* -- Récupère nombre de jeux & jeu le plus joué
+!diff *HH:MM* -- donne le temps déjà passe ou avant une certaine heure
+!% *HH:MM* *HH:MM* -- donne le pourcentage déjà passé entre les deux heures dnonées
+!sexe *prenom* --
+!beauf -- donne un élément requis pour etre beauf
+!mail *MailCible*[;*autreMail*] *Sujet* *Message* -- Envoi un mail à un ou plusieurs destinataires
+
+Interactions :
+"go_cs" -- lancer une partie de cs
+"kick_moi" -- pas besoin d'explications
+"je_me_casse" -- prochaines horaires du métro 6 direction CDG à dupleix
