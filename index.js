@@ -99,16 +99,16 @@ bot.on('message', message => {
 
 
   //suicide du bot
-  if (message.content === "!suicide"){
+  if (command === "suicide"){
     message.channel.send("Ah ok on me bute comme ça :tired_face: :gun:");
     bot.destroy();
   }
 
   //meteo
-  if(message.content.includes("!meteo")){
+  if(command === "meteo"){
 
-    var ville = message.content.split(" ")[1];
-    var demain = message.content.split(" ")[2];
+    var ville = args[1];
+    var demain = args[2];
     var jour = 0;
     var annonce = "aujourd'hui, la température est de ";
     var url;
@@ -119,8 +119,7 @@ bot.on('message', message => {
     var openweathermeteo = function(ville, jour, callback){
       if (/^[a-zA-Z]/.test(ville)) {
         url = "http://api.openweathermap.org/data/2.5/forecast/daily?q="+ville+"&mode=json&units=metric&cnt=2&lang=fr&appid=50d1f0d31cd8814419a3d8a06d208d4d";
-      }
-      else{
+      }else{
         url = "http://api.openweathermap.org/data/2.5/forecast/daily?zip="+ville+"&mode=json&units=metric&cnt=2&lang=fr&appid=50d1f0d31cd8814419a3d8a06d208d4d";
       }
 
@@ -128,7 +127,7 @@ bot.on('message', message => {
     		try{
     			var result = JSON.parse(body);
     			var previsions = {
-    				temperature : result.list[jour].temp.day,
+            temperature : result.list[jour].temp.day,
     				city : result.city.name,
     				description : result.list[jour].weather[0].description
     			};
