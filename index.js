@@ -33,7 +33,24 @@ bot.on("guildMemberAdd", (member) => {
 bot.on('message', message => {
 
   //Variables
-  var tousLeMonde = message.guild.members;
+  const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+  const command = args.shift().toLowerCase();
+
+
+  if (command === 'ban'){
+    message.channel.sendMessage('qui veut tu ban ?').then(() => {
+      message.channel.awaitMessages(response => 'message', {
+        max: 1,
+        time: 30000,
+        errors: ['time'],
+      })
+      .then((collected) => {
+          message.channel.send(`The collected message was: ${collected.first().content}`);
+        })
+        .catch(() => {
+          message.channel.send('There was no collected message that passed the filter within the time limit!');
+        });
+    });
 
   //COMMANDES !
   //kick au hasard de la part de l'admin
