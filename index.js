@@ -24,23 +24,44 @@ bot.on('ready', () => {
   bot.channels.first().send("Salut moi c'est Flik, le meilleur bot du monde :ok_hand:");
 });
 
+bot.on("guildMemberAdd", (member) => {
+  console.log(`New User "${member.user.username}" has joined "${member.guild.name}"` );
+  member.guild.channels.get("welcome").send(`"${member.user.username}" has joined this server`);
+});
 
 //Message
 bot.on('message', message => {
 
   //Variables
-  var tousLeMonde = message.guild.members;
+  const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+  const command = args.shift().toLowerCase();
 
+
+  if (command === 'ban'){
+    message.channel.sendMessage('qui veut tu ban ?').then(() => {
+      message.channel.awaitMessages(response => 'message', {
+        max: 1,
+        time: 30000,
+        errors: ['time'],
+      })
+      .then((collected) => {
+          message.channel.send(`The collected message was: ${collected.first().content}`);
+        })
+        .catch(() => {
+          message.channel.send('There was no collected message that passed the filter within the time limit!');
+        });
+    });
+
+  }
   //COMMANDES !
   //kick au hasard de la part de l'admin
-  if (message.content === ("!kick")){
+  if (command === "kick"){
     if(message.member.kickable == false){
+      var perdant = message.guild.members.random();
       message.channel.send("Roulette russe de l'admin ! Un kick au hasard !");
-      var perdant = tousLeMonde.random();
       if(perdant.kickable == false){
         message.channel.send("Ok ça tombe sur l'admin on peut rien faire.");
-      }
-      else{
+      }else{
         message.channel.send('<@'+perdant.id+"> a perdu.");
         var count = 5;
         var timer = setInterval(function() { handleTimer(count); }, 1000);
@@ -49,17 +70,17 @@ bot.on('message', message => {
   }
 
   //roulette russe
-  if(message.content === "!roulette") {
+  if(command === "roulette") {
     message.channel.send("Jeu de la roulette russe : "+ nbR +"/6 chance d'avoir une punition.");
     if(Math.floor(Math.random() * (6-nbR)) == 0) {
       var puni = Math.floor(Math.random()*punitions.length);
-      message.channel.send("PAN");
-      message.channel.send("Punition : " + punitions[puni]);
+
+      message.channel.send("PAN \nPunition : " + punitions[puni]);
 
       switch(puni) {
         case 0:
           message.member.kick("Vous avez perdu la roulette");
-            break;
+          break;
         case 1:
           message.member.setNickname(pseudoJSON['pseudos'][Math.floor(Math.random() * pseudoJSON['pseudos'].length)]);
           break;
@@ -72,46 +93,22 @@ bot.on('message', message => {
       nbR += 1;
     }
   }
-
   //decide choix1 choix2...
-  if (message.content.includes("!decide")){
-    var choix = message.content.split(" ");
-    choix.splice(choix.indexOf("!decide"), 1);
-    if(choix.indexOf("noir") == -1){
-      message.channel.send("Le choix est : " + choix[Math.floor(Math.random() * choix.length)]);
-    }
-    else{
-       choix.splice(choix.indexOf("noir"), 1);
-       message.channel.send("lol c'est pas noir déjà. La réponse est : " + choix[Math.floor(Math.random() * choix.length)]);
-    }
-  }
+  if (command === ("decide"))
+    message.channel.send("Le choix est : " + args[Math.floor(Math.random() * args.length)]);
 
-  //spam "string" nbRepetitions
-  if (message.content.includes("!spam")){
-    var choix = message.content.split(" ");
-    var taille = choix.length;
-    var phrase = "";
-    for (var j = 1; j < taille-1; j++){
-      phrase = phrase + " " + choix[j];
-    }
-    if(choix[taille-1] <= 100 && choix.length >= 3){
-      for (var i = 0; i < choix[taille-1]; i++) {
-        message.channel.send(phrase);
-      }
-    }
-  }
 
   //suicide du bot
-  if (message.content === "!suicide"){
+  if (command === "suicide"){
     message.channel.send("Ah ok on me bute comme ça :tired_face: :gun:");
     bot.destroy();
   }
 
   //meteo
-  if(message.content.includes("!meteo")){
+  if(command === "meteo"){
 
-    var ville = message.content.split(" ")[1];
-    var demain = message.content.split(" ")[2];
+    var ville = args[1];
+    var demain = args[2];
     var jour = 0;
     var annonce = "aujourd'hui, la température est de ";
     var url;
@@ -122,8 +119,7 @@ bot.on('message', message => {
     var openweathermeteo = function(ville, jour, callback){
       if (/^[a-zA-Z]/.test(ville)) {
         url = "http://api.openweathermap.org/data/2.5/forecast/daily?q="+ville+"&mode=json&units=metric&cnt=2&lang=fr&appid=50d1f0d31cd8814419a3d8a06d208d4d";
-      }
-      else{
+      }else{
         url = "http://api.openweathermap.org/data/2.5/forecast/daily?zip="+ville+"&mode=json&units=metric&cnt=2&lang=fr&appid=50d1f0d31cd8814419a3d8a06d208d4d";
       }
 
@@ -131,7 +127,7 @@ bot.on('message', message => {
     		try{
     			var result = JSON.parse(body);
     			var previsions = {
-    				temperature : result.list[jour].temp.day,
+            temperature : result.list[jour].temp.day,
     				city : result.city.name,
     				description : result.list[jour].weather[0].description
     			};
@@ -148,16 +144,17 @@ bot.on('message', message => {
   }
 
   //trafic
-  if(message.content.includes("!trafic")){
+  if(command === "trafic"){
 
-    var traf = message.content.split(" ");
     if(traf.length > 1){
-      var code = traf[1];
+      var code = args[1];
       var type = "";
+
       if(code.toUpperCase() != code.toLowerCase()) type = "rers";
       else type = "metros";
 
       var transports = leTrafic(type, code);
+
       transports(function(err, previsions){
       	if(err) return console.log(err);
       	if(previsions.status != null){
@@ -171,7 +168,7 @@ bot.on('message', message => {
   }
 
   //chien
-  if(message.content === "!chien"){
+  if(command === "chien"){
     var leChien = leChien(type, code);
     leChien(function(err, previsions){
     	if(err) return console.log(err);
@@ -180,12 +177,11 @@ bot.on('message', message => {
   }
 
   //gif
-  if(message.content.includes("!gif")){
-    var phrase = message.content.split(" ");
+  if(command === "gif"){
     var recherche = "";
     for(var i = 1; i<phrase.length; i++){
-      if(i==1) recherche = phrase[i];
-      else recherche = recherche + "+" + phrase[i];
+      if(i==1) recherche = args[i];
+      else recherche = recherche + "+" + args[i];
     }
     var leGif = gif(recherche);
     leGif(function(err, previsions){
@@ -195,8 +191,8 @@ bot.on('message', message => {
 }
 
   //apprend une phrase
-  if(message.content.includes("!apprend")) {
-    var sentence = message.content.split("!apprend ").pop();
+  if(command === "apprend") {
+    var sentence = message.content.split("apprend ").pop();
     fs.readFile(cerveauTXT, 'utf8', function(err, data) {
       if (!err || sentence !='') {
         var savoir = data.toString().split('\n');
@@ -218,7 +214,7 @@ bot.on('message', message => {
   }
 
   //savoir exprime 1 savoir
-  if(message.content === ("!savoir")) {
+  if(command === "savoir") {
     fs.readFile(cerveauTXT, 'utf8', function(err, data) {
       if (!err) {
         var savoir = data.toString().split('\n');
@@ -233,7 +229,7 @@ bot.on('message', message => {
   }
 
   //malou exprime tout le savoir
-  if(message.content ===("!malou")) {
+  if(command === "malou") {
     fs.readFile(cerveauTXT, 'utf8', function(err, data) {
       if (!err) {
         var grandSavoir = data.toString().split('\n');
@@ -249,7 +245,7 @@ bot.on('message', message => {
   }
 
   //doc
-  if(message.content ===("!doc")) {
+  if(command === "doc") {
     fs.readFile(docTXT, 'utf8', function(err, data) {
       if (!err) {
         var laDoc = data.toString().split('\n');
@@ -265,11 +261,11 @@ bot.on('message', message => {
   }
 
   //pause gouter pour chaque membres
-  if(message.content === ("!pause")) {
+  if(command === "pause") {
     var userID,manger,boire;
     message.channel.send('Aight c\'est l\'heure de la pause :ok_hand: :coffee: :chocolate_bar: ');
-    for(var branleur in tousLeMonde.array()){
-      userID =  tousLeMonde.array()[branleur]['user'].id;
+    for(var member in message.guild.members.array()){
+      userID =  message.guild.members.array()[member]['user'].id;
       manger = pauseJSON['manger'][Math.floor(Math.random() * pauseJSON['manger'].length)];
       boire = pauseJSON['boire'][Math.floor(Math.random() * pauseJSON['boire'].length)];
       message.channel.send('<@'+userID+'> : '+manger+' | '+boire);
@@ -277,7 +273,7 @@ bot.on('message', message => {
   }
 
   //top
-  if(message.content === ("!top")){
+  if(command === "h1z1"){
     var reaction,top,kill;
     var prediction = "";
     var nbGame = Math.floor((Math.random() * 5) + 1);
@@ -297,19 +293,19 @@ bot.on('message', message => {
   }
 
   //google recherche google
-  if(message.content.includes("!google")){
+  if(command === "google"){
     var keyword = message.content.split(" ");
     keyword.splice(keyword.indexOf("/google"), 1);
     google.l
     //var nextCounter = 0;
-    google.resultsPerPage = 10;
+    google.resultsPerPage = 5;
     google.lang = 'fr';
     google.tld = 'fr';
     google.nextText='Plus';
     google.protocol = 'https';
     var resultat,link ="";
 
-    google(keyword, function (err, res){
+    google(args, function (err, res){
       if (err) console.error(err);
 
       for (var i = 0; i < res.links.length; ++i) {
@@ -320,7 +316,7 @@ bot.on('message', message => {
   }
 
   //pic image random sur imgur
-  if(message.content === ("!pic")){
+  if(command === "pic"){
     var anysize = 5;//the size of string
     var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPKRSTUVWXYZ";
     var result="";
@@ -331,7 +327,7 @@ bot.on('message', message => {
   }
 
   //actu
-  if(message.content === ("/actu")){
+  if(command === "actu"){
     var actu = "";
     feed.load('http://www.bfmtv.com/rss/info/flux-rss/flux-toutes-les-actualites/', function(err, rss){
       console.log(rss);
@@ -341,7 +337,7 @@ bot.on('message', message => {
   }
 
   //chuck
-  if(message.content.includes("/chuck")){
+  if(command === "chuck"){
     var nbChuck = message.content.split(" ");
     nbChuck.splice(nbChuck.indexOf("/chuck"), 1);
 
@@ -354,7 +350,7 @@ bot.on('message', message => {
   }
 
   //sexe
-  if(message.content.includes("/sexe")){
+  if(command === "sexe"){
     var nom = message.content.split(" ");
     nom.splice(nom.indexOf("/sexe"),1);
     var url = "https://gender-api.com/get?name="+nom[0]+"&country=FR&key=kXRfKPCeGsNKcUwseW";
@@ -369,7 +365,7 @@ bot.on('message', message => {
   }
 
   //beauf
-  if(message.content === "!beauf") {
+  if(command === "beauf") {
     fs.readFile(beaufTXT, 'utf8', function(err, data) {
       if (!err) {
         var beauf = data.toString().split('\n');
@@ -430,13 +426,13 @@ bot.on('message', message => {
   }
 
   //difference avec une heure
-  if(message.content.includes("/diff")){
+  if(command === "diff"){
     var now = new Date();
     var heure = now.getHours()+2;
     var minute = now.getMinutes();
 
     var phrase = message.content.split(" ");
-    phrase = phrase[phrase.indexOf("/diff")+1];
+    phrase = phrase[phrase.indexOf("!diff")+1];
     var diff = diff(phrase);
     var diffH = Math.floor(diff / 60);
     var diffM = diff % 60;
@@ -463,36 +459,37 @@ bot.on('message', message => {
   }
 
   //Mail
-  if(message.content.includes("/mail")){
+  if(command === "mail"){
     var phrase = message.content.split(" ");
-      if(phrase.length >= 4){
-        var mail = phrase[1];
-        var sujet = phrase[2];
-        var texte = "";
-        for(var i = 3; i < phrase.length; i++){
-          texte = texte + " " + phrase[i];
-        }
-        'use strict';
-        let transporter = nodemailer.createTransport({
-            service: 'Gmail',
-            auth: {
-              user: 'lebotrelou@gmail.com',
-              pass: 'Grostest92'
-            }
-        });
-        let mailOptions = {
-            from: '"Le Bot Relou 2 Discord !" <lebotrelou@gmail.com>',
-            to: mail,
-            subject: sujet,
-            text: texte,
-        };
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                return console.log(error);
-            }
-            message.channel.send("Message envoyé poto :ok_hand:");
-        });
-    }
+        if(phrase.length >= 4){
+          var mail = phrase[1];
+          var sujet = phrase[2];
+          var texte = "";
+          for(var i = 3; i < phrase.length; i++){
+            texte = texte + " " + phrase[i];
+          }
+          'use strict';
+          let transporter = nodemailer.createTransport({
+              host : "smtp.gmail.com",
+              port: 465,
+              auth: {
+                user: 'lebotrelou@gmail.com',
+                pass: 'Grostest92'
+              }
+          });
+          let mailOptions = {
+              from: '"Le Bot Relou 2 Discord !" <lebotrelou@gmail.com>',
+              to: mail,
+              subject: sujet,
+              text: texte,
+          };
+          transporter.sendMail(mailOptions, (error, info) => {
+              if (error) {
+                  return console.log(error);
+              }
+              message.channel.send("Message envoyé poto :ok_hand:");
+          });
+      }
   }
 
 
@@ -683,6 +680,7 @@ bot.on('message', message => {
   }
 });
 
+bot.login(config.token);
 
 /*//Suppression de message
 bot.on('messageDelete', message => {
