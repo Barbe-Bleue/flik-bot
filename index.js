@@ -461,34 +461,35 @@ bot.on('message', message => {
   //Mail
   if(command === "mail"){
     var phrase = message.content.split(" ");
-      if(phrase.length >= 4){
-        var mail = phrase[1];
-        var sujet = phrase[2];
-        var texte = "";
-        for(var i = 3; i < phrase.length; i++){
-          texte = texte + " " + phrase[i];
-        }
-        'use strict';
-        let transporter = nodemailer.createTransport({
-            service: 'Gmail',
-            auth: {
-              user: 'lebotrelou@gmail.com',
-              pass: 'Grostest92'
-            }
-        });
-        let mailOptions = {
-            from: '"Le Bot Relou 2 Discord !" <lebotrelou@gmail.com>',
-            to: mail,
-            subject: sujet,
-            text: texte,
-        };
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                return console.log(error);
-            }
-            message.channel.send("Message envoyé poto :ok_hand:");
-        });
-    }
+        if(phrase.length >= 4){
+          var mail = phrase[1];
+          var sujet = phrase[2];
+          var texte = "";
+          for(var i = 3; i < phrase.length; i++){
+            texte = texte + " " + phrase[i];
+          }
+          'use strict';
+          let transporter = nodemailer.createTransport({
+              host : "smtp.gmail.com",
+              port: 465,
+              auth: {
+                user: 'lebotrelou@gmail.com',
+                pass: 'Grostest92'
+              }
+          });
+          let mailOptions = {
+              from: '"Le Bot Relou 2 Discord !" <lebotrelou@gmail.com>',
+              to: mail,
+              subject: sujet,
+              text: texte,
+          };
+          transporter.sendMail(mailOptions, (error, info) => {
+              if (error) {
+                  return console.log(error);
+              }
+              message.channel.send("Message envoyé poto :ok_hand:");
+          });
+      }
   }
 
 
