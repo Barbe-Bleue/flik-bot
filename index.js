@@ -459,7 +459,7 @@ bot.on('message', message => {
   }
 
   //Mail
-  if(message.content.includes("/mail")){
+  if(command === "mail"){
     var phrase = message.content.split(" ");
       if(phrase.length >= 4){
         var mail = phrase[1];
