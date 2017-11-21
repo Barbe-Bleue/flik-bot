@@ -21,7 +21,7 @@ var config = require('./config.json');
 //CONNEXION
 bot.on('ready', () => {
   console.log('bot ok!');
-  bot.channels.first().send("Salut moi c'est Flik, le meilleur bot du monde :ok_hand:");
+  bot.channels.first().send("Salut moi c'est vag, le meilleur bot du monde :ok_hand:");
 });
 
 bot.on("guildMemberAdd", (member) => {
@@ -37,22 +37,20 @@ bot.on('message', message => {
   const command = args.shift().toLowerCase();
 
 
-  if (command === 'ban'){
-    message.channel.sendMessage('qui veut tu ban ?').then(() => {
-      message.channel.awaitMessages(response => 'message', {
-        max: 1,
-        time: 30000,
-        errors: ['time'],
-      })
-      .then((collected) => {
-          message.channel.send(`The collected message was: ${collected.first().content}`);
-        })
-        .catch(() => {
-          message.channel.send('There was no collected message that passed the filter within the time limit!');
-        });
+  if (message.content.startsWith('!ban')){
+    // Easy way to get member object though mentions.
+    var member= message.mentions.members.first();
+    // Kick
+    member.kick().then((member) => {
+       // Successmessage
+       message.channel.send(":wave: " + member.displayName + " a été kické :point_right: ");
+    }).catch(() => {
+        // Failmessage
+       message.channel.send("On ne peut pas bannir Dieu :cross:");
     });
-
   }
+
+
   //COMMANDES !
   //kick au hasard de la part de l'admin
   if (command === "kick"){
@@ -93,10 +91,10 @@ bot.on('message', message => {
       nbR += 1;
     }
   }
+
   //decide choix1 choix2...
   if (command === ("decide"))
     message.channel.send("Le choix est : " + args[Math.floor(Math.random() * args.length)]);
-
 
   //suicide du bot
   if (command === "suicide"){
@@ -192,24 +190,39 @@ bot.on('message', message => {
 
   //apprend une phrase
   if(command === "apprend") {
-    var sentence = message.content.split("apprend ").pop();
-    fs.readFile(cerveauTXT, 'utf8', function(err, data) {
-      if (!err || sentence !='') {
-        var savoir = data.toString().split('\n');
-        for(var line in savoir) {
-          if(sentence == savoir[line]){
-            var newSavoir = false;
-          }
-        }
-      } else {
-        console.log(err);
-      }
-      if(newSavoir != false) {
-        fs.appendFile(cerveauTXT,sentence+'\n',"UTF-8",{'flags': 'a+'});
-        message.channel.send("Ok poto jm'en souviendrai :thumbsup: ");
-      } else {
-        message.channel.send(":no_entry: Hey, je connais déjà ca fdp :no_entry: ");
-      }
+    message.channel.sendMessage('Que veux tu me faire apprendre ?')
+    .then(() => {
+      message.channel.awaitMessages(response => 'message', {
+        max: 1,
+        time: 30000,
+        errors: ['time'],
+      })
+      .then((collected) => {
+
+          var sentence = collected.first().content;
+          var newSavoir = true;
+          fs.readFile(cerveauTXT, 'utf8', function(err, data) {
+            if (!err || sentence !='') {
+              var savoir = data.toString().split('\n');
+              for(var line in savoir) {
+                if(sentence == savoir[line]){
+                  var newSavoir = false;
+                }
+              }
+            } else {
+              console.log(err);
+            }
+            if(newSavoir != false) {
+              fs.appendFile(cerveauTXT,sentence+'\n',"UTF-8",{'flags': 'a+'});
+              message.channel.send("Ok poto jm'en souviendrai :thumbsup: ");
+            } else {
+              message.channel.send(":no_entry: Hey, je connais déjà ca fdp :no_entry: ");
+            }
+          });
+        })
+        .catch(() => {
+          message.channel.send('There was no collected message that passed the filter within the time limit!');
+        });
     });
   }
 
