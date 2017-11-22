@@ -52,11 +52,11 @@ bot.on('message', message => {
       var member= message.mentions.members.first();
       // Kick
       member.kick().then((member) => {
-         // Successmessage
-         message.channel.send(":wave: " + member.displayName + " a été kické :point_right: ");
+        // Successmessage
+        message.channel.send(":wave: " + member.displayName + " a été kické :point_right: ");
       }).catch(() => {
-          // Failmessage
-         message.channel.send("On ne peut pas bannir Dieu :cross:");
+        // Failmessage
+        message.channel.send("On ne peut pas bannir Dieu :cross:");
       });
     }else {
       message.channel.send("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
@@ -510,7 +510,46 @@ bot.on('message', message => {
       }
   }
 
+  // wiki
+  if(command === "wiki"){
+    if(args.length > 1){
+      wikiSearch(args.join('_'));
+    }else if (args.length == 0) {
+      message.channel.send('tu veux quoi ?').then(() => {
+        message.channel.awaitMessages(response => response.content.length > 0 , {
+          max: 1,
+          time: 30000,
+          errors: ['time'],
+        }).then((collected) => {
+          message.channel.send('The collected message was: '+collected.first().content);
+          wikiSearch(collected.first().content);
+        }).catch(() => {
+          message.channel.send('There was no collected message that passed the filter within the time limit!');
+        });
+      });
+    }else{
+      wikiSearch(args[0]);
+    }
+  }
 
+
+  function wikiSearch(recherche){
+    var url = "https://fr.wikipedia.org/w/api.php?action=opensearch&search="+recherche+"&limit=1&namespace=0&format=json";
+    request(url, function(err, resopnse, json){
+      try {
+        var name = JSON.parse(json)[1];
+        var link = JSON.parse(json)[3];
+        if(name ==='undefined'){
+          message.channel.send('Aucun résultats');
+        }else {
+          message.channel.send('Recherche wikipedia pour: '+recherche);
+          message.channel.send('Nom: '+name[0]+'\n'+link[0]+'\n\n');
+        }
+      } catch (e) {
+        callback('ERREUR: '+e);
+      }
+    });
+  }
   // QUESTIONS TEXTUELLES
 
   // Go cs
