@@ -347,9 +347,8 @@ bot.on('message', message => {
 
   // actu
   if(command === "actu"){
-    var actu = "";
+    var actu=" ";
     feed.load('http://www.bfmtv.com/rss/info/flux-rss/flux-toutes-les-actualites/', function(err, rss){
-      console.log(rss);
       for(i = 0; i <= 5; i++) actu += rss.items[i].title+" - "+rss.items[i].url+"\n\n";
       message.channel.send(actu);
     });
@@ -357,28 +356,9 @@ bot.on('message', message => {
 
   // chuck
   if(command === "chuck"){
-    var nbChuck = message.content.split(" ");
-    nbChuck.splice(nbChuck.indexOf("/chuck"), 1);
-
-    var url = "http://www.chucknorrisfacts.fr/api/get?data=tri:alea;nb:"+nbChuck;
-
+    var url = "http://www.chucknorrisfacts.fr/api/get?data=tri:alea;nb:1";
     request(url, function(err, response, json){
       message.channel.send(JSON.parse(json)[0].fact);
-    });
-
-  }
-
-  // sexe
-  if(command === "sexe"){
-    message.channel.send(args[0]);
-    var url = "https://gender-api.com/get?name="+args[0]+"&country=FR&key=kXRfKPCeGsNKcUwseW";
-
-    request(url, function(err, resopnse, json){
-      var sexe = JSON.parse(json).gender;
-      var precision = JSON.parse(json).accuracy;
-      if(sexe === "male") sexe = "Homme";
-      else sexe = "Femme";
-      message.channel.send(sexe + ", sûr à " + precision + "%");
     });
   }
 
@@ -392,12 +372,19 @@ bot.on('message', message => {
       } else console.log(err);
     });
   }
+  // wiki
+  if(command === "wiki"){
+    bangSearch(wikiSearch,'_',args);
+  }
 
   // afr amazon fr
-  if(message.content.includes("afr")){
-    var amazon = message.content.split(" ");
-    amazon.splice(amazon.indexOf("!decide"), 1);
-    message.channel.send("https://www.amazon.fr/s/ref=nb_sb_noss?__mk_fr_FR=%C3%85M%C3%85%C5%BD%C3%95%C3%91&url=search-alias%3Daps&field-keywords="+amazon);
+  if(command === ("afr")){
+    bangSearch(amazonSearch,'+',args);
+  }
+
+  // sexe
+  if(command === "sexe"){
+    bangSearch(sexeSearch,' ',args);
   }
 
   // Steam
@@ -477,26 +464,8 @@ bot.on('message', message => {
       }
   }
 
-  // wiki
-  if(command === "wiki"){
-    if(args.length > 1){
-      wikiSearch(args.join('_'));
-    }else if (args.length == 0) {
-      message.channel.send('tu veux quoi ?').then(() => {
-        message.channel.awaitMessages(response => response.content.length > 0 , {
-          max: 1,
-          time: 10000,
-          errors: ['time'],
-        }).then((collected) => {
-          wikiSearch(collected.first().content);
-        }).catch(() => {
-          message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
-        });
-      });
-    }else{
-      wikiSearch(args[0]);
-    }
-  }
+
+
 
   // QUESTIONS TEXTUELLES
 
@@ -634,7 +603,17 @@ bot.on('message', message => {
     };
   }
 
-
+  // SEARCH FUNCTION
+  function sexeSearch(prenom){
+    var url = "https://gender-api.com/get?name="+prenom+"&country=FR&key=kXRfKPCeGsNKcUwseW";
+    request(url, function(err, resopnse, json){
+      var sexe = JSON.parse(json).gender;
+      var precision = JSON.parse(json).accuracy;
+      if(sexe === "male") sexe = "Homme";
+      else sexe = "Femme";
+      message.channel.send(prenom+': '+sexe + ", sûr à " + precision + "%");
+    });
+  }
 
   function wikiSearch(recherche){
     var url = "https://fr.wikipedia.org/w/api.php?action=opensearch&search="+recherche+"&limit=1&namespace=0&format=json";
@@ -652,6 +631,31 @@ bot.on('message', message => {
         callback('ERREUR: '+e);
       }
     });
+  }
+
+  function amazonSearch(recherche){
+    var url = "https://www.amazon.fr/s/ref=nb_sb_noss?__mk_fr_FR=%C3%85M%C3%85%C5%BD%C3%95%C3%91&url=search-alias%3Daps&field-keywords="+recherche;
+    message.channel.send('Recherche amazon pour: '+recherche+'\n'+url);
+  }
+
+  function bangSearch(searchFunctionName,keywordSeparator,args){
+    if(args.length > 1){
+      searchFunctionName(args.join(keywordSeparator));
+    }else if (args.length == 0) {
+      message.channel.send('tu veux quoi ?').then(() => {
+        message.channel.awaitMessages(response => response.content.length > 0 , {
+          max: 1,
+          time: 10000,
+          errors: ['time'],
+        }).then((collected) => {
+          searchFunctionName(collected.first().content);
+        }).catch(() => {
+          message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
+        });
+      });
+    }else{
+      searchFunctionName(args[0]);
+    }
   }
 });
 
