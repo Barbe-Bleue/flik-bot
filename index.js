@@ -24,35 +24,46 @@ bot.on('ready', () => {
   bot.channels.first().send("Salut moi c'est vag, le meilleur bot du monde :ok_hand:");
 });
 
+// Suppression de message
+bot.on('messageDelete', message => {
+	message.channel.send('Ohlala pas bien ! '+message.author.username+' a supprimer son message !');
+	message.member.setNickname("supprimeur");
+});
+
+// Member join
 bot.on("guildMemberAdd", (member) => {
   console.log(`New User "${member.user.username}" has joined "${member.guild.name}"` );
   member.guild.channels.get("welcome").send(`"${member.user.username}" has joined this server`);
 });
 
-//Message
+// Message
 bot.on('message', message => {
 
-  //Variables
+  // Variables
   const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
 
+  //COMMANDES !
 
+  // Ban
   if (message.content.startsWith('!ban')){
-    // Easy way to get member object though mentions.
-    var member= message.mentions.members.first();
-    // Kick
-    member.kick().then((member) => {
-       // Successmessage
-       message.channel.send(":wave: " + member.displayName + " a été kické :point_right: ");
-    }).catch(() => {
-        // Failmessage
-       message.channel.send("On ne peut pas bannir Dieu :cross:");
-    });
+    if(message.member.kickable != false){
+      // Easy way to get member object though mentions.
+      var member= message.mentions.members.first();
+      // Kick
+      member.kick().then((member) => {
+         // Successmessage
+         message.channel.send(":wave: " + member.displayName + " a été kické :point_right: ");
+      }).catch(() => {
+          // Failmessage
+         message.channel.send("On ne peut pas bannir Dieu :cross:");
+      });
+    }else {
+      message.channel.send("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
+    }
   }
 
-
-  //COMMANDES !
-  //kick au hasard de la part de l'admin
+  // kick au hasard de la part de l'admin
   if (command === "kick"){
     if(message.member.kickable == false){
       var perdant = message.guild.members.random();
@@ -67,7 +78,7 @@ bot.on('message', message => {
     }
   }
 
-  //roulette russe
+  // roulette russe
   if(command === "roulette") {
     message.channel.send("Jeu de la roulette russe : "+ nbR +"/6 chance d'avoir une punition.");
     if(Math.floor(Math.random() * (6-nbR)) == 0) {
@@ -92,21 +103,21 @@ bot.on('message', message => {
     }
   }
 
-  //decide choix1 choix2...
+  // decide choix1 choix2...
   if (command === ("decide"))
     message.channel.send("Le choix est : " + args[Math.floor(Math.random() * args.length)]);
 
-  //suicide du bot
+  // suicide du bot
   if (command === "suicide"){
     message.channel.send("Ah ok on me bute comme ça :tired_face: :gun:");
     bot.destroy();
   }
 
-  //meteo
+  // meteo
   if(command === "meteo"){
 
-    var ville = args[1];
-    var demain = args[2];
+    var ville = args[0];
+    var demain = args[1];
     var jour = 0;
     var annonce = "aujourd'hui, la température est de ";
     var url;
@@ -141,11 +152,12 @@ bot.on('message', message => {
     });
   }
 
-  //trafic
+  // Trafic
   if(command === "trafic"){
 
+    var traf = message.content.split(" ");
     if(traf.length > 1){
-      var code = args[1];
+      var code = args[0];
       var type = "";
 
       if(code.toUpperCase() != code.toLowerCase()) type = "rers";
@@ -174,21 +186,16 @@ bot.on('message', message => {
     });
   }
 
-  //gif
+  // gif
   if(command === "gif"){
-    var recherche = "";
-    for(var i = 1; i<phrase.length; i++){
-      if(i==1) recherche = args[i];
-      else recherche = recherche + "+" + args[i];
-    }
-    var leGif = gif(recherche);
+    var leGif = gif(args[0]);
     leGif(function(err, previsions){
       if(err) return console.log(err);
       message.channel.send(previsions.url);
     });
 }
 
-  //apprend une phrase
+  // apprend une phrase
   if(command === "apprend") {
     message.channel.sendMessage('Que veux tu me faire apprendre ?')
     .then(() => {
@@ -226,7 +233,7 @@ bot.on('message', message => {
     });
   }
 
-  //savoir exprime 1 savoir
+  // savoir exprime 1 savoir
   if(command === "savoir") {
     fs.readFile(cerveauTXT, 'utf8', function(err, data) {
       if (!err) {
@@ -241,7 +248,7 @@ bot.on('message', message => {
     });
   }
 
-  //malou exprime tout le savoir
+  // malou exprime tout le savoir
   if(command === "malou") {
     fs.readFile(cerveauTXT, 'utf8', function(err, data) {
       if (!err) {
@@ -257,7 +264,7 @@ bot.on('message', message => {
     });
   }
 
-  //doc
+  // doc
   if(command === "doc") {
     fs.readFile(docTXT, 'utf8', function(err, data) {
       if (!err) {
@@ -273,7 +280,7 @@ bot.on('message', message => {
     });
   }
 
-  //pause gouter pour chaque membres
+  // pause gouter pour chaque membres
   if(command === "pause") {
     var userID,manger,boire;
     message.channel.send('Aight c\'est l\'heure de la pause :ok_hand: :coffee: :chocolate_bar: ');
@@ -285,7 +292,7 @@ bot.on('message', message => {
     }
   }
 
-  //top
+  // top
   if(command === "h1z1"){
     var reaction,top,kill;
     var prediction = "";
@@ -305,10 +312,9 @@ bot.on('message', message => {
     message.channel.send(prediction);
   }
 
-  //google recherche google
+  // google recherche google
   if(command === "google"){
-    var keyword = message.content.split(" ");
-    keyword.splice(keyword.indexOf("/google"), 1);
+    var keyword = args[0];
     google.l
     //var nextCounter = 0;
     google.resultsPerPage = 5;
@@ -328,7 +334,7 @@ bot.on('message', message => {
     });
   }
 
-  //pic image random sur imgur
+  // pic image random sur imgur
   if(command === "pic"){
     var anysize = 5;//the size of string
     var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPKRSTUVWXYZ";
@@ -339,7 +345,7 @@ bot.on('message', message => {
     message.channel.send("http://imgur.com/gallery/"+result);
   }
 
-  //actu
+  // actu
   if(command === "actu"){
     var actu = "";
     feed.load('http://www.bfmtv.com/rss/info/flux-rss/flux-toutes-les-actualites/', function(err, rss){
@@ -349,7 +355,7 @@ bot.on('message', message => {
     });
   }
 
-  //chuck
+  // chuck
   if(command === "chuck"){
     var nbChuck = message.content.split(" ");
     nbChuck.splice(nbChuck.indexOf("/chuck"), 1);
@@ -362,11 +368,10 @@ bot.on('message', message => {
 
   }
 
-  //sexe
+  // sexe
   if(command === "sexe"){
-    var nom = message.content.split(" ");
-    nom.splice(nom.indexOf("/sexe"),1);
-    var url = "https://gender-api.com/get?name="+nom[0]+"&country=FR&key=kXRfKPCeGsNKcUwseW";
+    message.channel.send(args[0]);
+    var url = "https://gender-api.com/get?name="+args[0]+"&country=FR&key=kXRfKPCeGsNKcUwseW";
 
     request(url, function(err, resopnse, json){
       var sexe = JSON.parse(json).gender;
@@ -377,7 +382,7 @@ bot.on('message', message => {
     });
   }
 
-  //beauf
+  // beauf
   if(command === "beauf") {
     fs.readFile(beaufTXT, 'utf8', function(err, data) {
       if (!err) {
@@ -388,14 +393,14 @@ bot.on('message', message => {
     });
   }
 
-  //afr amazon fr
+  // afr amazon fr
   if(message.content.includes("/afr")){
     var amazon = message.content.split(" ");
     amazon.splice(amazon.indexOf("/decide"), 1);
     message.channel.send("https://www.amazon.fr/s/ref=nb_sb_noss?__mk_fr_FR=%C3%85M%C3%85%C5%BD%C3%95%C3%91&url=search-alias%3Daps&field-keywords="+amazon);
   }
 
-  //Steam
+  // Steam
   if(message.content.toUpperCase().includes("/STEAM")){
 
     var pseudo = message.content.split(" ")[1];
@@ -438,7 +443,7 @@ bot.on('message', message => {
     }
   }
 
-  //difference avec une heure
+  // difference avec une heure
   if(command === "diff"){
     var now = new Date();
     var heure = now.getHours()+2;
@@ -452,7 +457,7 @@ bot.on('message', message => {
     message.channel.send(diffH + " heures et " + diffM + " minutes.");
   }
 
-  //Pourcentage de la journée
+  // Pourcentage de la journée
   if(message.content.includes("/%") && message.content.split(" ")[0] == "/%"){
 
     var now = new Date();
@@ -471,7 +476,7 @@ bot.on('message', message => {
     }
   }
 
-  //Mail
+  // Mail
   if(command === "mail"){
     var phrase = message.content.split(" ");
         if(phrase.length >= 4){
@@ -506,9 +511,9 @@ bot.on('message', message => {
   }
 
 
-  //QUESTIONS TEXTUELLES
+  // QUESTIONS TEXTUELLES
 
-  //Go cs
+  // Go cs
   if (message.content.toUpperCase() === ("GO CS")){
     if(message.member.kickable == false){
       message.channel.send("L'admin veut lancer une partie de cs, tappez 'go CS' pour rejoindre. (1/5)");
@@ -519,7 +524,7 @@ bot.on('message', message => {
     }
   }
 
-  //Demande de kick
+  // Demande de kick
   if (message.content.toUpperCase().includes("KICK MOI")){
     if(message.member.kickable == false){
       message.channel.send("Batard je peut pas te kick t'es admin.");
@@ -527,7 +532,7 @@ bot.on('message', message => {
     message.member.kick();
   }
 
-  //Jme casse
+  // Jme casse
   if(message.content.includes("je me casse")){
     var transports = leTransport();
     transports(function(err, previsions){
@@ -536,18 +541,16 @@ bot.on('message', message => {
     });
   }
 
+  // DETECTEURS
 
-
-  //DETECTEURS
-
-  //Insulte detector
+  // Insulte detector
   for(var insulte in cancerJSON) {
     if(message.content.includes(insulte) && message.content != '' && typeof cancerJSON[insulte] != 'undefined'){
         message.channel.send(cancerJSON[insulte][Math.floor(Math.random() * cancerJSON[insulte].length)]);
     }
   }
 
-  //FONCTIONS
+  // FONCTIONS
 
   // Timer avant kick
   function handleTimer() {
@@ -566,7 +569,7 @@ bot.on('message', message => {
     setTimeout(function(){ perdant.kick()}, 3000);
   }
 
-  //pour le transport
+  // pour le transport
   function leTransport(){
     var transports;
     return transports = function(callback){
@@ -588,7 +591,7 @@ bot.on('message', message => {
     };
   }
 
-  //pour le trafic
+  // pour le trafic
   function leTrafic(type, code){
     var transports;
     return transports = function(callback){
@@ -608,11 +611,11 @@ bot.on('message', message => {
     };
   }
 
-  //pour le chien
+  // pour le chien
   function leChien(type, code){
     var leChien;
     return leChien = function(callback){
-      url = "http://thedogapi.co.uk/api/v1/dog?limit=1";
+      url = "https://api.thedogapi.co.uk/v2/dog.php?limit=1";
     	request(url, function(err, response, body){
     		try{
     			var result = JSON.parse(body);
@@ -647,7 +650,7 @@ bot.on('message', message => {
     };
   }
 
-    //getID Steam
+  //getID Steam
   function getSteamID(pseudo){
     var SID;
     return SID = function(callback){
@@ -694,13 +697,6 @@ bot.on('message', message => {
 });
 
 bot.login(config.token);
-
-/*//Suppression de message
-bot.on('messageDelete', message => {
-	message.channel.send('Ohlala pas bien ! '+message.author.username+' a supprimer son message !');
-	message.member.setNickname("supprimeur");
-});*/
-
 
 /*
 Pour lancer le bot,
