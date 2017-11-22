@@ -394,9 +394,9 @@ bot.on('message', message => {
   }
 
   // afr amazon fr
-  if(message.content.includes("/afr")){
+  if(message.content.includes("afr")){
     var amazon = message.content.split(" ");
-    amazon.splice(amazon.indexOf("/decide"), 1);
+    amazon.splice(amazon.indexOf("!decide"), 1);
     message.channel.send("https://www.amazon.fr/s/ref=nb_sb_noss?__mk_fr_FR=%C3%85M%C3%85%C5%BD%C3%95%C3%91&url=search-alias%3Daps&field-keywords="+amazon);
   }
 
@@ -443,39 +443,6 @@ bot.on('message', message => {
     }
   }
 
-  // difference avec une heure
-  if(command === "diff"){
-    var now = new Date();
-    var heure = now.getHours()+2;
-    var minute = now.getMinutes();
-
-    var phrase = message.content.split(" ");
-    phrase = phrase[phrase.indexOf("!diff")+1];
-    var diff = diff(phrase);
-    var diffH = Math.floor(diff / 60);
-    var diffM = diff % 60;
-    message.channel.send(diffH + " heures et " + diffM + " minutes.");
-  }
-
-  // Pourcentage de la journée
-  if(message.content.includes("/%") && message.content.split(" ")[0] == "/%"){
-
-    var now = new Date();
-    var heure = now.getHours()+2;
-    var minute = now.getMinutes();
-
-    var phrase = message.content.split(" ");
-    if(phrase.length == 3){
-      var debut = phrase[1];
-      var fin = phrase[2];
-
-    var depuisDeb = diff(debut);
-    var jusquaFin = diff(fin);
-    var journee = depuisDeb + jusquaFin;
-    message.channel.send(((depuisDeb/journee)*100).toFixed(2) + "% du temps déjà passée");
-    }
-  }
-
   // Mail
   if(command === "mail"){
     var phrase = message.content.split(" ");
@@ -518,13 +485,12 @@ bot.on('message', message => {
       message.channel.send('tu veux quoi ?').then(() => {
         message.channel.awaitMessages(response => response.content.length > 0 , {
           max: 1,
-          time: 30000,
+          time: 10000,
           errors: ['time'],
         }).then((collected) => {
-          message.channel.send('The collected message was: '+collected.first().content);
           wikiSearch(collected.first().content);
         }).catch(() => {
-          message.channel.send('There was no collected message that passed the filter within the time limit!');
+          message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
         });
       });
     }else{
@@ -553,23 +519,21 @@ bot.on('message', message => {
     message.member.kick();
   }
 
-  // Jme casse
-  if(message.content.includes("je me casse")){
-    var transports = leTransport();
-    transports(function(err, previsions){
-    	if(err) return console.log(err);
-    	message.channel.send("Metros 6 pour CDG dans "+previsions.temps1+", "+previsions.temps2+", "+previsions.temps3+" et "+previsions.temps4);
-    });
-  }
-
   // DETECTEURS
 
   // Insulte detector
-  for(var insulte in cancerJSON) {
-    if(message.content.includes(insulte) && message.content != '' && typeof cancerJSON[insulte] != 'undefined'){
-        message.channel.send(cancerJSON[insulte][Math.floor(Math.random() * cancerJSON[insulte].length)]);
-    }
+  if(cancerJSON[message.content]){
+    message.channel.send(cancerJSON[message.content][Math.floor(Math.random() * cancerJSON[message.content].length)]);
   }
+
+  // Méthonde plus lente
+  /*
+    for(var insulte in cancerJSON) {
+      if(message.content.includes(insulte) && message.content != '' && typeof cancerJSON[insulte] != 'undefined'){
+          message.channel.send(cancerJSON[insulte][Math.floor(Math.random() * cancerJSON[insulte].length)]);
+      }
+    }
+  }*/
 
   // FONCTIONS
 
@@ -590,27 +554,6 @@ bot.on('message', message => {
     setTimeout(function(){ perdant.kick()}, 3000);
   }
 
-  // pour le transport
-  function leTransport(){
-    var transports;
-    return transports = function(callback){
-      url = "https://api-ratp.pierre-grimaud.fr/v3/schedules/metros/6/dupleix/A";
-    	request(url, function(err, response, body){
-    		try{
-    			var result = JSON.parse(body);
-    			var previsions = {
-      			temps1 : result.result.schedules[0].message,
-    				temps2 : result.result.schedules[1].message,
-    				temps3 : result.result.schedules[2].message,
-    				temps4 : result.result.schedules[3].message,
-    			};
-    			callback(null, previsions);
-    		}catch(e){
-    			callback(e);
-    		}
-    	});
-    };
-  }
 
   // pour le trafic
   function leTrafic(type, code){
@@ -651,7 +594,7 @@ bot.on('message', message => {
     };
   }
 
-  //giphy
+  // giphy
   function gif(recherche){
     var leGif = "";
     return leGif = function(callback){
@@ -691,30 +634,7 @@ bot.on('message', message => {
     };
   }
 
-  //diff heure
-  function diff(lheure){
-    var now = new Date();
-    var heure = now.getHours()+2;
-    var minute = now.getMinutes();
-    var heureCible = lheure.split(":");
-    if (heureCible[0] > 23 || heureCible[1] > 59){
-      message.channel.send("T'inventes des heures qui existent pas toi.");
-    }
-    else{
-      var s = now.getMonth()+"-"+now.getDay()+"-"+now.getYear()+" "+heureCible[0]+":"+heureCible[1]+":00";
-      var d = new Date(s);
-      var diff = 0;
-      var cibleMin = (d.getHours()*60 + d.getMinutes());
-      var mtnMin = (heure*60 + minute);
-      if(cibleMin > mtnMin){
-        diff = cibleMin - mtnMin;
-      }
-      else{
-        diff = mtnMin - cibleMin;
-      }
-      return diff;
-    }
-  }
+
 
   function wikiSearch(recherche){
     var url = "https://fr.wikipedia.org/w/api.php?action=opensearch&search="+recherche+"&limit=1&namespace=0&format=json";
