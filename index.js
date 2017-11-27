@@ -1,4 +1,5 @@
 //VARIABLES
+var tmp = 'atom';
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const nodemailer = require('nodemailer');
