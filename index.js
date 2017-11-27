@@ -197,15 +197,12 @@ bot.on('message', message => {
 
   // apprend une phrase
   if(command === "apprend") {
-    message.channel.sendMessage('Que veux tu me faire apprendre ?')
-    .then(() => {
-      message.channel.awaitMessages(response => 'message', {
+    message.channel.sendMessage('Que veux tu me faire apprendre ?').then(() => {
+      message.channel.awaitMessages(response => response.content.length > 0, {
         max: 1,
         time: 30000,
         errors: ['time'],
-      })
-      .then((collected) => {
-
+      }).then((collected) => {
           var sentence = collected.first().content;
           var newSavoir = true;
           fs.readFile(cerveauTXT, 'utf8', function(err, data) {
@@ -216,18 +213,17 @@ bot.on('message', message => {
                   var newSavoir = false;
                 }
               }
-            } else {
-              console.log(err);
-            }
-            if(newSavoir != false) {
-              fs.appendFile(cerveauTXT,sentence+'\n',"UTF-8",{'flags': 'a+'});
-              message.channel.send("Ok poto jm'en souviendrai :thumbsup: ");
-            } else {
-              message.channel.send(":no_entry: Hey, je connais déjà ca fdp :no_entry: ");
+              if(newSavoir != false) {
+                fs.appendFile(cerveauTXT,sentence+'\n',"UTF-8",{'flags': 'a+'});
+                message.channel.send("Ok poto jm'en souviendrai :thumbsup: ");
+                newSavoir = false;
+              } else {
+                message.channel.send(":no_entry: Hey, je connais déjà ca fdp :no_entry: ");
+                newSavoir = true;
+              }
             }
           });
-        })
-        .catch(() => {
+        }).catch(() => {
           message.channel.send('There was no collected message that passed the filter within the time limit!');
         });
     });
