@@ -1,3 +1,7 @@
 apprend
 split la phrase en mot clé, recherhe une phrase dans le savoir où il y a le plus de mots clé
-si mot clé trouvé dans une phrase > 3 => phrase déjà connu 
+si mot clé trouvé dans une phrase > 3 => phrase déjà connu
+
+!private @nom message
+
+envoie message à @nom 

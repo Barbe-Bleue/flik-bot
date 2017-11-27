@@ -105,3 +105,28 @@ function diff(lheure){
     return diff;
   }
 }
+
+
+
+
+
+// reverse json
+// wiki
+if(command === "wiki"){
+  message.channel.send('Recherche wikipedia pour: '+args[0]);
+  var url = "https://fr.wikipedia.org/w/api.php?action=opensearch&search="+args[0]+"&limit=3&namespace=0&format=json";
+
+  request(url, function(err, resopnse, json){
+    var names = JSON.parse(json)[1];
+    var links = JSON.parse(json)[3];
+
+
+    for(i in names){
+      var name = names.reverse()[i];
+      //var def = JSON.parse(json)[2][i];
+      var link = links.reverse()[i];
+
+      message.channel.send('Nom: '+name+'\n'+link+'\n\n');
+    }
+  });
+}
