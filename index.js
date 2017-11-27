@@ -1,5 +1,5 @@
 //VARIABLES
-var tmp = 'atom';
+var tmp = 'atomaaaa';
 var test = 'log in github';
 const Discord = require('discord.js');
 const bot = new Discord.Client();
