@@ -53,7 +53,6 @@ bot.on('message', message => {
     });
 
   }
-  update
   //COMMANDES !
   //kick au hasard de la part de l'admin
   if (command === "kick"){
