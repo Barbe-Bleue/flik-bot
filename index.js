@@ -53,6 +53,7 @@ bot.on('message', message => {
     });
 
   }
+  Salut
   //COMMANDES !
   //kick au hasard de la part de l'admin
   if (command === "kick"){
