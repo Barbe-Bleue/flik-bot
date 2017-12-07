@@ -17,7 +17,7 @@ var cerveauTXT = "./cerveau.txt";
 var docTXT = "./doc.txt";
 var beaufTXT = "./beauf.txt";
 var config = require('./config.json');
-chezmoi
+chezmoi2
 //CONNEXION
 bot.on('ready', () => {
   console.log('bot ok!');
