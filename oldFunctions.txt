@@ -1,0 +1,132 @@
+// Jme casse
+if(message.content.includes("je me casse")){
+  var transports = leTransport();
+  transports(function(err, previsions){
+    if(err) return console.log(err);
+    message.channel.send("Metros 6 pour CDG dans "+previsions.temps1+", "+previsions.temps2+", "+previsions.temps3+" et "+previsions.temps4);
+  });
+}
+
+// pour le transport
+function leTransport(){
+  var transports;
+  return transports = function(callback){
+    url = "https://api-ratp.pierre-grimaud.fr/v3/schedules/metros/6/dupleix/A";
+    request(url, function(err, response, body){
+      try{
+        var result = JSON.parse(body);
+        var previsions = {
+          temps1 : result.result.schedules[0].message,
+          temps2 : result.result.schedules[1].message,
+          temps3 : result.result.schedules[2].message,
+          temps4 : result.result.schedules[3].message,
+        };
+        callback(null, previsions);
+      }catch(e){
+        callback(e);
+      }
+    });
+  };
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// difference avec une heure
+if(command === "diff"){
+  var now = new Date();
+  var heure = now.getHours()+2;
+  var minute = now.getMinutes();
+
+  var phrase = message.content.split(" ");
+  phrase = phrase[phrase.indexOf("!diff")+1];
+  var diff = diff(phrase);
+  var diffH = Math.floor(diff / 60);
+  var diffM = diff % 60;
+  message.channel.send(diffH + " heures et " + diffM + " minutes.");
+}
+
+// Pourcentage de la journée
+if(message.content.includes("/%") && message.content.split(" ")[0] == "/%"){
+
+  var now = new Date();
+  var heure = now.getHours()+2;
+  var minute = now.getMinutes();
+
+  var phrase = message.content.split(" ");
+  if(phrase.length == 3){
+    var debut = phrase[1];
+    var fin = phrase[2];
+
+  var depuisDeb = diff(debut);
+  var jusquaFin = diff(fin);
+  var journee = depuisDeb + jusquaFin;
+  message.channel.send(((depuisDeb/journee)*100).toFixed(2) + "% du temps déjà passée");
+  }
+}
+
+//diff heure
+function diff(lheure){
+  var now = new Date();
+  var heure = now.getHours()+2;
+  var minute = now.getMinutes();
+  var heureCible = lheure.split(":");
+  if (heureCible[0] > 23 || heureCible[1] > 59){
+    message.channel.send("T'inventes des heures qui existent pas toi.");
+  }
+  else{
+    var s = now.getMonth()+"-"+now.getDay()+"-"+now.getYear()+" "+heureCible[0]+":"+heureCible[1]+":00";
+    var d = new Date(s);
+    var diff = 0;
+    var cibleMin = (d.getHours()*60 + d.getMinutes());
+    var mtnMin = (heure*60 + minute);
+    if(cibleMin > mtnMin){
+      diff = cibleMin - mtnMin;
+    }
+    else{
+      diff = mtnMin - cibleMin;
+    }
+    return diff;
+  }
+}
+
+
+
+
+
+// reverse json
+// wiki
+if(command === "wiki"){
+  message.channel.send('Recherche wikipedia pour: '+args[0]);
+  var url = "https://fr.wikipedia.org/w/api.php?action=opensearch&search="+args[0]+"&limit=3&namespace=0&format=json";
+
+  request(url, function(err, resopnse, json){
+    var names = JSON.parse(json)[1];
+    var links = JSON.parse(json)[3];
+
+
+    for(i in names){
+      var name = names.reverse()[i];
+      //var def = JSON.parse(json)[2][i];
+      var link = links.reverse()[i];
+
+      message.channel.send('Nom: '+name+'\n'+link+'\n\n');
+    }
+  });
+}
