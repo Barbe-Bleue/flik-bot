@@ -17,7 +17,7 @@ var cerveauTXT = "./cerveau.txt";
 var docTXT = "./doc.txt";
 var beaufTXT = "./beauf.txt";
 var config = require('./config.json');
-chezmoi2
+
 //CONNEXION
 bot.on('ready', () => {
   console.log('bot ok!');
@@ -368,6 +368,17 @@ bot.on('message', message => {
       } else console.log(err);
     });
   }
+
+  // Rename
+  if(command == "rename"){
+    if(args.length == 1){
+      message.member.setNickname(args[0]);
+      message.channel.send("Hey, "+message.author.username+" a changé son nom en '"+args+"'");
+    }else{
+      message.channel.send('Pseudo invalide')
+    }
+  }
+
   // wiki
   if(command === "wiki"){
     bangSearch(wikiSearch,'_',args);
