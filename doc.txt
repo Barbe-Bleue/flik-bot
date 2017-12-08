@@ -23,9 +23,14 @@ Commandes utilisateurs :
 !steam *steamID ou steamID64* -- Récupère nombre de jeux & jeu le plus joué
 !diff *HH:MM* -- donne le temps déjà passe ou avant une certaine heure
 !% *HH:MM* *HH:MM* -- donne le pourcentage déjà passé entre les deux heures dnonées
-!sexe *prenom* --
+!sexe *prenom* -- détermine le genre du prénom
 !beauf -- donne un élément requis pour etre beauf
 !mail *MailCible*[;*autreMail*] *Sujet* *Message* -- Envoi un mail à un ou plusieurs destinataires
+!rename *nom* -- changer de pseudo 
+
+Recherches:
+!wiki *mot* -- fait une recherche sur wikipedia du mot clé
+!afr *mot* -- envoie le liens amazon sur le mot clé
 
 Interactions :
 "go_cs" -- lancer une partie de cs
