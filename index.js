@@ -5,6 +5,7 @@ const nodemailer = require('nodemailer');
 var request = require('request');
 var google = require('google')
 var feed = require('rss-to-json');
+var strawpoll = require('strawpoll');
 
 var nbR = 1; //pour la roulette
 var punitions = ["kick", "Changement de pseudo"]; //Textes des punitions
@@ -373,9 +374,27 @@ bot.on('message', message => {
   if(command == "rename"){
     if(args.length == 1){
       message.member.setNickname(args[0]);
-      message.channel.send("Hey, "+message.author.username+" a changé son nom en '"+args+"'");
+      message.channel.send("Hey, "+message.author.username+" a changé son nom en ***"+args+"***");
     }else{
       message.channel.send('Pseudo invalide')
+    }
+  }
+
+  // Sondage
+  if(command == "sondage"){
+    if(args.length > 1){
+      choix = args.join(" ");
+      message.channel.send(":apple:***SONDAGE :apple:\n"+choix+"***")
+        .then(function (message) {
+          message.react("👍")
+          message.react("👎")
+          //message.pin()
+          //message.delete()
+        }).catch(function() {
+          //Something
+        });
+    }else {
+      message.channel.send("Indique la raison du sondage")
     }
   }
 
