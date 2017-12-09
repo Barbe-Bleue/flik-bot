@@ -26,7 +26,8 @@ Commandes utilisateurs :
 !sexe *prenom* -- détermine le genre du prénom
 !beauf -- donne un élément requis pour etre beauf
 !mail *MailCible*[;*autreMail*] *Sujet* *Message* -- Envoi un mail à un ou plusieurs destinataires
-!rename *nom* -- changer de pseudo 
+!rename *nom* -- changer de pseudo
+!btc -- affiche le cours du Bitcoin
 
 Recherches:
 !wiki *mot* -- fait une recherche sur wikipedia du mot clé
