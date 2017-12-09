@@ -4,8 +4,8 @@ const bot = new Discord.Client();
 const nodemailer = require('nodemailer');
 var request = require('request');
 var google = require('google')
-var feed = require('rss-to-json');
-
+var feed = require('rss-to-json'); // pour les actus
+var http = require('http'); // pour le btc
 
 
 var nbR = 1; //pour la roulette
@@ -399,6 +399,23 @@ bot.on('message', message => {
     }
   }
 
+  // Btc
+  if(command == "btc"){
+    http.get({
+      host: 'api.coindesk.com',
+      path: '/v1/bpi/currentprice.json'
+      },function(response) {
+        // Continuously update stream with data
+        var body = '';
+        response.on('data', function(d) { body += d; });
+        response.on('end', function() {
+          // Data reception is done, do whatever with it!
+          var parsed = JSON.parse(body);
+          message.channel.send(":dollar: **"+parsed.bpi.USD.rate+" $** :dollar:");
+        });
+      }
+    );
+  }
 
 
   // wiki
@@ -489,9 +506,6 @@ bot.on('message', message => {
           });
       }
   }
-
-
-
 
   // QUESTIONS TEXTUELLES
 
