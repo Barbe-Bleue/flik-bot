@@ -28,6 +28,7 @@ Commandes utilisateurs :
 !mail *MailCible*[;*autreMail*] *Sujet* *Message* -- Envoi un mail à un ou plusieurs destinataires
 !rename *nom* -- changer de pseudo
 !btc -- affiche le cours du Bitcoin
+!btc *monnaies1* *monnaies2* -- affiche le prix en dollars des monnaies en question
 
 Recherches:
 !wiki *mot* -- fait une recherche sur wikipedia du mot clé
