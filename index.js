@@ -6,7 +6,13 @@ var request = require('request');
 var google = require('google')
 var feed = require('rss-to-json'); // pour les actus
 var http = require('http'); // pour le btc
-
+var CoinMarketCap = require("node-coinmarketcap"); // pour le btc
+var options = {
+  events: true, // Enable event system
+  refresh: 60, // Refresh time in seconds (Default: 60)
+  convert: "EUR" // Convert price to different currencies. (Default USD)
+}
+var coinmarketcap = new CoinMarketCap(options);
 
 var nbR = 1; //pour la roulette
 var punitions = ["kick", "Changement de pseudo"]; //Textes des punitions
@@ -36,6 +42,21 @@ bot.on('messageDelete', message => {
 bot.on("guildMemberAdd", (member) => {
   console.log(`New User "${member.user.username}" has joined "${member.guild.name}"` );
   member.guild.channels.get("welcome").send(`"${member.user.username}" has joined this server`);
+});
+
+// Trigger this event every 60 seconds with information about BTC
+coinmarketcap.on("BTC", (coin) => {
+  message.channel.send(coin).
+  then(function (message) {
+    message.pin()})
+  .catch(function() {
+    //Something
+  });
+});
+
+// Trigger this event when BTC percent change is greater than 20
+coinmarketcap.onPercentChange24h("BTC", 20, (coin) => {
+  message.channel.send("Le Bitcoin à augmenté de plus de 20% en 24h ! :chart_with_upwards_trend: :white_check_mark: ");
 });
 
 // Message
@@ -401,21 +422,26 @@ bot.on('message', message => {
 
   // Btc
   if(command == "btc"){
-    http.get({
-      host: 'api.coindesk.com',
-      path: '/v1/bpi/currentprice.json'
-      },function(response) {
-        // Continuously update stream with data
-        var body = '';
-        response.on('data', function(d) { body += d; });
-        response.on('end', function() {
-          // Data reception is done, do whatever with it!
-          var parsed = JSON.parse(body);
-          message.channel.send(":dollar: **"+parsed.bpi.USD.rate+" $** :dollar:");
-        });
-      }
-    );
+    if(args.length == 0){
+      // If you want to check a single coin, use get() (You need to supply the coinmarketcap id of the cryptocurrency, not the symbol)
+      // If you want to use symbols instead of id, use multi.
+      coinmarketcap.get("bitcoin", coin => {
+        message.channel.send(":dollar: **"+coin.price_usd+" $** :dollar:"); // Prints the price in USD of BTC at the moment.
+      });
+    }else if(args.length > 0){
+      var multiCoin = "";
+      // If you want to check multiple coins, use multi():
+      coinmarketcap.multi(coins => {
+        for (var i = 0; i < args.length; i++) {
+          crypto = args[i].toUpperCase();
+          multiCoin += crypto+" : "+coins.get(crypto).price_usd+" :dollar: \n";
+        }
+        message.channel.send(multiCoin);
+      });
+    }
   }
+
+
 
 
   // wiki
