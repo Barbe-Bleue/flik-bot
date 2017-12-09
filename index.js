@@ -44,27 +44,28 @@ bot.on("guildMemberAdd", (member) => {
   member.guild.channels.get("welcome").send(`"${member.user.username}" has joined this server`);
 });
 
-// Trigger this event every 60 seconds with information about BTC
-coinmarketcap.on("BTC", (coin) => {
-  message.channel.send(coin).
-  then(function (message) {
-    message.pin()})
-  .catch(function() {
-    //Something
-  });
-});
-
-// Trigger this event when BTC percent change is greater than 20
-coinmarketcap.onPercentChange24h("BTC", 20, (coin) => {
-  message.channel.send("Le Bitcoin à augmenté de plus de 20% en 24h ! :chart_with_upwards_trend: :white_check_mark: ");
-});
-
 // Message
 bot.on('message', message => {
 
   // Variables
   const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
+
+  // Trigger this event every 60 seconds with information about BTC
+  coinmarketcap.on("BTC", (coin) => {
+    message.channel.send(coin)
+    .then(function (message) {
+      message.pin()})
+    .catch(function() {
+      //Something
+    });
+  });
+
+  // Trigger this event when BTC percent change is greater than 20
+  coinmarketcap.onPercentChange24h("BTC", 20, (coin) => {
+    message.channel.send("Le Bitcoin à augmenté de plus de 20% en 24h ! :chart_with_upwards_trend: :white_check_mark: ");
+  });
+
 
   //COMMANDES !
 
@@ -138,7 +139,6 @@ bot.on('message', message => {
 
   // meteo
   if(command === "meteo"){
-
     var ville = args[0];
     var demain = args[1];
     var jour = 0;
@@ -205,7 +205,7 @@ bot.on('message', message => {
     var leChien = leChien(type, code);
     leChien(function(err, previsions){
     	if(err) return console.log(err);
-    	message.channel.send(previsions.url);
+        message.channel.send(previsions.url);
     });
   }
 
@@ -216,7 +216,7 @@ bot.on('message', message => {
       if(err) return console.log(err);
       message.channel.send(previsions.url);
     });
-}
+  }
 
   // apprend une phrase
   if(command === "apprend") {
