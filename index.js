@@ -5,7 +5,8 @@ const nodemailer = require('nodemailer');
 var request = require('request');
 var google = require('google')
 var feed = require('rss-to-json');
-var strawpoll = require('strawpoll');
+
+
 
 var nbR = 1; //pour la roulette
 var punitions = ["kick", "Changement de pseudo"]; //Textes des punitions
@@ -398,6 +399,8 @@ bot.on('message', message => {
     }
   }
 
+
+
   // wiki
   if(command === "wiki"){
     bangSearch(wikiSearch,'_',args);
@@ -414,9 +417,8 @@ bot.on('message', message => {
   }
 
   // Steam
-  if(message.content.toUpperCase().includes("/STEAM")){
-
-    var pseudo = message.content.split(" ")[1];
+  if(command === "steam"){
+    var pseudo = args[0];
     if(pseudo != null){
       var steamID = getSteamID(pseudo);
       steamID(function(err, resultat){
@@ -425,17 +427,14 @@ bot.on('message', message => {
         if(succ != "1" && /^\d+$/.test(pseudo) == true){
           id = pseudo;
           succ = "1";
-        }
-        else{
+        }else{
           id = resultat.id;
         }
         if (succ == "1"){
           var url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=B480E532F65ABE5030AA92D1E09EAAA5&steamid="+id+"&include_appinfo=1&format=json";
           request(url, function(err, response, json){
-            var jeu = "";
+            var jeu,appid,img = "";
             var heuresJeu = 1;
-            var appid = "";
-            var img = "";
             var result = JSON.parse(json);
             var nbJeux = result.response.game_count;
             for (var i = 0; i < nbJeux; i++){
@@ -447,9 +446,10 @@ bot.on('message', message => {
               }
             }
             heuresJeu = heuresJeu/60;
-            message.channel.send("ce joueur a " + nbJeux + " jeux sur steam.");
-            message.channel.send("http://media.steampowered.com/steamcommunity/public/images/apps/"+appid+"/"+img+".jpg");
-            message.channel.send("Le jeu le plus joué est '" + jeu + "' avec " + heuresJeu.toFixed(2) + " heures de jeu.");
+            steamStats ="ce joueur a " + nbJeux + " jeux sur steam.\n";
+            steamStats += "http://media.steampowered.com/steamcommunity/public/images/apps/"+appid+"/"+img+".jpg\n";
+            steamStats += "Le jeu le plus joué est '" + jeu + "' avec " + heuresJeu.toFixed(2) + " heures de jeu.\n";
+            message.channel.send(steamStats);
           });
         }
       });
