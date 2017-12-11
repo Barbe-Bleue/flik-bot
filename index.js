@@ -513,15 +513,6 @@ bot.on('message', message => {
     message.channel.send(cancerJSON[message.content][Math.floor(Math.random() * cancerJSON[message.content].length)]);
   }
 
-  // Méthonde plus lente
-  /*
-    for(var insulte in cancerJSON) {
-      if(message.content.includes(insulte) && message.content != '' && typeof cancerJSON[insulte] != 'undefined'){
-          message.channel.send(cancerJSON[insulte][Math.floor(Math.random() * cancerJSON[insulte].length)]);
-      }
-    }
-  }*/
-
   // FONCTIONS
 
   // Timer avant kick
