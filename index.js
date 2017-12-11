@@ -613,14 +613,14 @@ bot.on('message', message => {
   }
 
   // SEARCH FUNCTION
-  function sexeSearch(prenom){
+  function genreSearch(prenom){
     var url = "https://gender-api.com/get?name="+prenom+"&country=FR&key=kXRfKPCeGsNKcUwseW";
     request(url, function(err, resopnse, json){
-      var sexe = JSON.parse(json).gender;
+      var genre = JSON.parse(json).gender;
       var precision = JSON.parse(json).accuracy;
-      if(sexe === "male") sexe = "Homme";
-      else sexe = "Femme";
-      message.channel.send(prenom+': '+sexe + ", sûr à " + precision + "%");
+      if(genre === "male") genre = "Homme";
+      else genre = "Femme";
+      message.channel.send(prenom+': '+genre + ", sûr à " + precision + "%");
     });
   }
 
