@@ -76,7 +76,9 @@ bot.on('message', message => {
     }
   }
 
-  // kick au hasard de la part de l'admin
+  //COMMANDES !
+  //kick au hasard de la part de l'admin
+
   if (command === "kick"){
     if(message.member.kickable == false){
       var perdant = message.guild.members.random();
