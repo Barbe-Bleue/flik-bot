@@ -415,21 +415,20 @@ bot.on('message', message => {
   }
 
 
-
-
-  // wiki
-  if(command === "wiki"){
-    bangSearch(wikiSearch,'_',args);
-  }
-
-  // afr amazon fr
-  if(command === ("afr")){
-    bangSearch(amazonSearch,'+',args);
-  }
-
-  // sexe
-  if(command === "sexe"){
-    bangSearch(sexeSearch,' ',args);
+  // RECHERCHES
+  switch (command) {
+    // wiki
+    case "wiki" :
+      bangSearch(wikiSearch,'_',args);
+      break;
+    // afr amazon fr
+    case "afr" :
+      bangSearch(amazonSearch,'+',args);
+      break;
+    // genre
+    case "genre" :
+      bangSearch(genreSearch,' ',args);
+      break;
   }
 
   // Steam
