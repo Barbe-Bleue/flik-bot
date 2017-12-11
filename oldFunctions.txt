@@ -30,22 +30,42 @@ function leTransport(){
 }
 
 
+var strawpoll = require('strawpoll');
+// Poll
+if(command == "poll"){
+  if(args.length > 1){
+    var total = 0;
+    var options = message.content.slice('"').trim().split(/"+/g);
+    var title = options[0];
+
+    var digit = [":zero:",":one:",":two:",":three:",":four:",":five:",":six:",":seven:"]
+    var sondage = "**"+title+"**\n\n";
+
+    for (var i = 1; i < options.length; i++) {
+      sondage+=digit[i]+" "+options[i]+"\n";
+    }
+    message.channel.send(sondage)
+  }
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Btc
+if(command == "btc"){
+  http.get({
+    host: 'api.coindesk.com',
+    path: '/v1/bpi/currentprice.json'
+    },function(response) {
+      // Continuously update stream with data
+      var body = '';
+      response.on('data', function(d) { body += d; });
+      response.on('end', function() {
+        // Data reception is done, do whatever with it!
+        var parsed = JSON.parse(body);
+        message.channel.send(":dollar: **"+parsed.bpi.USD.rate+" $** :dollar:");
+      });
+    }
+  );
+}
 
 
 // difference avec une heure
@@ -105,9 +125,6 @@ function diff(lheure){
     return diff;
   }
 }
-
-
-
 
 
 // reverse json
