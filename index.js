@@ -40,9 +40,9 @@ bot.on('messageDelete', message => {
 
 // Member join
 bot.on("guildMemberAdd", member => {
-
-  //console.log("Et maintenat on dit bonjour à "+member.user.username+" qui a rejoint"+member.guild.name+ " !" );
-  //member.guild.channels.get("welcome").send(member.user.username+" has joined this server");
+  console.log(member.user.username+member.guild.name);
+  console.log("Et maintenat on dit bonjour à "+member.user.username+" qui a rejoint"+member.guild.name+ " !" );
+  member.guild.channels.get("welcome").send(member.user.username+" has joined this server");
 });
 
 // Message
@@ -76,11 +76,6 @@ bot.on('message', message => {
     }
   }
 
-<<<<<<< HEAD
-  //COMMANDES !
-  //kick au hasard de la part de l'admin
-
-=======
   // mute user
   if(command === "mute"){
     // Overwrite permissions for a message author
@@ -98,7 +93,6 @@ bot.on('message', message => {
   }
 
   // kick au hasard de la part de l'admin
->>>>>>> mute and unmute command
   if (command === "kick"){
     if(message.member.kickable == false){
       var perdant = message.guild.members.random();
@@ -527,22 +521,6 @@ bot.on('message', message => {
     }
     message.member.kick();
   }
-
-  // savoir exprime 1 savoir
-  if(message.content.toUpperCase().includes("VAG PARLE MOI DE")) {
-    fs.readFile(cerveauTXT, 'utf8', function(err, data) {
-      if (!err){
-        var savoir = data.toString().split('\n');
-
-        if(savoir !='') message.channel.send(savoir[Math.floor(Math.random() * savoir.length)]);
-        else message.channel.send("Hey, flemme me casse pas les couilles");
-
-      } else {
-        console.log(err);
-      }
-    });
-  }
-
 
   // DETECTEURS
 
