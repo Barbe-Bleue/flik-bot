@@ -63,16 +63,16 @@ bot.on('message', message => {
       if(member != undefined){
         member.kick().then((member) => {
           // Successmessage
-          message.channel.send(":wave: " + member.displayName + " a été kické :point_right: ");
+          message.reply(":wave: " + member.displayName + " a été kické :point_right: ");
         }).catch(() => {
           // Failmessage
-          message.channel.send("On ne peut pas bannir Dieu :cross:");
+          message.reply("On ne peut pas bannir Dieu :cross:");
         });
       }else{
-        message.channel.send("Je peux pas bannir tout le monde ca ne se fait pas !");
+        message.reply("Je peux pas bannir tout le monde ca ne se fait pas !");
       }
     }else {
-      message.channel.send("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
+      message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
     }
   }
 
@@ -118,7 +118,7 @@ bot.on('message', message => {
 
   // decide choix1 choix2...
   if (command === ("decide"))
-    message.channel.send("Le choix est : " + args[Math.floor(Math.random() * args.length)]);
+    message.reply("Le choix est : " + args[Math.floor(Math.random() * args.length)]);
 
   // suicide du bot
   if (command === "suicide"){
@@ -162,7 +162,7 @@ bot.on('message', message => {
     };
     openweathermeteo(ville, jour, function(err, previsions){
     	if(err) return console.log(err);
-    	message.channel.send("A "+previsions.city+", " + annonce + previsions.temperature + "°C, " + previsions.description + " "+ meteoJSON[previsions.description]);
+    	message.reply("A "+previsions.city+", " + annonce + previsions.temperature + "°C, " + previsions.description + " "+ meteoJSON[previsions.description]);
     });
   }
 
