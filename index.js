@@ -76,9 +76,29 @@ bot.on('message', message => {
     }
   }
 
+<<<<<<< HEAD
   //COMMANDES !
   //kick au hasard de la part de l'admin
 
+=======
+  // mute user
+  if(command === "mute"){
+    // Overwrite permissions for a message author
+    message.channel.overwritePermissions(message.mentions.members.first(), {
+      SEND_MESSAGES: false
+    }).then(() => message.channel.send(message.mentions.members.first()+" a été mute. Fallait pas faire chier :kissing_heart:")).catch(console.error);
+  }
+
+  // unmute user
+  if(command =="unmute"){
+    // Overwrite permissions for a message author
+    message.channel.overwritePermissions(message.mentions.members.first(), {
+      SEND_MESSAGES: true
+    }).then(() => message.channel.send("On libère"+message.mentions.members.first()+", tu peux reparler maintenant :ok_hand: :slight_smile:")).catch(console.error);
+  }
+
+  // kick au hasard de la part de l'admin
+>>>>>>> mute and unmute command
   if (command === "kick"){
     if(message.member.kickable == false){
       var perdant = message.guild.members.random();
