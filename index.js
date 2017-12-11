@@ -40,8 +40,8 @@ bot.on('messageDelete', message => {
 
 // Member join
 bot.on("guildMemberAdd", (member) => {
-  console.log(`New User "${member.user.username}" has joined "${member.guild.name}"` );
-  member.guild.channels.get("welcome").send(`"${member.user.username}" has joined this server`);
+  console.log("New User "+member.user.username+" has joined "+member.guild.name );
+  member.guild.channels.get("welcome").send(member.user.username+" has joined this server");
 });
 
 // Message
@@ -70,18 +70,22 @@ bot.on('message', message => {
   //COMMANDES !
 
   // Ban
-  if (message.content.startsWith('!ban')){
-    if(message.member.kickable != false){
+  if (command === "ban"){
+    if(message.member.kickable == false){
       // Easy way to get member object though mentions.
       var member= message.mentions.members.first();
       // Kick
-      member.kick().then((member) => {
-        // Successmessage
-        message.channel.send(":wave: " + member.displayName + " a été kické :point_right: ");
-      }).catch(() => {
-        // Failmessage
-        message.channel.send("On ne peut pas bannir Dieu :cross:");
-      });
+      if(member != undefined){
+        member.kick().then((member) => {
+          // Successmessage
+          message.channel.send(":wave: " + member.displayName + " a été kické :point_right: ");
+        }).catch(() => {
+          // Failmessage
+          message.channel.send("On ne peut pas bannir Dieu :cross:");
+        });
+      }else{
+        message.channel.send("Je peux pas bannir tout le monde ca ne se fait pas !");
+      }
     }else {
       message.channel.send("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
     }
@@ -241,7 +245,7 @@ bot.on('message', message => {
                 message.channel.send("Ok poto jm'en souviendrai :thumbsup: ");
                 newSavoir = false;
               } else {
-                message.channel.send(":no_entry: Hey, je connais déjà ca fdp :no_entry: ");
+                message.channel.send(":no_entry: Hey, je connais déjà ca ! :no_entry: ");
                 newSavoir = true;
               }
             }
@@ -277,9 +281,7 @@ bot.on('message', message => {
         for (var i in grandSavoir){
           if(savoir[i] != '') savoir += grandSavoir[i]+'\n';
         } message.channel.send(savoir);
-      }
-      else console.log(err);
-
+      }else console.log(err);
     });
   }
 
@@ -293,9 +295,7 @@ bot.on('message', message => {
         for (var i in laDoc){
           if(doc[i] != '') doc += laDoc[i]+'\n';
         } message.channel.send(doc);
-      }
-      else console.log(err);
-
+      }   else console.log(err);
     });
   }
 
@@ -421,7 +421,7 @@ bot.on('message', message => {
   }
 
   // Btc
-  if(command == "btc"){
+  if(command == "coin"){
     if(args.length == 0){
       // If you want to check a single coin, use get() (You need to supply the coinmarketcap id of the cryptocurrency, not the symbol)
       // If you want to use symbols instead of id, use multi.
