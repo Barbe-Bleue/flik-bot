@@ -2,6 +2,17 @@ apprend
 split la phrase en mot clé, recherhe une phrase dans le savoir où il y a le plus de mots clé
 si mot clé trouvé dans une phrase > 3 => phrase déjà connu
 
+sert à rien on voit le message
 !private @nom message
+envoie message à @nom
 
-envoie message à @nom 
+-republie l'image que (x) a voulue supprimer et dit '(x) a voulue supprimer ça
+-si le bot reconnais le nom d'un artiste ou d'un groupe dans sa blacklist, skip la chanson et dit "woullah tu passe pas ça" ou si (x) est blacklisté, skip sa musique et le bot dit "nan pas toi jt'aime pas"
+-quand (x) arrive sur le chat vocal, le bot se lance et dit soit par text ou vocale "ohoh alerte aux gogoles"
+-quand (x) se fait exlure, le bot imite denis brogniart "le conseil vous a choisi..."
+-quand (x) lance cs go et qu'il est sur un chat vocale, le bot dit "quelqu'un veut venir ? , (x) veut faire du sale"
+-quand (x) inclue "hitler" le bot dit "parle pas de ça, ça me donne des gaz"
+
+
+!vag parle moi de ce que tu sais sur le japon
+> balance une phrase avec comme mot clé japon

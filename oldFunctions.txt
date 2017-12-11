@@ -68,6 +68,86 @@ if(command == "btc"){
 }
 
 
+<<<<<<< Updated upstream
+=======
+// Trigger this event every 60 seconds with information about BTC
+coinmarketcap.on("BTC", (coin) => {
+  message.channel.send(coin)
+  .then(function (message) {
+    message.pin()})
+  .catch(function() {
+    //Something
+  });
+});
+
+// Trigger this event when BTC percent change is greater than 20
+coinmarketcap.onPercentChange24h("BTC", 20, (coin) => {
+  message.channel.send("Le Bitcoin à augmenté de plus de 20% en 24h ! :chart_with_upwards_trend: :white_check_mark: ");
+});
+
+
+//insulte dédetector
+// Méthonde plus lente
+/*
+  for(var insulte in cancerJSON) {
+    if(message.content.includes(insulte) && message.content != '' && typeof cancerJSON[insulte] != 'undefined'){
+        message.channel.send(cancerJSON[insulte][Math.floor(Math.random() * cancerJSON[insulte].length)]);
+    }
+  }
+}*/
+
+// mails
+// Mail
+if(command === "mail"){
+  var phrase = message.content.split(" ");
+      if(phrase.length >= 4){
+        var mail = phrase[1];
+        var sujet = phrase[2];
+        var texte = "";
+        for(var i = 3; i < phrase.length; i++){
+          texte = texte + " " + phrase[i];
+        }
+        'use strict';
+        let transporter = nodemailer.createTransport({
+            host : "smtp.gmail.com",
+            port: 465,
+            auth: {
+              user: 'lebotrelou@gmail.com',
+              pass: '******'
+            }
+        });
+        let mailOptions = {
+            from: '"Le Bot Relou 2 Discord !" <lebotrelou@gmail.com>',
+            to: mail,
+            subject: sujet,
+            text: texte,
+        };
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return console.log(error);
+            }
+            message.channel.send("Message envoyé poto :ok_hand:");
+        });
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> Stashed changes
 // difference avec une heure
 if(command === "diff"){
   var now = new Date();

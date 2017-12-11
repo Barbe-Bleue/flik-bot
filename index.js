@@ -40,9 +40,9 @@ bot.on('messageDelete', message => {
 
 // Member join
 bot.on("guildMemberAdd", member => {
-  console.log(member.user.username+member.guild.name);
-  console.log("Et maintenat on dit bonjour à "+member.user.username+" qui a rejoint"+member.guild.name+ " !" );
-  member.guild.channels.get("welcome").send(member.user.username+" has joined this server");
+
+  //console.log("Et maintenat on dit bonjour à "+member.user.username+" qui a rejoint"+member.guild.name+ " !" );
+  //member.guild.channels.get("welcome").send(member.user.username+" has joined this server");
 });
 
 // Message
@@ -527,6 +527,22 @@ bot.on('message', message => {
     }
     message.member.kick();
   }
+
+  // savoir exprime 1 savoir
+  if(message.content.toUpperCase().includes("VAG PARLE MOI DE")) {
+    fs.readFile(cerveauTXT, 'utf8', function(err, data) {
+      if (!err){
+        var savoir = data.toString().split('\n');
+
+        if(savoir !='') message.channel.send(savoir[Math.floor(Math.random() * savoir.length)]);
+        else message.channel.send("Hey, flemme me casse pas les couilles");
+
+      } else {
+        console.log(err);
+      }
+    });
+  }
+
 
   // DETECTEURS
 

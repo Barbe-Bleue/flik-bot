@@ -27,8 +27,10 @@ Commandes utilisateurs :
 !beauf -- donne un élément requis pour etre beauf
 !mail *MailCible*[;*autreMail*] *Sujet* *Message* -- Envoi un mail à un ou plusieurs destinataires
 !rename *nom* -- changer de pseudo
-!btc -- affiche le cours du Bitcoin
-!btc *monnaies1* *monnaies2* -- affiche le prix en dollars des monnaies en question
+!coin -- affiche le cours du Bitcoin
+!coin *monnaies1* *monnaies2* -- affiche le prix en dollars des monnaies en question
+!mute *user* -- mute textuellement un user
+!unmute *user* -- unmute textuellement un user
 
 Recherches:
 !wiki *mot* -- fait une recherche sur wikipedia du mot clé
