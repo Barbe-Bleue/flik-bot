@@ -39,8 +39,9 @@ bot.on('messageDelete', message => {
 });
 
 // Member join
-bot.on("guildMemberAdd", (member) => {
-  console.log("New User "+member.user.username+" has joined "+member.guild.name );
+bot.on("guildMemberAdd", member => {
+  console.log(member.user.username+member.guild.name);
+  console.log("Et maintenat on dit bonjour à "+member.user.username+" qui a rejoint"+member.guild.name+ " !" );
   member.guild.channels.get("welcome").send(member.user.username+" has joined this server");
 });
 
@@ -50,22 +51,6 @@ bot.on('message', message => {
   // Variables
   const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
-
-  // Trigger this event every 60 seconds with information about BTC
-  coinmarketcap.on("BTC", (coin) => {
-    message.channel.send(coin)
-    .then(function (message) {
-      message.pin()})
-    .catch(function() {
-      //Something
-    });
-  });
-
-  // Trigger this event when BTC percent change is greater than 20
-  coinmarketcap.onPercentChange24h("BTC", 20, (coin) => {
-    message.channel.send("Le Bitcoin à augmenté de plus de 20% en 24h ! :chart_with_upwards_trend: :white_check_mark: ");
-  });
-
 
   //COMMANDES !
 
@@ -138,7 +123,9 @@ bot.on('message', message => {
   // suicide du bot
   if (command === "suicide"){
     message.channel.send("Ah ok on me bute comme ça :tired_face: :gun:");
-    bot.destroy();
+    setTimeout(function(){
+      bot.destroy();
+    }, 2000);
   }
 
   // meteo
