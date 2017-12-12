@@ -40,9 +40,9 @@ bot.on('messageDelete', message => {
 
 // Member join
 bot.on("guildMemberAdd", member => {
-  console.log(member.user.username+member.guild.name);
-  console.log("Et maintenat on dit bonjour à "+member.user.username+" qui a rejoint"+member.guild.name+ " !" );
-  member.guild.channels.get("welcome").send(member.user.username+" has joined this server");
+  //console.log(member.user.username+member.guild.name);
+  //console.log("Et maintenat on dit bonjour à "+member.user.username+" qui a rejoint"+member.guild.name+ " !" );
+  //member.guild.channels.get("welcome").send(member.user.username+" has joined this server");
 });
 
 // Message
@@ -502,17 +502,6 @@ bot.on('message', message => {
   }
 
   // QUESTIONS TEXTUELLES
-
-  // Go cs
-  if (message.content.toUpperCase() === ("GO CS")){
-    if(message.member.kickable == false){
-      message.channel.send("L'admin veut lancer une partie de cs, tappez 'go CS' pour rejoindre. (1/5)");
-    }
-    else{
-      message.author.send("wlh tg parle pas de cs");
-      message.member.kick();
-    }
-  }
 
   // Demande de kick
   if (message.content.toUpperCase().includes("KICK MOI")){
