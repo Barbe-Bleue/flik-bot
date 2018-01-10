@@ -6,6 +6,7 @@ var request = require('request');
 var google = require('google')
 var feed = require('rss-to-json'); // pour les actus
 var http = require('http'); // pour le btc
+var translate = require('translate');
 var CoinMarketCap = require("node-coinmarketcap"); // pour le btc
 var options = {
   events: true, // Enable event system
@@ -13,11 +14,13 @@ var options = {
   convert: "EUR" // Convert price to different currencies. (Default USD)
 }
 var coinmarketcap = new CoinMarketCap(options);
+var jsonfile = require('jsonfile');
 
 var nbR = 1; //pour la roulette
 var punitions = ["kick", "Changement de pseudo"]; //Textes des punitions
 var fs = require("fs"); //obligtoire pour des fonctions
 var cancerJSON = require('./cancer.json');
+var insultesJSON = require('./insultes.json');
 var pauseJSON = require('./pause.json');
 var pseudoJSON = require('./pseudo.json');
 var meteoJSON = require("./meteo.json");
@@ -54,6 +57,13 @@ bot.on('message', message => {
 
   //COMMANDES !
 
+  // traduction
+  if (command === "tr"){
+    var text = message.content.split(' ').slice(1, -1).join(' ');
+    var lang = message.content.split(" ").splice(-1);
+    var key = config.yandexApiKey;
+    trad(text,lang,key);
+  }
   // Ban
   if (command === "ban"){
     if(message.member.kickable == false){
@@ -89,9 +99,9 @@ bot.on('message', message => {
     // Overwrite permissions for a message author
     message.channel.overwritePermissions(message.mentions.members.first(), {
       SEND_MESSAGES: true
-    }).then(() => message.channel.send("On libère"+message.mentions.members.first()+", tu peux reparler maintenant :ok_hand: :slight_smile:")).catch(console.error);
+    }).then(() => message.channel.send("On libère "+message.mentions.members.first()+", tu peux reparler maintenant :ok_hand: :slight_smile:"))
+    .catch(console.error);
   }
-
   // kick au hasard de la part de l'admin
   if (command === "kick"){
     if(message.member.kickable == false){
@@ -100,7 +110,7 @@ bot.on('message', message => {
       if(perdant.kickable == false){
         message.channel.send("Ok ça tombe sur l'admin on peut rien faire.");
       }else{
-        message.channel.send('<@'+perdant.id+"> a perdu.");
+        message.channel.send(perdant.displayName+" a perdu.");
         var count = 5;
         var timer = setInterval(function() { handleTimer(count); }, 1000);
       }
@@ -488,7 +498,7 @@ bot.on('message', message => {
   }
 
   // doc
-  if(command === "doc") {
+  if(command === "doc" || command === "help") {
     fs.readFile(docTXT, 'utf8', function(err, data) {
       if (!err) {
         var laDoc = data.toString().split('\n');
@@ -506,7 +516,7 @@ bot.on('message', message => {
   // Demande de kick
   if (message.content.toUpperCase().includes("KICK MOI")){
     if(message.member.kickable == false){
-      message.channel.send("Batard je peut pas te kick t'es admin.");
+      message.channel.send("Je peux pas te kick t'es admin.");
     }
     message.member.kick();
   }
@@ -516,6 +526,17 @@ bot.on('message', message => {
   // Insulte detector
   if(cancerJSON[message.content]){
     message.channel.send(cancerJSON[message.content][Math.floor(Math.random() * cancerJSON[message.content].length)]);
+  }
+
+  // Set the permissions of the role
+
+  // Insulte detector
+  if(insultesJSON['insultes'].filter(item => message.content.includes(item)).length >= 1) {
+    var mechant = message.author;
+    message.reply(':oncoming_police_car: :rotating_light: POLICE :rotating_light: :oncoming_police_car:');
+    message.channel.overwritePermissions(mechant, {
+      SEND_MESSAGES: false
+    }).then(() => message.channel.send(mechant+" a été mute. Fallait pas faire chier :kissing_heart:")).catch(console.error);
   }
 
   // FONCTIONS
@@ -531,9 +552,10 @@ bot.on('message', message => {
     }
   }
 
+
   //Bye bye
   function byebye(perdant) {
-    message.channel.send("Bye bye <@"+perdant.id+"> !");
+    message.channel.send("Bye bye "+perdant+" !");
     setTimeout(function(){ perdant.kick()}, 3000);
   }
 
@@ -628,6 +650,14 @@ bot.on('message', message => {
       message.channel.send(prenom+': '+genre + ", sûr à " + precision + "%");
     });
   }
+  // SEARCH FUNCTION
+  function trad(text,lang,key){
+    var url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key="+key+"&text="+text+"&lang="+lang+"&format=plain";
+    request(url, function(err, resopnse, json){
+      var trad = JSON.parse(json).text;
+      message.channel.send(trad);
+    });
+  }
 
   function wikiSearch(recherche){
     var url = "https://fr.wikipedia.org/w/api.php?action=opensearch&search="+recherche+"&limit=1&namespace=0&format=json";
@@ -690,4 +720,5 @@ http://thedogapi.co.uk/api/v1/dog?limit=1
 https://developers.giphy.com/dashboard/
 https://github.com/jprichardson/node-google
 https://www.npmjs.com/package/rss-to-json
+https://translate.yandex.net/api/v1.5/tr.json/translate?key=&text=&lang=&format=plain
 */
