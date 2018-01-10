@@ -64,6 +64,11 @@ bot.on('message', message => {
     var key = config.yandexApiKey;
     trad(text,lang,key);
   }
+  var adminCommands = new Array("ban", "kick", "suicide", "mute","unmute");
+  if(message.member.kickable == true && adminCommands.indexOf(command) != -1){
+    message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
+  }
+
   // Ban
   if (command === "ban"){
     if(message.member.kickable == false){
@@ -81,8 +86,6 @@ bot.on('message', message => {
       }else{
         message.reply("Je peux pas bannir tout le monde ca ne se fait pas !");
       }
-    }else {
-      message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
     }
   }
 

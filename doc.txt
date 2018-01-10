@@ -7,6 +7,7 @@ Commandes admin :
 !rename *nom* -- changer de pseudo
 
 Commandes utilisateur:
+!tr *texte* *langue* traduit le texte dans la langue voulu
 !roulette -- Jeu de la roulette russe
 !decide *choix1* *choix2* *choix3* etc.. -- Quand on arrive pas à se décider
 !meteo *ville*!*code postal,code pays* (demain) -- Meteo de la ville aujourd'hui, ou demain si "demain" est ajouté à la fin de la phrase
