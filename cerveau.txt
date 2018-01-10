@@ -1,1 +1,6 @@
+<<<<<<< Updated upstream
 
+=======
+le japon c'est un pays
+les fleurs sont jolies
+>>>>>>> Stashed changes
