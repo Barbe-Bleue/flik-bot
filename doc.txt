@@ -1,44 +1,44 @@
+préfix des commandes: !
+
 Commandes admin :
-!kick -- kick un utilisateur au hasard
-!suicide -- fin du bot
-!mute *user* -- mute textuellement un user
-!unmute *user* -- unmute textuellement un user
-!ban *user* -- banni un user
-!rename *nom* -- changer de pseudo
+kick -- kick un utilisateur au hasard
+suicide -- fin du bot
+mute *user* -- mute textuellement un user
+unmute *user* -- unmute textuellement un user
+ban *user* -- banni un user
+rename *nom* -- changer de pseudo
 
 Commandes utilisateur:
-!tr *texte* *langue* traduit le texte dans la langue voulu
-!roulette -- Jeu de la roulette russe
-!decide *choix1* *choix2* *choix3* etc.. -- Quand on arrive pas à se décider
-!meteo *ville*!*code postal,code pays* (demain) -- Meteo de la ville aujourd'hui, ou demain si "demain" est ajouté à la fin de la phrase
-!trafic *ligne* -- état du trafic pour la ligne en question
-!actu -- dernières actualités
-!gif *mot(s)-clé(s)* -- gif au hasard selon mot(s)-clé(s)
-!sondage *titre sondage* -- vote oui ou non sur un sondage
-!genre *prenom* -- détermine le genre du prénom
-!coin -- affiche le cours du Bitcoin
-!coin *monnaies1* *monnaies2* -- affiche le prix en dollars des monnaies en question
+traduis *texte* *langue* traduit le texte dans la langue voulu
+roulette -- Jeu de la roulette russe
+decide *choix1* *choix2* *choix3* etc.. -- Quand on arrive pas à se décider
+meteo *ville**code postal,code pays* (demain) -- Meteo de la ville aujourd'hui, ou demain si "demain" est ajouté à la fin de la phrase
+trafic *ligne* -- état du trafic pour la ligne en question
+actu -- dernières actualités
+gif *mot(s)-clé(s)* -- gif au hasard selon mot(s)-clé(s)
+sondage *titre sondage* -- vote oui ou non sur un sondage
+genre *prenom* -- détermine le genre du prénom
+coin -- affiche le cours du Bitcoin
+coin *monnaies1* *monnaies2* -- affiche le prix en dollars des monnaies en question
 
-!apprend -- apprend une phrase au bot
-!malou -- le bot balance tout son savoir
-!savoir -- le bot exprime une phrase qu'il connait
+apprends -- apprend une phrase au bot
+malou -- le bot balance tout son savoir
+savoir -- le bot exprime une phrase qu'il connait
 
-!steam *steamID ou steamID64* -- Récupère nombre de jeux & jeu le plus joué
-
-!mail *MailCible*[;*autreMail*] *Sujet* *Message* -- Envoi un mail à un ou plusieurs destinataires
+steam *steamID ou steamID64* -- Récupère nombre de jeux & jeu le plus joué
 
 Recherches:
-!wiki *mot* -- fait une recherche sur wikipedia du mot clé
-!afr *mot* -- envoie le liens amazon sur le mot clé
-!google *recherche* -- recherche google
+wiki *mot* -- fait une recherche sur wikipedia du mot clé
+afr *mot* -- envoie le liens amazon sur le mot clé
+google *recherche* -- recherche google
 
 Interactions :
 "kick_moi" -- pas besoin d'explications
 
 Commandes autres:
-!chien -- photo de chien
-!top -- choix du nombre de jeux et prévisions
-!pic -- photo au hasard
-!pause -- choix du snack pour la pause
-!beauf -- donne un élément requis pour etre beauf
-!chuck -- Chuck norris fact
+chien -- photo de chien
+top -- choix du nombre de jeux et prévisions
+pic -- photo au hasard
+pause -- choix du snack pour la pause
+beauf -- donne un élément requis pour etre beauf
+chuck -- Chuck norris fact
