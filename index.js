@@ -38,7 +38,6 @@ var yandexApiKey = config.yandexApiKey; // pour traduction
 bot.on('ready', () => {
   console.log('bot ok!');
   bot.channels.first().send("Salut moi c'est vag, le meilleur bot du monde :ok_hand:");
-  console.log(token);
 });
 
 // Suppression de message
@@ -57,29 +56,31 @@ bot.on("guildMemberAdd", member => {
 // Message
 bot.on('message', message => {
 
-  // Variables
+  // args & commands
   const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
 
-  //COMMANDES !
+  // check admin
+  var adminCommands = new Array("ban", "kick", "suicide", "mute","unmute");
+  if(message.member.kickable == true && adminCommands.indexOf(command) != -1){
+    message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
+  }
+
+  // COMMANDES !
 
   // traduction
-  if (command === "tr"){
+  if (command === "traduis"){
     var text = message.content.split(' ').slice(1, -1).join(' ');
     var lang = message.content.split(" ").splice(-1);
     var key = yandexApiKey;
     trad(text,lang,key);
-  }
-  var adminCommands = new Array("ban", "kick", "suicide", "mute","unmute");
-  if(message.member.kickable == true && adminCommands.indexOf(command) != -1){
-    message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
   }
 
   // Ban
   if (command === "ban"){
     if(message.member.kickable == false){
       // Easy way to get member object though mentions.
-      var member= message.mentions.members.first();
+      var member = message.mentions.members.first();
       // Kick
       if(member != undefined){
         member.kick().then((member) => {
@@ -111,6 +112,7 @@ bot.on('message', message => {
     }).then(() => message.channel.send("On libère "+message.mentions.members.first()+", tu peux reparler maintenant :ok_hand: :slight_smile:"))
     .catch(console.error);
   }
+
   // kick au hasard de la part de l'admin
   if (command === "kick"){
     if(message.member.kickable == false){
@@ -226,7 +228,7 @@ bot.on('message', message => {
     }
   }
 
-  //chien
+  // chien
   if(command === "chien"){
     var leChien = leChien(type, code);
     leChien(function(err, previsions){
