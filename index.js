@@ -408,7 +408,7 @@ bot.on('message', message => {
   if(command == "rename"){
     if(args.length == 1){
       message.member.setNickname(args[0]);
-      message.channel.send("Hey, "+message.author.username+" a changé son nom en ***"+args+"***");
+      message.channel.send("Hey @everyone ! "+message.author+" a changé son nom en ***"+args+"***");
     }else{
       message.channel.send('Pseudo invalide')
     }
@@ -545,10 +545,12 @@ bot.on('message', message => {
   // Insulte detector
   if(insultesJSON['insultes'].filter(item => message.content.includes(item)).length >= 1) {
     var mechant = message.author;
-    message.reply(':oncoming_police_car: :rotating_light: POLICE :rotating_light: :oncoming_police_car:');
-    message.channel.overwritePermissions(mechant, {
-      SEND_MESSAGES: false
-    }).then(() => message.channel.send(mechant+" a été mute. Fallait pas faire chier :kissing_heart:")).catch(console.error);
+    if(mechant.kickable == true){
+      message.reply(':oncoming_police_car: :rotating_light: POLICE :rotating_light: :oncoming_police_car:');
+      message.channel.overwritePermissions(mechant, {
+        SEND_MESSAGES: false
+      }).then(() => message.channel.send(mechant+" a été mute. Fallait pas faire chier :kissing_heart:")).catch(console.error);
+    }
   }
 
   // FONCTIONS
