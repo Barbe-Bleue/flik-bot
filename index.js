@@ -27,12 +27,18 @@ var meteoJSON = require("./meteo.json");
 var cerveauTXT = "./cerveau.txt";
 var docTXT = "./doc.txt";
 var beaufTXT = "./beauf.txt";
+
+//config
 var config = require('./config.json');
+var token = config.token; // token discord
+var prefix = config.prefix; // préfix des commandes
+var yandexApiKey = config.yandexApiKey; // pour traduction
 
 //CONNEXION
 bot.on('ready', () => {
   console.log('bot ok!');
   bot.channels.first().send("Salut moi c'est vag, le meilleur bot du monde :ok_hand:");
+  console.log(token);
 });
 
 // Suppression de message
@@ -52,7 +58,7 @@ bot.on("guildMemberAdd", member => {
 bot.on('message', message => {
 
   // Variables
-  const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+  const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
 
   //COMMANDES !
@@ -61,7 +67,7 @@ bot.on('message', message => {
   if (command === "tr"){
     var text = message.content.split(' ').slice(1, -1).join(' ');
     var lang = message.content.split(" ").splice(-1);
-    var key = config.yandexApiKey;
+    var key = yandexApiKey;
     trad(text,lang,key);
   }
   var adminCommands = new Array("ban", "kick", "suicide", "mute","unmute");
@@ -706,7 +712,7 @@ bot.on('message', message => {
   }
 });
 
-bot.login(config.token);
+bot.login(token);
 
 /*
 Pour lancer le bot,
