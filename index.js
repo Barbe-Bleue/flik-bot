@@ -247,18 +247,20 @@ bot.on('message', message => {
   }
 
   // apprend une phrase
-  if(command === "apprend") {
+  if(command === "apprends") {
     message.channel.sendMessage('Que veux tu me faire apprendre ?').then(() => {
       message.channel.awaitMessages(response => response.content.length > 0, {
         max: 1,
         time: 30000,
         errors: ['time'],
       }).then((collected) => {
-          var sentence = collected.first().content;
           var newSavoir = true;
+          var sentence = transformSentence(collected.first().content);
+
           fs.readFile(cerveauTXT, 'utf8', function(err, data) {
             if (!err || sentence !='') {
               var savoir = data.toString().split('\n');
+
               for(var line in savoir) {
                 if(sentence == savoir[line]){
                   var newSavoir = false;
@@ -451,7 +453,6 @@ bot.on('message', message => {
     }
   }
 
-
   // RECHERCHES
   switch (command) {
     // wiki
@@ -552,6 +553,40 @@ bot.on('message', message => {
 
   // FONCTIONS
 
+  function transformSentence(sentence){
+    var sentenceArray = sentence.slice().trim().split(/ +/g );
+    // pronoms
+    if(sentenceArray[0] == "que")
+      sentenceArray.shift();
+
+    switch (sentenceArray[0]) {
+      case "tu" :
+        sentenceArray[0] = "je";
+        break;
+      case "je" :
+        sentenceArray[0] = message.author;
+        break;
+      case message.mentions.members.first():
+        sentenceArray[0] =  message.mentions.members.first();
+        break;
+    }
+    // verbe
+    switch (sentenceArray[1]) {
+      case "es":
+        sentenceArray[1] = "suis";
+        break;
+      case "suis":
+        sentenceArray[1] = "est";
+        break;
+      case "as":
+        sentenceArray[1] = "ai";
+        break;
+      case "as":
+        sentenceArray[1] = "ai";
+        break;
+    }
+    return sentence = sentenceArray.join(" ");
+  }
   // Timer avant kick
   function handleTimer() {
     if(count === 0) {
