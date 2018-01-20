@@ -74,21 +74,40 @@ bot.on('message', message => {
 
   // COMMANDES !
   if (command === "sms"){
-    message.author.send('tape le numero de téléphone suivit du message').then(() => {
+    message.author.send('tape le numero de téléphone suivit du message. Exemple: ***33610101010 salut comment ca va ?***').then(() => {
       message.author.dmChannel.awaitMessages(response => response.author.id === message.author.id , {
        max: 1,
        time: 30000,
        errors: ['time'],
       }).then((collected) => {
-       console.log(collected.first().content);
+        var numberPhone = collected.first().content.split(" ")[0];
+        var messageText = collected.first().content.split(" ").slice(1).join(' ');
+
+        if(isNaN(numberPhone)){
+          message.author.send("Le numero n'est pas correct, relace la commande **sms**");
+        }else if(numberPhone.length > 11 || numberPhone.length < 10)  {
+          message.author.send("Le numero n'est pas correct, relace la commande **sms**");
+        }else{
+          if(numberPhone.charAt(0) == 0){
+            numberPhone = numberPhone.replace('0','33');
+          }
+          nexmoSMS.message.sendSms(
+            config.myNumber, numberPhone, messageText,
+            (err, responseData) => {
+              if (err) {
+                message.autor.send("Erreur lors de l'envoie :calling: :x:")
+                console.log(err);
+              } else {
+                message.author.send(" Message envoyé ! :calling: :white_check_mark:")
+                console.dir(responseData);
+              }
+            }
+          );
+        }
       }).catch(() => {
-       message.author.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
+        message.author.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
       });
     });
-
-    for(var mdr in  message.guild.members){
-      message.channel.send(mdr);
-    }
   }
   // traduction
   if (command === "traduis"){
@@ -577,6 +596,11 @@ bot.on('message', message => {
 
   // FONCTIONS
 
+  // envoie de sms
+  function sendSMS(numberPhone,messageText){
+
+  }
+
   function transformSentence(sentence){
     var sentenceArray = sentence.slice().trim().split(/ +/g );
     // pronoms
@@ -611,6 +635,7 @@ bot.on('message', message => {
     }
     return sentence = sentenceArray.join(" ");
   }
+
   // Timer avant kick
   function handleTimer() {
     if(count === 0) {
