@@ -139,19 +139,19 @@ bot.on('message', message => {
 
   // mute user
   if(command === "mute"){
-    // Overwrite permissions for a message author
-    message.channel.overwritePermissions(message.mentions.members.first(), {
-      SEND_MESSAGES: false
-    }).then(() => message.channel.send(message.mentions.members.first()+" a été mute. Fallait pas faire chier :kissing_heart:")).catch(console.error);
+    var victime = message.mentions.members.first();
+    if(args[1]){
+      time = args[1] * 1000;
+    }else {
+      time = config.muteTime;
+    }
+    muteUser(victime,time);
   }
 
   // unmute user
   if(command =="unmute"){
-    // Overwrite permissions for a message author
-    message.channel.overwritePermissions(message.mentions.members.first(), {
-      SEND_MESSAGES: true
-    }).then(() => message.channel.send("On libère "+message.mentions.members.first()+", tu peux reparler maintenant :ok_hand: :slight_smile:"))
-    .catch(console.error);
+    var victime = message.mentions.members.first();
+    unmuteUser(victime);
   }
 
   // kick au hasard de la part de l'admin
@@ -585,20 +585,35 @@ bot.on('message', message => {
 
   // Insulte detector
   if(insultesJSON['insultes'].filter(item => message.content.includes(item)).length >= 1) {
-    var mechant = message.author;
+    var mechant = message.member;
+    message.reply(':oncoming_police_car: :rotating_light: POLICE DES GROS MOTS :rotating_light: :oncoming_police_car:');
     if(mechant.kickable == true){
-      message.reply(':oncoming_police_car: :rotating_light: POLICE :rotating_light: :oncoming_police_car:');
-      message.channel.overwritePermissions(mechant, {
-        SEND_MESSAGES: false
-      }).then(() => message.channel.send(mechant+" a été mute. Fallait pas faire chier :kissing_heart:")).catch(console.error);
+      muteUser(mechant,config.muteTime);
+    }else {
+      message.channel.send("Ohw c'est vous admin ? Excuser moi pour le dérangement")
     }
   }
 
   // FONCTIONS
 
-  // envoie de sms
-  function sendSMS(numberPhone,messageText){
+  // mute
+  function muteUser(victime,time){
+    // Overwrite permissions for a message author
+    message.channel.overwritePermissions(victime, {
+      SEND_MESSAGES: false
+    }).then(() => message.channel.send(victime+" a été mute pour "+time / 1000+" secondes. Fallait pas faire chier :kissing_heart:")).catch(console.error);
 
+    setTimeout(function(){
+      unmuteUser(victime)
+    },time);
+  }
+
+  // unmute
+  function unmuteUser(victime){
+    // Overwrite permissions for a message author
+    message.channel.overwritePermissions(victime, {
+      SEND_MESSAGES: true
+    }).then(() => message.channel.send("On libère "+victime+", tu peux reparler maintenant :ok_hand: :slight_smile:")).catch(console.error);
   }
 
   function transformSentence(sentence){
