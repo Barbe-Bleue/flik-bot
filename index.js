@@ -68,13 +68,13 @@ bot.on('message', message => {
 
   // check admin
   var adminCommands = new Array("ban", "kick", "suicide", "mute","unmute");
-  if(message.author.kickable == true && adminCommands.indexOf(command) != -1){
+  if(message.member.kickable == true && adminCommands.indexOf(command) != -1){
     message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
   }
 
   // COMMANDES !
   if (command === "sms"){
-    message.author.send('tape le numero de téléphone suivit du message. Exemple: ***33610101010 salut comment ca va ?***').then(() => {
+    message.author.send('tape le numero de téléphone suivit du message. Exemple: ***0610101010 salut comment ca va ?***').then(() => {
       message.author.dmChannel.awaitMessages(response => response.author.id === message.author.id , {
        max: 1,
        time: 30000,
