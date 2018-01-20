@@ -18,6 +18,7 @@
     "google": "^2.1.0",
     "google-translate": "^2.0.5",
     "jsonfile": "^4.0.0",
+    "nexmo": "^2.1.1",
     "node-coinmarketcap": "^0.2.0",
     "nodemailer": "^4.3.1",
     "nodemon": "^1.12.1",
