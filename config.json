@@ -4,5 +4,7 @@
   "service": "",
   "mail": "",
   "pass": "",
-  "yandexApiKey": ""
+  "yandexApiKey": "",
+  "myNumber": "",
+  "muteTime" : ""
 }
