@@ -13,6 +13,12 @@ var options = {
   refresh: 60, // Refresh time in seconds (Default: 60)
   convert: "EUR" // Convert price to different currencies. (Default USD)
 }
+var Nexmo = require('nexmo');
+const nexmoSMS = new Nexmo({
+  apiKey: "7e6f3343",
+  apiSecret: "2953fb71fcf9ea5f"
+});
+
 var coinmarketcap = new CoinMarketCap(options);
 var jsonfile = require('jsonfile');
 
@@ -62,12 +68,28 @@ bot.on('message', message => {
 
   // check admin
   var adminCommands = new Array("ban", "kick", "suicide", "mute","unmute");
-  if(message.member.kickable == true && adminCommands.indexOf(command) != -1){
+  if(message.author.kickable == true && adminCommands.indexOf(command) != -1){
     message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
   }
 
   // COMMANDES !
+  if (command === "sms"){
+    message.author.send('tape le numero de téléphone suivit du message').then(() => {
+      message.author.dmChannel.awaitMessages(response => response.author.id === message.author.id , {
+       max: 1,
+       time: 30000,
+       errors: ['time'],
+      }).then((collected) => {
+       console.log(collected.first().content);
+      }).catch(() => {
+       message.author.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
+      });
+    });
 
+    for(var mdr in  message.guild.members){
+      message.channel.send(mdr);
+    }
+  }
   // traduction
   if (command === "traduis"){
     var text = message.content.split(' ').slice(1, -1).join(' ');
@@ -737,7 +759,7 @@ bot.on('message', message => {
       message.channel.send('tu veux quoi ?').then(() => {
         message.channel.awaitMessages(response => response.content.length > 0 , {
           max: 1,
-          time: 10000,
+          time: 30000,
           errors: ['time'],
         }).then((collected) => {
           searchFunctionName(collected.first().content);
