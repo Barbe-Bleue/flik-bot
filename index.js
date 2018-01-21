@@ -127,7 +127,7 @@ bot.on('message', message => {
       if(member != undefined){
         member.kick().then((member) => {
           // Successmessage
-          message.reply(":wave: " + member.displayName + " a été kické :point_right: ");
+          message.channel.send("@everyone :wave: **" + member.displayName + "** a été kické :point_right: ");
         }).catch(() => {
           // Failmessage
           message.reply("On ne peut pas bannir Dieu :cross:");
@@ -336,7 +336,7 @@ bot.on('message', message => {
             }
           });
         }).catch(() => {
-          message.channel.send('There was no collected message that passed the filter within the time limit!');
+          message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
         });
     });
   }
@@ -582,7 +582,7 @@ bot.on('message', message => {
 
         for (var i in laDoc){
           if(doc[i] != '') doc += laDoc[i]+'\n';
-        } message.channel.send(doc);
+        } message.author.send(doc);
       }   else console.log(err);
     });
   }

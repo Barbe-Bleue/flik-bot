@@ -1,12 +1,10 @@
-préfix des commandes: !
-
 Commandes admin :
-kick -- kick un utilisateur au hasard
+**kick** -- kick un utilisateur au hasard
 suicide -- fin du bot
 mute *user* -- mute textuellement un user
 unmute *user* -- unmute textuellement un user
 ban *user* -- banni un user
-rename *nom* -- changer de pseudo
+rename *user* *nom* -- change le pseudo du *user* en *nom*
 
 Commandes utilisateur:
 traduis *texte* *langue* traduit le texte dans la langue voulu
@@ -14,6 +12,9 @@ roulette -- Jeu de la roulette russe
 decide *choix1* *choix2* *choix3* etc.. -- Quand on arrive pas à se décider
 meteo *ville**code postal,code pays* (demain) -- Meteo de la ville aujourd'hui, ou demain si "demain" est ajouté à la fin de la phrase
 trafic *ligne* -- état du trafic pour la ligne en question
+trafic *type* -- type = metros/rers
+rename *pseudo* -- change son nom en *pseudo*
+sms -- permet d'envoyer un sms
 actu -- dernières actualités
 gif *mot(s)-clé(s)* -- gif au hasard selon mot(s)-clé(s)
 sondage *titre sondage* -- vote oui ou non sur un sondage
