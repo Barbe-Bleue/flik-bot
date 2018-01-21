@@ -465,7 +465,12 @@ bot.on('message', message => {
 
   // Rename
   if(command == "rename"){
-    if(args.length == 1){
+    if(args[1] && message.member.kickable == false){
+      message.mentions.members.first().setNickname(args[1]);
+      message.channel.send("Hey @everyone ! "+message.author+" a changé le nom de "+message.mentions.members.first()+" en ***"+args[1]+"***");
+    }else if (args[1] && message.member.kickable == true) {
+      message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
+    }else if(args[0]){
       message.member.setNickname(args[0]);
       message.channel.send("Hey @everyone ! "+message.author+" a changé son nom en ***"+args+"***");
     }else{
