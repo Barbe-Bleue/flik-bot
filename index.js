@@ -39,6 +39,7 @@ var config = require('./config.json');
 var token = config.token; // token discord
 var prefix = config.prefix; // préfix des commandes
 var yandexApiKey = config.yandexApiKey; // pour traduction
+var muteTime = config.muteTime; // pour temps de mute
 
 //CONNEXION
 bot.on('ready', () => {
@@ -143,7 +144,7 @@ bot.on('message', message => {
     if(args[1]){
       time = args[1] * 1000;
     }else {
-      time = config.muteTime;
+      time = muteTime;
     }
     muteUser(victime,time);
   }
@@ -247,12 +248,29 @@ bot.on('message', message => {
   // Trafic
   if(command === "trafic"){
 
-    var traf = message.content.split(" ");
-    if(traf.length > 1){
-      var code = args[0];
-      var type = "";
+    var code = args[0];
+    var type = "";
 
-      if(code.toUpperCase() != code.toLowerCase()) type = "rers";
+    if(code.length > 1){
+      var info = bulletin(code);
+      info(function(err, bulletin){
+        if(err) return console.log(err);
+
+        var infoTrafic = "";
+
+        for(ligne in bulletin){
+          var status = bulletin[ligne["status"]];
+          var statusMessage = "";
+          if(typeof ligne !== undefined){
+          	if(status === "Trafic normal") statusMessage = (":white_check_mark: : "+bulletin[ligne]);
+          	else if(status === "Travaux") statusMessage = (":warning: : "+bulletin[ligne]);
+          	else if(status === "Trafic perturbé") statusMessage = (":octagonal_sign: : "+bulletin[ligne]);
+          	else if (status === "Trafic très perturbé") statusMessage = (":poop: : " +bulletin[ligne]);
+        	}infoTrafic += "Ligne **"+ligne+"**: "+statusMessage+"\n";
+        }message.channel.send(infoTrafic);
+      });
+    }else{
+      if(isNaN(code)) type = "rers";
       else type = "metros";
 
       var transports = leTrafic(type, code);
@@ -501,7 +519,7 @@ bot.on('message', message => {
       bangSearch(wikiSearch,'_',args);
       break;
     // afr amazon fr
-    case "afr" :
+    case "amazon" :
       bangSearch(amazonSearch,'+',args);
       break;
     // genre
@@ -570,8 +588,9 @@ bot.on('message', message => {
   if (message.content.toUpperCase().includes("KICK MOI")){
     if(message.member.kickable == false){
       message.channel.send("Je peux pas te kick t'es admin.");
+    }else{
+      message.member.kick();
     }
-    message.member.kick();
   }
 
   // DETECTEURS
@@ -580,8 +599,6 @@ bot.on('message', message => {
   if(cancerJSON[message.content]){
     message.channel.send(cancerJSON[message.content][Math.floor(Math.random() * cancerJSON[message.content].length)]);
   }
-
-  // Set the permissions of the role
 
   // Insulte detector
   if(insultesJSON['insultes'].filter(item => message.content.includes(item)).length >= 1) {
@@ -603,6 +620,7 @@ bot.on('message', message => {
       SEND_MESSAGES: false
     }).then(() => message.channel.send(victime+" a été mute pour "+time / 1000+" secondes. Fallait pas faire chier :kissing_heart:")).catch(console.error);
 
+    // temps avant de ban
     setTimeout(function(){
       unmuteUser(victime)
     },time);
@@ -662,13 +680,11 @@ bot.on('message', message => {
     }
   }
 
-
   //Bye bye
   function byebye(perdant) {
     message.channel.send("Bye bye "+perdant+" !");
     setTimeout(function(){ perdant.kick()}, 3000);
   }
-
 
   // pour le trafic
   function leTrafic(type, code){
@@ -683,6 +699,28 @@ bot.on('message', message => {
     				message : result.result.message,
     			};
     			callback(null, previsions);
+    		}catch(e){
+    			callback(e);
+    		}
+    	});
+    };
+  }
+
+  function bulletin(type) {
+    var transports;
+    return transports = function(callback){
+      url = "https://api-ratp.pierre-grimaud.fr/v3/traffic/"+type;
+    	request(url, function(err, response, body){
+    		try{
+    			var jsonBulletin = JSON.parse(body);
+          var result = jsonBulletin.result.rers
+          var bulletin = [];
+          for(ligne in result){
+            if(ligne !== null){
+              bulletin[result[ligne].line] = result[ligne].message;
+              bulletin[result[ligne].line["status"]] = result[ligne].title;
+            }
+          }callback(null,bulletin);
     		}catch(e){
     			callback(e);
     		}
@@ -816,13 +854,6 @@ bot.on('message', message => {
 bot.login(token);
 
 /*
-Pour lancer le bot,
-Ouvrir un nouveau terminal et tapper "bot"
-
-Fermer le terminal ou la page C9 = bot offline, tout recommencer
-à faire après chaque ctrl+s
-
-
 ressources API :
 https://github.com/pgrimaud/horaires-ratp-api
 https://openweathermap.org/api
@@ -831,4 +862,5 @@ https://developers.giphy.com/dashboard/
 https://github.com/jprichardson/node-google
 https://www.npmjs.com/package/rss-to-json
 https://translate.yandex.net/api/v1.5/tr.json/translate?key=&text=&lang=&format=plain
+https://www.nexmo.com/
 */
