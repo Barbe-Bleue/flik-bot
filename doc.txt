@@ -22,7 +22,8 @@ Commandes utilisateur:
 **coin** -- affiche le cours du Bitcoin
 **coin** *monnaies1* *monnaies2* -- affiche le prix en dollars des monnaies en question
 
-**apprends** -- apprend une phrase au bot
+**apprends** -- le bot demande ce que tu veux qu'il apprenne
+**apprends** *phrase* -- apprend une phrase au bot
 **malou** -- le bot balance tout son savoir
 **savoir** -- le bot exprime une phrase qu'il connait
 

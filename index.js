@@ -59,6 +59,16 @@ bot.on("guildMemberAdd", member => {
   //console.log(member.user.username+member.guild.name);
   //console.log("Et maintenat on dit bonjour à "+member.user.username+" qui a rejoint"+member.guild.name+ " !" );
   //member.guild.channel.send(member.user.username+" has joined this server");
+  fs.readFile(docTXT, 'utf8', function(err, data) {
+    if (!err) {
+      var laDoc = data.toString().split('\n');
+      var doc ='';
+
+      for (var i in laDoc){
+        if(doc[i] != '') doc += laDoc[i]+'\n';
+      } member.send(doc);
+    } else console.log(err);
+  });
 });
 
 // Message
@@ -68,12 +78,8 @@ bot.on('message', message => {
   const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
 
-  console.log(message.author.username+": "+command);
   // check admin
-  var adminCommands = new Array("ban", "kick", "suicide", "mute","unmute");
-  if(!message.member.roles.find("name", "Admin") && adminCommands.indexOf(command) != -1){
-    message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
-  }
+  //var adminCommands = new Array("ban", "kick", "suicide", "mute","unmute");
 
   // COMMANDES !
   if (command === "sms"){
@@ -114,11 +120,41 @@ bot.on('message', message => {
   }
   // traduction
   if (command === "traduis"){
+      var key = yandexApiKey;
 
-    var text = message.content.split(' ').slice(1, -1).join(' ');
-    var lang = message.content.split(" ").splice(-1);
-    var key = yandexApiKey;
-    trad(text,lang,key);
+    if(args != ""){
+      var text = message.content.split(' ').slice(1, -1).join(' ');
+      var lang = message.content.split(" ").splice(-1);
+      trad(text,lang,key);
+    }else {
+      message.reply('Que veux tu me faire traduire ?').then(() => {
+        message.channel.awaitMessages(responseText => responseText.content.length > 0, {
+          max: 1,
+          time: 30000,
+          errors: ['time'],
+        }).then((collected) => {
+            var text = collected.first().content;
+            message.reply('en quelle langue ?').then(() => {
+              message.channel.awaitMessages(responseLang => responseLang.content.length > 0, {
+                max: 1,
+                time: 30000,
+                errors: ['time'],
+              }).then((collectedLang) => {
+                var lang = collectedLang.first().content;
+                  if(text && lang){
+                    trad(text,lang,key);
+                  }else(
+                    message.reply("Il me faut un text et une langue")
+                  )
+                }).catch(() => {
+                  message.reply('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
+                });
+            });
+          }).catch(() => {
+            message.reply('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
+          });
+      });
+    }
   }
 
   // Ban
@@ -143,23 +179,31 @@ bot.on('message', message => {
 
   // mute user
   if(command === "mute"){
-    var victime = message.mentions.members.first();
-    if(args[1]){
-      time = args[1] * 1000;
+    if(message.member.roles.find("name", "Admin")){
+      var victime = message.mentions.members.first();
+      if(args[1]){
+        time = args[1] * 1000;
+      }else {
+        time = muteTime;
+      }
+      muteUser(victime,time);
     }else {
-      time = muteTime;
+      message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
     }
-    muteUser(victime,time);
   }
 
   // unmute user
   if(command =="unmute"){
-    var victime = message.mentions.members.first();
-    unmuteUser(victime);
+    if(message.member.roles.find("name", "Admin")){
+      var victime = message.mentions.members.first();
+      unmuteUser(victime);
+    }else {
+      message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
+    }
   }
 
   // kick au hasard de la part de l'admin
-  if (command === "roulette"){
+  if (command === "kick"){
     if(message.member.roles.find("name", "Admin")){
       var perdant = message.guild.members.random();
       message.channel.send("Roulette russe de l'admin ! Un kick au hasard !");
@@ -204,10 +248,14 @@ bot.on('message', message => {
 
   // suicide du bot
   if (command === "suicide"){
-    message.channel.send("Ah ok on me bute comme ça :tired_face: :gun:");
-    setTimeout(function(){
-      bot.destroy();
-    }, 2000);
+    if(message.member.roles.find("name", "Admin")){
+      message.channel.send("@everyone Ah ok on me bute comme ça :tired_face: :gun:");
+      setTimeout(function(){
+        bot.destroy();
+      }, 2000);
+    }else {
+      message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
+    }
   }
 
   // meteo
@@ -331,38 +379,26 @@ bot.on('message', message => {
 
   // apprend une phrase
   if(command === "apprends") {
-    message.channel.sendMessage('Que veux tu me faire apprendre ?').then(() => {
-      message.channel.awaitMessages(response => response.content.length > 0, {
-        max: 1,
-        time: 30000,
-        errors: ['time'],
-      }).then((collected) => {
-          var newSavoir = true;
-          var sentence = transformSentence(collected.first().content);
+    if(args != ""){
+      var sentence = transformSentence(args.join(' '));
+      writeCerveau(sentence);
+    }else{
+      message.channel.sendMessage('Que veux tu me faire apprendre ?').then(() => {
+        message.channel.awaitMessages(response => response.content.length > 0, {
+          max: 1,
+          time: 30000,
+          errors: ['time'],
+        }).then((collected) => {
+            var newSavoir = true;
+            console.log(collected.first().content);
+            var sentence = transformSentence(collected.first().content);
+            writeCerveau(sentence);
 
-          fs.readFile(cerveauTXT, 'utf8', function(err, data) {
-            if (!err || sentence !='') {
-              var savoir = data.toString().split('\n');
-
-              for(var line in savoir) {
-                if(sentence == savoir[line]){
-                  var newSavoir = false;
-                }
-              }
-              if(newSavoir != false) {
-                fs.appendFile(cerveauTXT,sentence+'\n',"UTF-8",{'flags': 'a+'});
-                message.channel.send("Ok poto jm'en souviendrai :thumbsup: ");
-                newSavoir = false;
-              } else {
-                message.channel.send(":no_entry: Hey, je connais déjà ca ! :no_entry: ");
-                newSavoir = true;
-              }
-            }
+          }).catch(() => {
+            message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
           });
-        }).catch(() => {
-          message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
-        });
-    });
+      });
+    }
   }
 
   // savoir exprime 1 savoir
@@ -644,11 +680,10 @@ bot.on('message', message => {
 
         for (var i in laDoc){
           if(doc[i] != '') doc += laDoc[i]+'\n';
-        } message.author.send(doc);
+        } message.author.send(doc)
       }   else console.log(err);
     });
   }
-
   // QUESTIONS TEXTUELLES
 
   // Demande de kick
@@ -679,6 +714,27 @@ bot.on('message', message => {
   }
 
   // FONCTIONS
+  function writeCerveau(sentence) {
+    fs.readFile(cerveauTXT, 'utf8', function(err, data) {
+      if (!err || sentence !='') {
+        var savoir = data.toString().split('\n');
+
+        for(var line in savoir) {
+          if(sentence == savoir[line]){
+            var newSavoir = false;
+          }
+        }
+        if(newSavoir != false) {
+          fs.appendFile(cerveauTXT,sentence+'\n',"UTF-8",{'flags': 'a+'});
+          message.channel.send("Ok poto jm'en souviendrai :thumbsup: ");
+          newSavoir = false;
+        } else {
+          message.channel.send(":no_entry: Hey, je connais déjà ca ! :no_entry: ");
+          newSavoir = true;
+        }
+      }
+    });
+  }
 
   // mute
   function muteUser(victime,time){
