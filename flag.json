@@ -1,0 +1,61 @@
+{
+  "anglais":{
+    "code": "en",
+    "flag": "http://flaglane.com/download/british-flag/british-flag-graphic.png"
+  },
+  "italien":{
+    "code": "it",
+    "flag": "http://flaglane.com/download/italian-flag/italian-flag-graphic.png"
+  },
+  "espagnol":{
+    "code": "es",
+    "flag": "http://flaglane.com/download/spanish-flag/spanish-flag-graphic.png"
+  },
+  "allemand":{
+    "code": "de",
+    "flag": "http://flaglane.com/download/german-flag/german-flag-graphic.png"
+  },
+  "russe":{
+    "code": "ru",
+    "flag": "http://flaglane.com/download/russian-flag/russian-flag-graphic.png"
+  },
+  "portugais":{
+    "code": "pt",
+    "flag": "http://flaglane.com/download/portuguese-flag/portuguese-flag-graphic.png"
+  },
+  "danois":{
+    "code": "da",
+    "flag": "http://flaglane.com/download/dane-flag/dane-flag-graphic.png"
+  },
+  "suedois":{
+    "code": "sv",
+    "flag": "http://flaglane.com/download/swedish-flag/swedish-flag-graphic.png"
+  },
+  "indien":{
+    "code": "hi",
+    "flag": "http://flaglane.com/download/indian-flag/indian-flag-graphic.png"
+  },
+  "hébreu":{
+    "code": "he",
+    "flag": "http://flaglane.com/download/israeli-flag/israeli-flag-graphic.png"
+  },
+  "grecque":{
+    "code": "el",
+    "flag": "http://flaglane.com/download/greek-flag/greek-flag-graphic.png"
+  },
+  "polonais":{
+    "code": "pl",
+    "flag": "http://flaglane.com/download/polish-flag/polish-flag-graphic.png"
+  },
+  "chinois":{
+    "code": "cn",
+    "flag": "http://flaglane.com/download/chinese-flag/chinese-flag-graphic.png"
+  },
+  "japonais":{
+    "code": "ja",
+    "flag": "http://flaglane.com/download/japanese-flag/japanese-flag-graphic.png"
+  },
+  "default":{
+    "flag": "https://translate.yandex.com/icons/favicon.png"
+  }
+}

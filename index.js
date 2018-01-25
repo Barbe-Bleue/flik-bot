@@ -6,30 +6,46 @@ var request = require('request');
 var google = require('google')
 var feed = require('rss-to-json'); // pour les actus
 var http = require('http'); // pour le btc
+var translate = require('translate');
 var CoinMarketCap = require("node-coinmarketcap"); // pour le btc
 var options = {
   events: true, // Enable event system
   refresh: 60, // Refresh time in seconds (Default: 60)
   convert: "EUR" // Convert price to different currencies. (Default USD)
 }
+var Nexmo = require('nexmo');
+const nexmoSMS = new Nexmo({
+  apiKey: "7e6f3343",
+  apiSecret: "2953fb71fcf9ea5f"
+});
+
 var coinmarketcap = new CoinMarketCap(options);
+var jsonfile = require('jsonfile');
 
 var nbR = 1; //pour la roulette
 var punitions = ["kick", "Changement de pseudo"]; //Textes des punitions
 var fs = require("fs"); //obligtoire pour des fonctions
 var cancerJSON = require('./cancer.json');
+var insultesJSON = require('./insultes.json');
 var pauseJSON = require('./pause.json');
 var pseudoJSON = require('./pseudo.json');
 var meteoJSON = require("./meteo.json");
+var flagJSON = require("./flag.json");
 var cerveauTXT = "./cerveau.txt";
 var docTXT = "./doc.txt";
 var beaufTXT = "./beauf.txt";
+
+//config
 var config = require('./config.json');
+var token = config.token; // token discord
+var prefix = config.prefix; // préfix des commandes
+var yandexApiKey = config.yandexApiKey; // pour traduction
+var muteTime = config.muteTime; // pour temps de mute
 
 //CONNEXION
 bot.on('ready', () => {
   console.log('bot ok!');
-  bot.channels.first().send("Salut moi c'est vag, le meilleur bot du monde :ok_hand:");
+  bot.channels.first().send("Salut moi c'est vag, le meilleur bot du monde :ok_hand: tape 'doc' ou 'help' pour savoir tout ce que je peux faire :sunglasses: ");
 });
 
 // Suppression de message
@@ -40,30 +56,81 @@ bot.on('messageDelete', message => {
 
 // Member join
 bot.on("guildMemberAdd", member => {
-  console.log(member.user.username+member.guild.name);
-  console.log("Et maintenat on dit bonjour à "+member.user.username+" qui a rejoint"+member.guild.name+ " !" );
-  member.guild.channels.get("welcome").send(member.user.username+" has joined this server");
+  //console.log(member.user.username+member.guild.name);
+  //console.log("Et maintenat on dit bonjour à "+member.user.username+" qui a rejoint"+member.guild.name+ " !" );
+  //member.guild.channel.send(member.user.username+" has joined this server");
 });
 
 // Message
 bot.on('message', message => {
 
-  // Variables
-  const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+  // args & commands
+  const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
 
-  //COMMANDES !
+  console.log(message.author.username+": "+command);
+  // check admin
+  var adminCommands = new Array("ban", "kick", "suicide", "mute","unmute");
+  if(!message.member.roles.find("name", "Admin") && adminCommands.indexOf(command) != -1){
+    message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
+  }
+
+  // COMMANDES !
+  if (command === "sms"){
+    message.author.send('tape le numero de téléphone suivit du message. Exemple: ***0610101010 salut comment ca va ?***').then(() => {
+      message.author.dmChannel.awaitMessages(response => response.author.id === message.author.id , {
+       max: 1,
+       time: 30000,
+       errors: ['time'],
+      }).then((collected) => {
+        var numberPhone = collected.first().content.split(" ")[0];
+        var messageText = collected.first().content.split(" ").slice(1).join(' ');
+
+        if(isNaN(numberPhone)){
+          message.author.send("Le numero n'est pas correct, relace la commande **sms**");
+        }else if(numberPhone.length > 11 || numberPhone.length < 10)  {
+          message.author.send("Le numero n'est pas correct, relace la commande **sms**");
+        }else{
+          if(numberPhone.charAt(0) == 0){
+            numberPhone = numberPhone.replace('0','33');
+          }
+          nexmoSMS.message.sendSms(
+            config.myNumber, numberPhone, messageText,
+            (err, responseData) => {
+              if (err) {
+                message.autor.send("Erreur lors de l'envoie :calling: :x:")
+                console.log(err);
+              } else {
+                message.author.send(" Message envoyé ! :calling: :white_check_mark:")
+                console.dir(responseData);
+              }
+            }
+          );
+        }
+      }).catch(() => {
+        message.author.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
+      });
+    });
+  }
+  // traduction
+  if (command === "traduis"){
+
+    var text = message.content.split(' ').slice(1, -1).join(' ');
+    var lang = message.content.split(" ").splice(-1);
+    var key = yandexApiKey;
+    trad(text,lang,key);
+  }
 
   // Ban
   if (command === "ban"){
-    if(message.member.kickable == false){
+    if(message.member.roles.find("name", "Admin")){
       // Easy way to get member object though mentions.
-      var member= message.mentions.members.first();
+      var member = message.mentions.members.first();
       // Kick
       if(member != undefined){
         member.kick().then((member) => {
           // Successmessage
-          message.reply(":wave: " + member.displayName + " a été kické :point_right: ");
+          message.channel.send("@everyone :wave: **" + member.displayName + "** a été kické :point_right: ");
         }).catch(() => {
           // Failmessage
           message.reply("On ne peut pas bannir Dieu :cross:");
@@ -71,22 +138,35 @@ bot.on('message', message => {
       }else{
         message.reply("Je peux pas bannir tout le monde ca ne se fait pas !");
       }
-    }else {
-      message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
     }
   }
 
-  //COMMANDES !
-  //kick au hasard de la part de l'admin
+  // mute user
+  if(command === "mute"){
+    var victime = message.mentions.members.first();
+    if(args[1]){
+      time = args[1] * 1000;
+    }else {
+      time = muteTime;
+    }
+    muteUser(victime,time);
+  }
 
-  if (command === "kick"){
-    if(message.member.kickable == false){
+  // unmute user
+  if(command =="unmute"){
+    var victime = message.mentions.members.first();
+    unmuteUser(victime);
+  }
+
+  // kick au hasard de la part de l'admin
+  if (command === "roulette"){
+    if(message.member.roles.find("name", "Admin")){
       var perdant = message.guild.members.random();
       message.channel.send("Roulette russe de l'admin ! Un kick au hasard !");
       if(perdant.kickable == false){
         message.channel.send("Ok ça tombe sur l'admin on peut rien faire.");
       }else{
-        message.channel.send('<@'+perdant.id+"> a perdu.");
+        message.channel.send(perdant.displayName+" a perdu.");
         var count = 5;
         var timer = setInterval(function() { handleTimer(count); }, 1000);
       }
@@ -135,11 +215,11 @@ bot.on('message', message => {
     var ville = args[0];
     var demain = args[1];
     var jour = 0;
-    var annonce = "aujourd'hui, la température est de ";
+    var annonce = "aujourd'hui la température est de ";
     var url;
     if(demain != null && demain.toUpperCase() === "DEMAIN"){
       jour = 1;
-      annonce = "demain, la température sera de ";
+      annonce = "demain la température sera de ";
     }
     var openweathermeteo = function(ville, jour, callback){
       if (/^[a-zA-Z]/.test(ville)) {
@@ -164,36 +244,74 @@ bot.on('message', message => {
     };
     openweathermeteo(ville, jour, function(err, previsions){
     	if(err) return console.log(err);
-    	message.reply("A "+previsions.city+", " + annonce + previsions.temperature + "°C, " + previsions.description + " "+ meteoJSON[previsions.description]);
+      const embed = new Discord.RichEmbed()
+      .setTitle("Meteo à "+previsions.city)
+      .setColor(0x10B8FE)
+      .setDescription(annonce + " "+previsions.temperature + "°C, " + previsions.description + " "+ meteoJSON[previsions.description])
+      .setThumbnail("https://cdn.pixabay.com/photo/2016/05/20/20/20/weather-1405870_960_720.png")
+      .setTimestamp()
+      message.channel.send({embed});
     });
   }
 
   // Trafic
   if(command === "trafic"){
 
-    var traf = message.content.split(" ");
-    if(traf.length > 1){
-      var code = args[0];
-      var type = "";
+    var code = args[0];
+    var type = "";
 
-      if(code.toUpperCase() != code.toLowerCase()) type = "rers";
+    if(code.length > 1){
+      var info = bulletin(code);
+      info(function(err, bulletin){
+        if(err) return console.log(err);
+
+        var infoTrafic = "";
+
+        for(ligne in bulletin){
+          var status = bulletin[ligne["status"]];
+          var statusMessage = "";
+          if(typeof ligne !== undefined){
+          	if(status === "Trafic normal") statusMessage = (":white_check_mark: : "+bulletin[ligne]);
+          	else if(status === "Travaux") statusMessage = (":warning: : "+bulletin[ligne]);
+          	else if(status === "Trafic perturbé") statusMessage = (":octagonal_sign: : "+bulletin[ligne]);
+          	else if (status === "Trafic très perturbé") statusMessage = (":poop: : " +bulletin[ligne]);
+        	}infoTrafic += "Ligne **"+ligne+"**: "+statusMessage+"\n";
+        }
+        const embed = new Discord.RichEmbed()
+        .setTitle("Info traffic")
+        .setColor(0x4AC1AE)
+        .setDescription(infoTrafic)
+        .setThumbnail("https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/RATP.svg/637px-RATP.svg.png")
+        .setTimestamp()
+        message.channel.send({embed});
+      });
+    }else{
+      if(isNaN(code)) type = "rers";
       else type = "metros";
 
       var transports = leTrafic(type, code);
 
       transports(function(err, previsions){
+        var infoTrafic = "";
       	if(err) return console.log(err);
       	if(previsions.status != null){
-        	if(previsions.status === "Trafic normal") message.channel.send(":white_check_mark: : "+previsions.message);
-        	else if(previsions.status === "Travaux") message.channel.send(":warning: : "+previsions.message);
-        	else if(previsions.status === "Trafic perturbé") message.channel.send(":octagonal_sign: : "+previsions.message);
-        	else if (previsions.status === "Trafic très perturbé") message.channel.send(":poop: : " +previsions.message);
+        	if(previsions.status === "Trafic normal") infoTrafic = ":white_check_mark: : "+previsions.message;
+        	else if(previsions.status === "Travaux") infoTrafic = ":warning: : "+previsions.message;
+        	else if(previsions.status === "Trafic perturbé") infoTrafic = ":octagonal_sign: : "+previsions.message;
+        	else if (previsions.status === "Trafic très perturbé") infoTrafic = ":poop: : " +previsions.message;
       	}
+        const embed = new Discord.RichEmbed()
+        .setTitle("Info traffic ligne "+code)
+        .setColor(0x4AC1AE)
+        .setDescription(infoTrafic)
+        .setThumbnail("https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/RATP.svg/637px-RATP.svg.png")
+        .setTimestamp()
+        message.channel.send({embed});
       });
     }
   }
 
-  //chien
+  // chien
   if(command === "chien"){
     var leChien = leChien(type, code);
     leChien(function(err, previsions){
@@ -212,18 +330,20 @@ bot.on('message', message => {
   }
 
   // apprend une phrase
-  if(command === "apprend") {
+  if(command === "apprends") {
     message.channel.sendMessage('Que veux tu me faire apprendre ?').then(() => {
       message.channel.awaitMessages(response => response.content.length > 0, {
         max: 1,
         time: 30000,
         errors: ['time'],
       }).then((collected) => {
-          var sentence = collected.first().content;
           var newSavoir = true;
+          var sentence = transformSentence(collected.first().content);
+
           fs.readFile(cerveauTXT, 'utf8', function(err, data) {
             if (!err || sentence !='') {
               var savoir = data.toString().split('\n');
+
               for(var line in savoir) {
                 if(sentence == savoir[line]){
                   var newSavoir = false;
@@ -240,7 +360,7 @@ bot.on('message', message => {
             }
           });
         }).catch(() => {
-          message.channel.send('There was no collected message that passed the filter within the time limit!');
+          message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
         });
     });
   }
@@ -323,8 +443,17 @@ bot.on('message', message => {
 
       for (var i = 0; i < res.links.length; ++i) {
         link = res.links[i];
-        if (link.href != null) resultat +=  link.title + ' - ' + link.href+"\n\n";
-      } message.channel.send(resultat);
+        console.log(res.links[i]);
+        if (link.href != null){
+          const embed = new Discord.RichEmbed()
+          .setTitle(link.title)
+          .setColor(0x4285F4)
+          .setDescription(link.description)
+          .setThumbnail("http://diylogodesigns.com/blog/wp-content/uploads/2016/04/google-logo-icon-PNG-Transparent-Background.png")
+          .setURL(link.href)
+          message.channel.send({embed});
+        }
+      }
     });
   }
 
@@ -341,18 +470,38 @@ bot.on('message', message => {
 
   // actu
   if(command === "actu"){
+
     var actu=" ";
     feed.load('http://www.bfmtv.com/rss/info/flux-rss/flux-toutes-les-actualites/', function(err, rss){
-      for(i = 0; i <= 5; i++) actu += rss.items[i].title+" - "+rss.items[i].url+"\n\n";
-      message.channel.send(actu);
+      for(i = 0; i <= 1; i++){
+
+        const embed = new Discord.RichEmbed()
+        .setTitle(rss.items[i].title)
+        .setAuthor(bot.user.username, bot.user.avatarURL)
+        .setColor(0x00AE86)
+        //.setDescription(rss.items[i].description)
+        .setFooter("Vag", bot.user.avatarURL)
+        .setImage(rss.items[i].enclosures[0].url)
+        .setThumbnail("https://upload.wikimedia.org/wikipedia/commons/4/40/BFM_TV_logo.png")
+        .setTimestamp()
+        .setURL(rss.items[i].url)
+        message.channel.send({embed});
+      }
     });
   }
 
   // chuck
   if(command === "chuck"){
-    var url = "http://www.chucknorrisfacts.fr/api/get?data=tri:alea;nb:1";
+    var url = "http://www.chucknorrisfacts.fr/api/get?data=tri:alea;nb:01";
     request(url, function(err, response, json){
-      message.channel.send(JSON.parse(json)[0].fact);
+      const embed = new Discord.RichEmbed()
+      .setTitle("Chuck Norris fact !")
+      .setColor(0xB87753)
+      .setDescription(JSON.parse(json)[0].fact)
+      .setThumbnail("http://pngimg.com/uploads/chuck_norris/chuck_norris_PNG1.png")
+      .setFooter("Chuck Norris")
+      .setTimestamp()
+      message.channel.send({embed});
     });
   }
 
@@ -361,7 +510,14 @@ bot.on('message', message => {
     fs.readFile(beaufTXT, 'utf8', function(err, data) {
       if (!err) {
         var beauf = data.toString().split('\n');
-        if(beauf !='') message.channel.send('Le beauf '+beauf[Math.floor(Math.random() * beauf.length)]);
+        if(beauf !=''){
+          const embed = new Discord.RichEmbed()
+          .setTitle("Le beauf")
+          .setColor(0x00AE86)
+          .setDescription(  beauf[Math.floor(Math.random() * beauf.length)])
+          .setThumbnail("http://image.noelshack.com/fichiers/2017/34/2/1503406665-beaufdefrance.png")
+          message.channel.send({embed});
+        }
         else message.channel.send("Hey, flemme me casse pas les couilles");
       } else console.log(err);
     });
@@ -369,9 +525,14 @@ bot.on('message', message => {
 
   // Rename
   if(command == "rename"){
-    if(args.length == 1){
+    if(args[1] && message.member.roles.find("name", "Admin")){
+      message.mentions.members.first().setNickname(args[1]);
+      message.channel.send("Hey @everyone ! "+message.author+" a changé le nom de "+message.mentions.members.first()+" en ***"+args[1]+"***");
+    }else if (args[1] && !message.member.roles.find("name", "Admin")) {
+      message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
+    }else if(args[0]){
       message.member.setNickname(args[0]);
-      message.channel.send("Hey, "+message.author.username+" a changé son nom en ***"+args+"***");
+      message.channel.send("Hey @everyone ! "+message.author+" a changé son nom en ***"+args+"***");
     }else{
       message.channel.send('Pseudo invalide')
     }
@@ -396,7 +557,7 @@ bot.on('message', message => {
   }
 
   // Btc
-  if(command == "coin"){
+  if(command == "coin" || command == "btc"){
     if(args.length == 0){
       // If you want to check a single coin, use get() (You need to supply the coinmarketcap id of the cryptocurrency, not the symbol)
       // If you want to use symbols instead of id, use multi.
@@ -409,13 +570,14 @@ bot.on('message', message => {
       coinmarketcap.multi(coins => {
         for (var i = 0; i < args.length; i++) {
           crypto = args[i].toUpperCase();
-          multiCoin += crypto+" : "+coins.get(crypto).price_usd+" :dollar: \n";
+          if(coins.get(crypto)){
+            multiCoin += crypto+" : "+coins.get(crypto).price_usd+" :dollar: \n";
+          }else(message.channel.send("Je ne connais pas la monnaie **"+crypto+"** désolé :confused: "))
         }
         message.channel.send(multiCoin);
       });
     }
   }
-
 
   // RECHERCHES
   switch (command) {
@@ -424,7 +586,7 @@ bot.on('message', message => {
       bangSearch(wikiSearch,'_',args);
       break;
     // afr amazon fr
-    case "afr" :
+    case "amazon" :
       bangSearch(amazonSearch,'+',args);
       break;
     // genre
@@ -474,7 +636,7 @@ bot.on('message', message => {
   }
 
   // doc
-  if(command === "doc") {
+  if(command === "doc" || command === "help") {
     fs.readFile(docTXT, 'utf8', function(err, data) {
       if (!err) {
         var laDoc = data.toString().split('\n');
@@ -482,30 +644,20 @@ bot.on('message', message => {
 
         for (var i in laDoc){
           if(doc[i] != '') doc += laDoc[i]+'\n';
-        } message.channel.send(doc);
+        } message.author.send(doc);
       }   else console.log(err);
     });
   }
 
   // QUESTIONS TEXTUELLES
 
-  // Go cs
-  if (message.content.toUpperCase() === ("GO CS")){
-    if(message.member.kickable == false){
-      message.channel.send("L'admin veut lancer une partie de cs, tappez 'go CS' pour rejoindre. (1/5)");
-    }
-    else{
-      message.author.send("wlh tg parle pas de cs");
-      message.member.kick();
-    }
-  }
-
   // Demande de kick
   if (message.content.toUpperCase().includes("KICK MOI")){
-    if(message.member.kickable == false){
-      message.channel.send("Batard je peut pas te kick t'es admin.");
+    if(message.member.roles.find("name", "Admin")){
+      message.channel.send("Je peux pas te kick t'es admin.");
+    }else{
+      message.member.kick();
     }
-    message.member.kick();
   }
 
   // DETECTEURS
@@ -515,7 +667,74 @@ bot.on('message', message => {
     message.channel.send(cancerJSON[message.content][Math.floor(Math.random() * cancerJSON[message.content].length)]);
   }
 
+  // Insulte detector
+  if(insultesJSON['insultes'].filter(item => message.content.includes(item)).length >= 1) {
+    var mechant = message.member;
+    message.reply(':oncoming_police_car: :rotating_light: POLICE DES GROS MOTS :rotating_light: :oncoming_police_car:');
+    if(mechant.kickable == true){
+      muteUser(mechant,config.muteTime);
+    }else {
+      message.channel.send("Ohw c'est vous admin ? Excuser moi pour le dérangement")
+    }
+  }
+
   // FONCTIONS
+
+  // mute
+  function muteUser(victime,time){
+    // Overwrite permissions for a message author
+    message.channel.overwritePermissions(victime, {
+      SEND_MESSAGES: false
+    }).then(() => message.channel.send(victime+" a été mute pour "+time / 1000+" secondes. Fallait pas faire chier :kissing_heart:")).catch(console.error);
+
+    // temps avant de ban
+    setTimeout(function(){
+      unmuteUser(victime)
+    },time);
+  }
+
+  // unmute
+  function unmuteUser(victime){
+    // Overwrite permissions for a message author
+    message.channel.overwritePermissions(victime, {
+      SEND_MESSAGES: true
+    }).then(() => message.channel.send("On libère "+victime+", tu peux reparler maintenant :ok_hand: :slight_smile:")).catch(console.error);
+  }
+
+  function transformSentence(sentence){
+    var sentenceArray = sentence.slice().trim().split(/ +/g );
+    // pronoms
+    if(sentenceArray[0] == "que")
+      sentenceArray.shift();
+
+    switch (sentenceArray[0]) {
+      case "tu" :
+        sentenceArray[0] = "je";
+        break;
+      case "je" :
+        sentenceArray[0] = message.author;
+        break;
+      case message.mentions.members.first():
+        sentenceArray[0] =  message.mentions.members.first();
+        break;
+    }
+    // verbe
+    switch (sentenceArray[1]) {
+      case "es":
+        sentenceArray[1] = "suis";
+        break;
+      case "suis":
+        sentenceArray[1] = "est";
+        break;
+      case "as":
+        sentenceArray[1] = "ai";
+        break;
+      case "as":
+        sentenceArray[1] = "ai";
+        break;
+    }
+    return sentence = sentenceArray.join(" ");
+  }
 
   // Timer avant kick
   function handleTimer() {
@@ -530,10 +749,9 @@ bot.on('message', message => {
 
   //Bye bye
   function byebye(perdant) {
-    message.channel.send("Bye bye <@"+perdant.id+"> !");
+    message.channel.send("Bye bye "+perdant+" !");
     setTimeout(function(){ perdant.kick()}, 3000);
   }
-
 
   // pour le trafic
   function leTrafic(type, code){
@@ -548,6 +766,28 @@ bot.on('message', message => {
     				message : result.result.message,
     			};
     			callback(null, previsions);
+    		}catch(e){
+    			callback(e);
+    		}
+    	});
+    };
+  }
+
+  function bulletin(type) {
+    var transports;
+    return transports = function(callback){
+      url = "https://api-ratp.pierre-grimaud.fr/v3/traffic/"+type;
+    	request(url, function(err, response, body){
+    		try{
+    			var jsonBulletin = JSON.parse(body);
+          var result = jsonBulletin.result.rers
+          var bulletin = [];
+          for(ligne in result){
+            if(ligne !== null){
+              bulletin[result[ligne].line] = result[ligne].message;
+              bulletin[result[ligne].line["status"]] = result[ligne].title;
+            }
+          }callback(null,bulletin);
     		}catch(e){
     			callback(e);
     		}
@@ -625,6 +865,30 @@ bot.on('message', message => {
       message.channel.send(prenom+': '+genre + ", sûr à " + precision + "%");
     });
   }
+  // SEARCH FUNCTION
+  function trad(text,lang,key){
+    var flag =""
+    country = lang.toString();
+
+    if(flagJSON[country]){
+      lang = flagJSON[country].code;
+      var flag = flagJSON[country].flag;
+    }else {
+      lang = country;
+      var flag = flagJSON["default"].flag;
+    }
+
+    var url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key="+key+"&text="+text+"&lang="+lang+"&format=plain";
+    request(url, function(err, resopnse, json){
+      const embed = new Discord.RichEmbed()
+      .setTitle("Traduction")
+      .setColor(0xFF0000)
+      .setDescription(JSON.parse(json).text)
+      .setThumbnail(flag)
+      .setTimestamp()
+      message.channel.send({embed});
+    });
+  }
 
   function wikiSearch(recherche){
     var url = "https://fr.wikipedia.org/w/api.php?action=opensearch&search="+recherche+"&limit=1&namespace=0&format=json";
@@ -646,7 +910,14 @@ bot.on('message', message => {
 
   function amazonSearch(recherche){
     var url = "https://www.amazon.fr/s/ref=nb_sb_noss?__mk_fr_FR=%C3%85M%C3%85%C5%BD%C3%95%C3%91&url=search-alias%3Daps&field-keywords="+recherche;
-    message.channel.send('Recherche amazon pour: '+recherche+'\n'+url);
+    const embed = new Discord.RichEmbed()
+        .setTitle("Recherche amazon pour: "+recherche)
+        .setColor(0xF3A847)
+        .setDescription(url)
+        .setThumbnail("https://upload.wikimedia.org/wikipedia/commons/b/b4/Amazon-icon.png")
+        .setTimestamp()
+        .setURL(url)
+        message.channel.send({embed});
   }
 
   function bangSearch(searchFunctionName,keywordSeparator,args){
@@ -656,7 +927,7 @@ bot.on('message', message => {
       message.channel.send('tu veux quoi ?').then(() => {
         message.channel.awaitMessages(response => response.content.length > 0 , {
           max: 1,
-          time: 10000,
+          time: 30000,
           errors: ['time'],
         }).then((collected) => {
           searchFunctionName(collected.first().content);
@@ -670,16 +941,9 @@ bot.on('message', message => {
   }
 });
 
-bot.login(config.token);
+bot.login(token);
 
 /*
-Pour lancer le bot,
-Ouvrir un nouveau terminal et tapper "bot"
-
-Fermer le terminal ou la page C9 = bot offline, tout recommencer
-à faire après chaque ctrl+s
-
-
 ressources API :
 https://github.com/pgrimaud/horaires-ratp-api
 https://openweathermap.org/api
@@ -687,4 +951,6 @@ http://thedogapi.co.uk/api/v1/dog?limit=1
 https://developers.giphy.com/dashboard/
 https://github.com/jprichardson/node-google
 https://www.npmjs.com/package/rss-to-json
+https://translate.yandex.net/api/v1.5/tr.json/translate?key=&text=&lang=&format=plain
+https://www.nexmo.com/
 */
