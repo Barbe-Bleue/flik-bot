@@ -30,5 +30,12 @@
         "C'est la castagne"
         ],
     "mdr": [":regional_indicator_m: :regional_indicator_d: :regional_indicator_r: :joy: "],
-    "vag ?": ["Oui c'est moi !", "Tu me veux quoi ?","Stp me parle pas j'ai la flemme là"]
+    "vag ?": [
+      "Oui c'est moi !",
+      "Tu me veux quoi ?",
+      "Stp me parle pas j'ai la flemme là",
+      "Toi tu vas encore me donner du taf",
+      "QUOI ?!",
+      "Bonjour bonsoir"
+    ]
 }
