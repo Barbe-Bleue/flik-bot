@@ -214,11 +214,11 @@ bot.on('message', message => {
     var ville = args[0];
     var demain = args[1];
     var jour = 0;
-    var annonce = "aujourd'hui, la température est de ";
+    var annonce = "aujourd'hui la température est de ";
     var url;
     if(demain != null && demain.toUpperCase() === "DEMAIN"){
       jour = 1;
-      annonce = "demain, la température sera de ";
+      annonce = "demain la température sera de ";
     }
     var openweathermeteo = function(ville, jour, callback){
       if (/^[a-zA-Z]/.test(ville)) {
@@ -243,7 +243,13 @@ bot.on('message', message => {
     };
     openweathermeteo(ville, jour, function(err, previsions){
     	if(err) return console.log(err);
-    	message.reply("A "+previsions.city+", " + annonce + previsions.temperature + "°C, " + previsions.description + " "+ meteoJSON[previsions.description]);
+      const embed = new Discord.RichEmbed()
+      .setTitle("Meteo à "+previsions.city)
+      .setColor(0x10B8FE)
+      .setDescription(annonce + " "+previsions.temperature + "°C, " + previsions.description + " "+ meteoJSON[previsions.description])
+      .setThumbnail("https://cdn.pixabay.com/photo/2016/05/20/20/20/weather-1405870_960_720.png")
+      .setTimestamp()
+      message.channel.send({embed});
     });
   }
 
