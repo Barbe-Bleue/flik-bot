@@ -59,6 +59,16 @@ bot.on("guildMemberAdd", member => {
   //console.log(member.user.username+member.guild.name);
   //console.log("Et maintenat on dit bonjour à "+member.user.username+" qui a rejoint"+member.guild.name+ " !" );
   //member.guild.channel.send(member.user.username+" has joined this server");
+  fs.readFile(docTXT, 'utf8', function(err, data) {
+    if (!err) {
+      var laDoc = data.toString().split('\n');
+      var doc ='';
+
+      for (var i in laDoc){
+        if(doc[i] != '') doc += laDoc[i]+'\n';
+      } member.send(doc);
+    } else console.log(err);
+  });
 });
 
 // Message
@@ -68,12 +78,8 @@ bot.on('message', message => {
   const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
 
-  console.log(message.author.username+": "+command);
   // check admin
-  var adminCommands = new Array("ban", "kick", "suicide", "mute","unmute");
-  if(!message.member.roles.find("name", "Admin") && adminCommands.indexOf(command) != -1){
-    message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
-  }
+  //var adminCommands = new Array("ban", "kick", "suicide", "mute","unmute");
 
   // COMMANDES !
   if (command === "sms"){
@@ -173,23 +179,31 @@ bot.on('message', message => {
 
   // mute user
   if(command === "mute"){
-    var victime = message.mentions.members.first();
-    if(args[1]){
-      time = args[1] * 1000;
+    if(message.member.roles.find("name", "Admin")){
+      var victime = message.mentions.members.first();
+      if(args[1]){
+        time = args[1] * 1000;
+      }else {
+        time = muteTime;
+      }
+      muteUser(victime,time);
     }else {
-      time = muteTime;
+      message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
     }
-    muteUser(victime,time);
   }
 
   // unmute user
   if(command =="unmute"){
-    var victime = message.mentions.members.first();
-    unmuteUser(victime);
+    if(message.member.roles.find("name", "Admin")){
+      var victime = message.mentions.members.first();
+      unmuteUser(victime);
+    }else {
+      message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
+    }
   }
 
   // kick au hasard de la part de l'admin
-  if (command === "roulette"){
+  if (command === "kick"){
     if(message.member.roles.find("name", "Admin")){
       var perdant = message.guild.members.random();
       message.channel.send("Roulette russe de l'admin ! Un kick au hasard !");
@@ -234,10 +248,14 @@ bot.on('message', message => {
 
   // suicide du bot
   if (command === "suicide"){
-    message.channel.send("Ah ok on me bute comme ça :tired_face: :gun:");
-    setTimeout(function(){
-      bot.destroy();
-    }, 2000);
+    if(message.member.roles.find("name", "Admin")){
+      message.channel.send("@everyone Ah ok on me bute comme ça :tired_face: :gun:");
+      setTimeout(function(){
+        bot.destroy();
+      }, 2000);
+    }else {
+      message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
+    }
   }
 
   // meteo
@@ -662,11 +680,10 @@ bot.on('message', message => {
 
         for (var i in laDoc){
           if(doc[i] != '') doc += laDoc[i]+'\n';
-        } message.author.send(doc);
+        } message.author.send(doc)
       }   else console.log(err);
     });
   }
-
   // QUESTIONS TEXTUELLES
 
   // Demande de kick
