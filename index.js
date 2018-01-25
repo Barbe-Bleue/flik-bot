@@ -44,7 +44,7 @@ var muteTime = config.muteTime; // pour temps de mute
 //CONNEXION
 bot.on('ready', () => {
   console.log('bot ok!');
-  bot.channels.first().send("Salut moi c'est vag, le meilleur bot du monde :ok_hand:");
+  bot.channels.first().send("Salut moi c'est vag, le meilleur bot du monde :ok_hand: tape 'doc' ou 'help' pour savoir tout ce que je peux faire :sunglasses: ");
 });
 
 // Suppression de message
@@ -67,9 +67,10 @@ bot.on('message', message => {
   const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
 
+  console.log(message.author.username+": "+command);
   // check admin
   var adminCommands = new Array("ban", "kick", "suicide", "mute","unmute");
-  if(message.member.kickable == true && adminCommands.indexOf(command) != -1){
+  if(!message.member.roles.find("name", "Admin") && adminCommands.indexOf(command) != -1){
     message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
   }
 
@@ -112,6 +113,7 @@ bot.on('message', message => {
   }
   // traduction
   if (command === "traduis"){
+
     var text = message.content.split(' ').slice(1, -1).join(' ');
     var lang = message.content.split(" ").splice(-1);
     var key = yandexApiKey;
@@ -120,7 +122,7 @@ bot.on('message', message => {
 
   // Ban
   if (command === "ban"){
-    if(message.member.kickable == false){
+    if(message.member.roles.find("name", "Admin")){
       // Easy way to get member object though mentions.
       var member = message.mentions.members.first();
       // Kick
@@ -156,8 +158,8 @@ bot.on('message', message => {
   }
 
   // kick au hasard de la part de l'admin
-  if (command === "kick"){
-    if(message.member.kickable == false){
+  if (command === "roulette"){
+    if(message.member.roles.find("name", "Admin")){
       var perdant = message.guild.members.random();
       message.channel.send("Roulette russe de l'admin ! Un kick au hasard !");
       if(perdant.kickable == false){
@@ -465,10 +467,10 @@ bot.on('message', message => {
 
   // Rename
   if(command == "rename"){
-    if(args[1] && message.member.kickable == false){
+    if(args[1] && message.member.roles.find("name", "Admin")){
       message.mentions.members.first().setNickname(args[1]);
       message.channel.send("Hey @everyone ! "+message.author+" a changé le nom de "+message.mentions.members.first()+" en ***"+args[1]+"***");
-    }else if (args[1] && message.member.kickable == true) {
+    }else if (args[1] && !message.member.roles.find("name", "Admin")) {
       message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
     }else if(args[0]){
       message.member.setNickname(args[0]);
@@ -497,7 +499,7 @@ bot.on('message', message => {
   }
 
   // Btc
-  if(command == "coin"){
+  if(command == "coin" || command == "btc"){
     if(args.length == 0){
       // If you want to check a single coin, use get() (You need to supply the coinmarketcap id of the cryptocurrency, not the symbol)
       // If you want to use symbols instead of id, use multi.
@@ -510,7 +512,9 @@ bot.on('message', message => {
       coinmarketcap.multi(coins => {
         for (var i = 0; i < args.length; i++) {
           crypto = args[i].toUpperCase();
-          multiCoin += crypto+" : "+coins.get(crypto).price_usd+" :dollar: \n";
+          if(coins.get(crypto)){
+            multiCoin += crypto+" : "+coins.get(crypto).price_usd+" :dollar: \n";
+          }else(message.channel.send("Je ne connais pas la monnaie **"+crypto+"** désolé :confused: "))
         }
         message.channel.send(multiCoin);
       });
@@ -591,7 +595,7 @@ bot.on('message', message => {
 
   // Demande de kick
   if (message.content.toUpperCase().includes("KICK MOI")){
-    if(message.member.kickable == false){
+    if(message.member.roles.find("name", "Admin")){
       message.channel.send("Je peux pas te kick t'es admin.");
     }else{
       message.member.kick();
