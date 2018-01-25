@@ -57,7 +57,7 @@ bot.on('messageDelete', message => {
 bot.on("guildMemberAdd", member => {
   //console.log(member.user.username+member.guild.name);
   //console.log("Et maintenat on dit bonjour à "+member.user.username+" qui a rejoint"+member.guild.name+ " !" );
-  member.guild.channel.send(member.user.username+" has joined this server");
+  //member.guild.channel.send(member.user.username+" has joined this server");
 });
 
 // Message
@@ -488,7 +488,14 @@ bot.on('message', message => {
     fs.readFile(beaufTXT, 'utf8', function(err, data) {
       if (!err) {
         var beauf = data.toString().split('\n');
-        if(beauf !='') message.channel.send('Le beauf '+beauf[Math.floor(Math.random() * beauf.length)]);
+        if(beauf !=''){
+          const embed = new Discord.RichEmbed()
+          .setTitle("Le beauf")
+          .setColor(0x00AE86)
+          .setDescription(  beauf[Math.floor(Math.random() * beauf.length)])
+          .setThumbnail("http://image.noelshack.com/fichiers/2017/34/2/1503406665-beaufdefrance.png")
+          message.channel.send({embed});
+        }
         else message.channel.send("Hey, flemme me casse pas les couilles");
       } else console.log(err);
     });
