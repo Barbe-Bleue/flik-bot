@@ -472,8 +472,20 @@ bot.on('message', message => {
 
     var actu=" ";
     feed.load('http://www.bfmtv.com/rss/info/flux-rss/flux-toutes-les-actualites/', function(err, rss){
-      for(i = 0; i <= 5; i++) actu += rss.items[i].title+" - "+rss.items[i].url+"\n\n";
-      message.channel.send(actu);
+      for(i = 0; i <= 1; i++){
+
+        const embed = new Discord.RichEmbed()
+        .setTitle(rss.items[i].title)
+        .setAuthor(bot.user.username, bot.user.avatarURL)
+        .setColor(0x00AE86)
+        //.setDescription(rss.items[i].description)
+        .setFooter("Vag", bot.user.avatarURL)
+        .setImage(rss.items[i].enclosures[0].url)
+        .setThumbnail("https://upload.wikimedia.org/wikipedia/commons/4/40/BFM_TV_logo.png")
+        .setTimestamp()
+        .setURL(rss.items[i].url)
+        message.channel.send({embed});
+      }
     });
   }
 
