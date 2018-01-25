@@ -442,8 +442,17 @@ bot.on('message', message => {
 
       for (var i = 0; i < res.links.length; ++i) {
         link = res.links[i];
-        if (link.href != null) resultat +=  link.title + ' - ' + link.href+"\n\n";
-      } message.channel.send(resultat);
+        console.log(res.links[i]);
+        if (link.href != null){
+          const embed = new Discord.RichEmbed()
+          .setTitle(link.title)
+          .setColor(0x4285F4)
+          .setDescription(link.description)
+          .setThumbnail("http://diylogodesigns.com/blog/wp-content/uploads/2016/04/google-logo-icon-PNG-Transparent-Background.png")
+          .setURL(link.href)
+          message.channel.send({embed});
+        }
+      }
     });
   }
 
@@ -872,7 +881,14 @@ bot.on('message', message => {
 
   function amazonSearch(recherche){
     var url = "https://www.amazon.fr/s/ref=nb_sb_noss?__mk_fr_FR=%C3%85M%C3%85%C5%BD%C3%95%C3%91&url=search-alias%3Daps&field-keywords="+recherche;
-    message.channel.send('Recherche amazon pour: '+recherche+'\n'+url);
+    const embed = new Discord.RichEmbed()
+        .setTitle("Recherche amazon pour: "+recherche)
+        .setColor(0xF3A847)
+        .setDescription(url)
+        .setThumbnail("https://upload.wikimedia.org/wikipedia/commons/b/b4/Amazon-icon.png")
+        .setTimestamp()
+        .setURL(url)
+        message.channel.send({embed});
   }
 
   function bangSearch(searchFunctionName,keywordSeparator,args){
