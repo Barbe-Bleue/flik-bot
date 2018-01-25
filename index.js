@@ -57,7 +57,7 @@ bot.on('messageDelete', message => {
 bot.on("guildMemberAdd", member => {
   //console.log(member.user.username+member.guild.name);
   //console.log("Et maintenat on dit bonjour à "+member.user.username+" qui a rejoint"+member.guild.name+ " !" );
-  //member.guild.channels.get("welcome").send(member.user.username+" has joined this server");
+  member.guild.channel.send(member.user.username+" has joined this server");
 });
 
 // Message
@@ -460,6 +460,7 @@ bot.on('message', message => {
 
   // actu
   if(command === "actu"){
+
     var actu=" ";
     feed.load('http://www.bfmtv.com/rss/info/flux-rss/flux-toutes-les-actualites/', function(err, rss){
       for(i = 0; i <= 5; i++) actu += rss.items[i].title+" - "+rss.items[i].url+"\n\n";
@@ -469,9 +470,16 @@ bot.on('message', message => {
 
   // chuck
   if(command === "chuck"){
-    var url = "http://www.chucknorrisfacts.fr/api/get?data=tri:alea;nb:1";
+    var url = "http://www.chucknorrisfacts.fr/api/get?data=tri:alea;nb:01";
     request(url, function(err, response, json){
-      message.channel.send(JSON.parse(json)[0].fact);
+      const embed = new Discord.RichEmbed()
+      .setTitle("Chuck Norris fact !")
+      .setColor(0xB87753)
+      .setDescription(JSON.parse(json)[0].fact)
+      .setThumbnail("http://pngimg.com/uploads/chuck_norris/chuck_norris_PNG1.png")
+      .setFooter("Chuck Norris")
+      .setTimestamp()
+      message.channel.send({embed});
     });
   }
 
