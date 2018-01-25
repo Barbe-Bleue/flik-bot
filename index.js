@@ -275,7 +275,14 @@ bot.on('message', message => {
           	else if(status === "Trafic perturbé") statusMessage = (":octagonal_sign: : "+bulletin[ligne]);
           	else if (status === "Trafic très perturbé") statusMessage = (":poop: : " +bulletin[ligne]);
         	}infoTrafic += "Ligne **"+ligne+"**: "+statusMessage+"\n";
-        }message.channel.send(infoTrafic);
+        }
+        const embed = new Discord.RichEmbed()
+        .setTitle("Info traffic")
+        .setColor(0x4AC1AE)
+        .setDescription(infoTrafic)
+        .setThumbnail("https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/RATP.svg/637px-RATP.svg.png")
+        .setTimestamp()
+        message.channel.send({embed});
       });
     }else{
       if(isNaN(code)) type = "rers";
@@ -284,13 +291,21 @@ bot.on('message', message => {
       var transports = leTrafic(type, code);
 
       transports(function(err, previsions){
+        var infoTrafic = "";
       	if(err) return console.log(err);
       	if(previsions.status != null){
-        	if(previsions.status === "Trafic normal") message.channel.send(":white_check_mark: : "+previsions.message);
-        	else if(previsions.status === "Travaux") message.channel.send(":warning: : "+previsions.message);
-        	else if(previsions.status === "Trafic perturbé") message.channel.send(":octagonal_sign: : "+previsions.message);
-        	else if (previsions.status === "Trafic très perturbé") message.channel.send(":poop: : " +previsions.message);
+        	if(previsions.status === "Trafic normal") infoTrafic = ":white_check_mark: : "+previsions.message;
+        	else if(previsions.status === "Travaux") infoTrafic = ":warning: : "+previsions.message;
+        	else if(previsions.status === "Trafic perturbé") infoTrafic = ":octagonal_sign: : "+previsions.message;
+        	else if (previsions.status === "Trafic très perturbé") infoTrafic = ":poop: : " +previsions.message;
       	}
+        const embed = new Discord.RichEmbed()
+        .setTitle("Info traffic ligne "+code)
+        .setColor(0x4AC1AE)
+        .setDescription(infoTrafic)
+        .setThumbnail("https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/RATP.svg/637px-RATP.svg.png")
+        .setTimestamp()
+        message.channel.send({embed});
       });
     }
   }
