@@ -30,6 +30,7 @@ var insultesJSON = require('./insultes.json');
 var pauseJSON = require('./pause.json');
 var pseudoJSON = require('./pseudo.json');
 var meteoJSON = require("./meteo.json");
+var flagJSON = require("./flag.json");
 var cerveauTXT = "./cerveau.txt";
 var docTXT = "./doc.txt";
 var beaufTXT = "./beauf.txt";
@@ -866,10 +867,26 @@ bot.on('message', message => {
   }
   // SEARCH FUNCTION
   function trad(text,lang,key){
+    var flag =""
+    country = lang.toString();
+
+    if(flagJSON[country]){
+      lang = flagJSON[country].code;
+      var flag = flagJSON[country].flag;
+    }else {
+      lang = country;
+      var flag = flagJSON["default"].flag;
+    }
+
     var url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key="+key+"&text="+text+"&lang="+lang+"&format=plain";
     request(url, function(err, resopnse, json){
-      var trad = JSON.parse(json).text;
-      message.channel.send(trad);
+      const embed = new Discord.RichEmbed()
+      .setTitle("Traduction")
+      .setColor(0xFF0000)
+      .setDescription(JSON.parse(json).text)
+      .setThumbnail(flag)
+      .setTimestamp()
+      message.channel.send({embed});
     });
   }
 
