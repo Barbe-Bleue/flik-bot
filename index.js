@@ -114,11 +114,41 @@ bot.on('message', message => {
   }
   // traduction
   if (command === "traduis"){
+      var key = yandexApiKey;
 
-    var text = message.content.split(' ').slice(1, -1).join(' ');
-    var lang = message.content.split(" ").splice(-1);
-    var key = yandexApiKey;
-    trad(text,lang,key);
+    if(args != ""){
+      var text = message.content.split(' ').slice(1, -1).join(' ');
+      var lang = message.content.split(" ").splice(-1);
+      trad(text,lang,key);
+    }else {
+      message.reply('Que veux tu me faire traduire ?').then(() => {
+        message.channel.awaitMessages(responseText => responseText.content.length > 0, {
+          max: 1,
+          time: 30000,
+          errors: ['time'],
+        }).then((collected) => {
+            var text = collected.first().content;
+            message.reply('en quelle langue ?').then(() => {
+              message.channel.awaitMessages(responseLang => responseLang.content.length > 0, {
+                max: 1,
+                time: 30000,
+                errors: ['time'],
+              }).then((collectedLang) => {
+                var lang = collectedLang.first().content;
+                  if(text && lang){
+                    trad(text,lang,key);
+                  }else(
+                    message.reply("Il me faut un text et une langue")
+                  )
+                }).catch(() => {
+                  message.reply('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
+                });
+            });
+          }).catch(() => {
+            message.reply('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
+          });
+      });
+    }
   }
 
   // Ban
@@ -331,38 +361,26 @@ bot.on('message', message => {
 
   // apprend une phrase
   if(command === "apprends") {
-    message.channel.sendMessage('Que veux tu me faire apprendre ?').then(() => {
-      message.channel.awaitMessages(response => response.content.length > 0, {
-        max: 1,
-        time: 30000,
-        errors: ['time'],
-      }).then((collected) => {
-          var newSavoir = true;
-          var sentence = transformSentence(collected.first().content);
+    if(args != ""){
+      var sentence = transformSentence(args.join(' '));
+      writeCerveau(sentence);
+    }else{
+      message.channel.sendMessage('Que veux tu me faire apprendre ?').then(() => {
+        message.channel.awaitMessages(response => response.content.length > 0, {
+          max: 1,
+          time: 30000,
+          errors: ['time'],
+        }).then((collected) => {
+            var newSavoir = true;
+            console.log(collected.first().content);
+            var sentence = transformSentence(collected.first().content);
+            writeCerveau(sentence);
 
-          fs.readFile(cerveauTXT, 'utf8', function(err, data) {
-            if (!err || sentence !='') {
-              var savoir = data.toString().split('\n');
-
-              for(var line in savoir) {
-                if(sentence == savoir[line]){
-                  var newSavoir = false;
-                }
-              }
-              if(newSavoir != false) {
-                fs.appendFile(cerveauTXT,sentence+'\n',"UTF-8",{'flags': 'a+'});
-                message.channel.send("Ok poto jm'en souviendrai :thumbsup: ");
-                newSavoir = false;
-              } else {
-                message.channel.send(":no_entry: Hey, je connais déjà ca ! :no_entry: ");
-                newSavoir = true;
-              }
-            }
+          }).catch(() => {
+            message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
           });
-        }).catch(() => {
-          message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
-        });
-    });
+      });
+    }
   }
 
   // savoir exprime 1 savoir
@@ -679,6 +697,27 @@ bot.on('message', message => {
   }
 
   // FONCTIONS
+  function writeCerveau(sentence) {
+    fs.readFile(cerveauTXT, 'utf8', function(err, data) {
+      if (!err || sentence !='') {
+        var savoir = data.toString().split('\n');
+
+        for(var line in savoir) {
+          if(sentence == savoir[line]){
+            var newSavoir = false;
+          }
+        }
+        if(newSavoir != false) {
+          fs.appendFile(cerveauTXT,sentence+'\n',"UTF-8",{'flags': 'a+'});
+          message.channel.send("Ok poto jm'en souviendrai :thumbsup: ");
+          newSavoir = false;
+        } else {
+          message.channel.send(":no_entry: Hey, je connais déjà ca ! :no_entry: ");
+          newSavoir = true;
+        }
+      }
+    });
+  }
 
   // mute
   function muteUser(victime,time){
