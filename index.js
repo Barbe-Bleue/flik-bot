@@ -474,17 +474,15 @@ bot.on('message', message => {
 
   // chuck
   if(command === "chuck"){
-    var url = "http://www.chucknorrisfacts.fr/api/get?data=tri:alea;nb:01";
-    request(url, function(err, response, json){
-      const embed = new Discord.RichEmbed()
+    cmd.chuck().then(res => {
+      message.channel.send(new Discord.RichEmbed()
       .setTitle("Chuck Norris fact !")
       .setColor(0xB87753)
-      .setDescription(JSON.parse(json)[0].fact)
+      .setDescription(res.fact)
       .setThumbnail("http://pngimg.com/uploads/chuck_norris/chuck_norris_PNG1.png")
       .setFooter("Chuck Norris")
-      .setTimestamp()
-      message.channel.send({embed});
-    });
+      .setTimestamp());
+    });      
   }
 
   // beauf
