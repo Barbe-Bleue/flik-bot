@@ -416,32 +416,22 @@ bot.on('message', message => {
 
   // google recherche google
   if(command === "google"){
-    var keyword = args[0];
     google.l
-    //var nextCounter = 0;
     google.resultsPerPage = 5;
     google.lang = 'fr';
     google.tld = 'fr';
     google.nextText='Plus';
     google.protocol = 'https';
-    var resultat,link ="";
-
+    
     google(args, function (err, res){
-      if (err) console.error(err);
-
-      for (var i = 0; i < res.links.length; ++i) {
-        link = res.links[i];
-        console.log(res.links[i]);
-        if (link.href != null){
-          const embed = new Discord.RichEmbed()
-          .setTitle(link.title)
-          .setColor(0x4285F4)
-          .setDescription(link.description)
-          .setThumbnail("http://diylogodesigns.com/blog/wp-content/uploads/2016/04/google-logo-icon-PNG-Transparent-Background.png")
-          .setURL(link.href)
-          message.channel.send({embed});
-        }
-      }
+      res.links.forEach(function(link) {
+         message.channel.send( new Discord.RichEmbed()
+        .setTitle(link.title)
+        .setColor(0x4285F4)
+        .setDescription(link.description)
+        .setThumbnail("http://diylogodesigns.com/blog/wp-content/uploads/2016/04/google-logo-icon-PNG-Transparent-Background.png")
+        .setURL(link.href))
+  		})
     });
   }
 
@@ -767,7 +757,6 @@ bot.on('message', message => {
     	});
     };
   }
-
 
   // SEARCH FUNCTION
   function genreSearch(name){
