@@ -575,46 +575,6 @@ bot.on('message', message => {
       break;
   }
 
-  // Steam
-  if(command === "steam"){
-    var pseudo = args[0];
-    if(pseudo != null){
-      var steamID = getSteamID(pseudo);
-      steamID(function(err, resultat){
-        var succ = resultat.success;
-        var id = "";
-        if(succ != "1" && /^\d+$/.test(pseudo) == true){
-          id = pseudo;
-          succ = "1";
-        }else{
-          id = resultat.id;
-        }
-        if (succ == "1"){
-          var url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=B480E532F65ABE5030AA92D1E09EAAA5&steamid="+id+"&include_appinfo=1&format=json";
-          request(url, function(err, response, json){
-            var jeu,appid,img = "";
-            var heuresJeu = 1;
-            var result = JSON.parse(json);
-            var nbJeux = result.response.game_count;
-            for (var i = 0; i < nbJeux; i++){
-          		if(result.response.games[i].playtime_forever > heuresJeu){
-                heuresJeu = result.response.games[i].playtime_forever;
-                jeu = result.response.games[i].name;
-                appid = result.response.games[i].appid;
-                img = result.response.games[i].img_logo_url;
-              }
-            }
-            heuresJeu = heuresJeu/60;
-            steamStats ="ce joueur a " + nbJeux + " jeux sur steam.\n";
-            steamStats += "http://media.steampowered.com/steamcommunity/public/images/apps/"+appid+"/"+img+".jpg\n";
-            steamStats += "Le jeu le plus joué est '" + jeu + "' avec " + heuresJeu.toFixed(2) + " heures de jeu.\n";
-            message.channel.send(steamStats);
-          });
-        }
-      });
-    }
-  }
-
   // doc
   if(command === "doc" || command === "help") {
   cmd.doc().then(res =>{
@@ -808,28 +768,6 @@ bot.on('message', message => {
     };
   }
 
-  // giphy
-  
-
-  //getID Steam
-  function getSteamID(pseudo){
-    var SID;
-    return SID = function(callback){
-      url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=B480E532F65ABE5030AA92D1E09EAAA5&vanityurl="+pseudo;
-    	request(url, function(err, response, body){
-    		try{
-    			var result = JSON.parse(body);
-    			var resultat = {
-      			success : result.response.success,
-    				id : result.response.steamid,
-    			};
-    			callback(null, resultat);
-    		}catch(e){
-    			callback(e);
-    		}
-    	});
-    };
-  }
 
   // SEARCH FUNCTION
   function genreSearch(name){
