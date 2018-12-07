@@ -1,0 +1,32 @@
+{
+  "manger": [
+    "Bounty",
+    "Snickers",
+    "Kikat",
+    "M&Ms",
+    "Gerblé",
+    "Côte d'Or",
+    "Madeleine",
+    "Gauffres",
+    "Yaourt Framboise",
+    "Kinder Bueno",
+    "Twix",
+    "Lion",
+    "Mars",
+    "Brownies",
+    "Napolitin",
+    "Chips"
+  ],
+  "boire": [
+    "Ice Tea",
+    "Volvic Citron",
+    "Minute Maid Orange",
+    "Minute Maid Tropic",
+    "Coca",
+    "Evian",
+    "Fanta Citron",
+    "Fanta Orange",
+    "S.pellegrino",
+    "Orangina"
+  ]
+}

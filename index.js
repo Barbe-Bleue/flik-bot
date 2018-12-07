@@ -28,7 +28,6 @@ var punitions = ["kick", "Changement de pseudo"]; //Textes des punitions
 var fs = require("fs"); //obligtoire pour des fonctions
 var cancerJSON = require('./json/cancer.json');
 var insultesJSON = require('./json/insultes.json');
-var pauseJSON = require('./json/pause.json');
 var pseudoJSON = require('./json/pseudo.json');
 var flagJSON = require("./json/flag.json");
 var cerveauTXT = "./datas/cerveau.txt";
@@ -400,13 +399,13 @@ bot.on('message', message => {
 
   // pause gouter pour chaque membres
   if(command === "pause") {
-    var userID,manger,boire;
     message.channel.send('Aight c\'est l\'heure de la pause :ok_hand: :coffee: :chocolate_bar: ');
+    
     for(var member in message.guild.members.array()){
-      userID =  message.guild.members.array()[member]['user'].id;
-      manger = pauseJSON['manger'][Math.floor(Math.random() * pauseJSON['manger'].length)];
-      boire = pauseJSON['boire'][Math.floor(Math.random() * pauseJSON['boire'].length)];
-      message.channel.send('<@'+userID+'> : '+manger+' | '+boire);
+      var userID =  message.guild.members.array()[member]['user'].id;
+      cmd.pause().then( res => {
+        message.channel.send('<@'+userID+'> : '+res.manger+' | '+res.boire);
+      })
     }
   }
 
