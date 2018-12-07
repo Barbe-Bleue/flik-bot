@@ -161,15 +161,11 @@ bot.on('message', message => {
   // Ban
   if (command === "ban"){
     if(message.member.roles.find("name", "Admin")){
-      // Easy way to get member object though mentions.
       var member = message.mentions.members.first();
-      // Kick
-      if(member != undefined){
+      if(member){
         member.kick().then((member) => {
-          // Successmessage
           message.channel.send("@everyone :wave: **" + member.displayName + "** a été kické :point_right: ");
         }).catch(() => {
-          // Failmessage
           message.reply("On ne peut pas bannir Dieu :cross:");
         });
       }else{
@@ -182,38 +178,36 @@ bot.on('message', message => {
   if(command === "mute"){
     if(message.member.roles.find("name", "Admin")){
       var victime = message.mentions.members.first();
-      if(args[1]){
+      if(args[1]) {
         time = args[1] * 1000;
-      }else {
+      } else {
         time = muteTime;
       }
       muteUser(victime,time);
-    }else {
+    } else {
       message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
     }
   }
 
   // unmute user
   if(command =="unmute"){
-    if(message.member.roles.find("name", "Admin")){
-      var victime = message.mentions.members.first();
-      unmuteUser(victime);
-    }else {
+    if(message.member.roles.find("name", "Admin")) {
+      unmuteUser(message.mentions.members.first());
+    } else {
       message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
     }
   }
 
   // kick au hasard de la part de l'admin
   if (command === "kick"){
-    if(message.member.roles.find("name", "Admin")){
+    if(message.member.roles.find("name", "Admin")) {
       var perdant = message.guild.members.random();
       message.channel.send("Roulette russe de l'admin ! Un kick au hasard !");
-      if(perdant.kickable == false){
+      if(perdant.kickable == false) {
         message.channel.send("Ok ça tombe sur l'admin on peut rien faire.");
-      }else{
+      } else {
         message.channel.send(perdant.displayName+" a perdu.");
-        var count = 5;
-        var timer = setInterval(function() { handleTimer(count); }, 1000);
+        var timer = setInterval(function() { handleTimer(5); }, 1000);
       }
     }
   }
@@ -507,10 +501,8 @@ bot.on('message', message => {
         .then(function (message) {
           message.react("👍")
           message.react("👎")
-          //message.pin()
-          //message.delete()
-        }).catch(function() {
-          //Something
+        }).catch(function(err) {
+          console.log(err);
         });
     }else {
       message.channel.send("Indique la raison du sondage")
@@ -520,15 +512,12 @@ bot.on('message', message => {
   // Btc
   if(command == "coin" || command == "btc"){
     if(args.length == 0){
-      // If you want to check a single coin, use get() (You need to supply the coinmarketcap id of the cryptocurrency, not the symbol)
-      // If you want to use symbols instead of id, use multi.
       coinmarketcap.get("bitcoin", coin => {
-        message.channel.send(":dollar: **"+coin.price_usd+" $** :dollar:"); // Prints the price in USD of BTC at the moment.
+        message.channel.send(":dollar: **"+coin.price_usd+" $** :dollar:");
       });
     }else if(args.length > 0){
-      var multiCoin = "";
-      // If you want to check multiple coins, use multi():
       coinmarketcap.multi(coins => {
+        var multiCoin = "";
         for (var i = 0; i < args.length; i++) {
           crypto = args[i].toUpperCase();
           if(coins.get(crypto)){
