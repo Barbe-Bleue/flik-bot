@@ -864,21 +864,9 @@ bot.on('message', message => {
   }
 
   function wikiSearch(recherche){
-    var url = "https://fr.wikipedia.org/w/api.php?action=opensearch&search="+recherche+"&limit=1&namespace=0&format=json";
-    request(url, function(err, resopnse, json){
-      try {
-        var name = JSON.parse(json)[1];
-        var link = JSON.parse(json)[3];
-        if(name ==='undefined'){
-          message.channel.send('Aucun résultats');
-        }else {
-          message.channel.send('Recherche wikipedia pour: '+recherche);
-          message.channel.send('Nom: '+name[0]+'\n'+link[0]+'\n\n');
-        }
-      } catch (e) {
-        callback('ERREUR: '+e);
-      }
-    });
+    cmd.wikipedia(recherche).then(res => {
+       message.channel.send(res);
+    })
   }
 
   function amazonSearch(recherche){

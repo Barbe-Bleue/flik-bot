@@ -9,4 +9,4 @@ exports.pause = require("./pause/pause.js")
 exports.topGame = require("./topGame.js")
 exports.picture = require("./picture.js")
 exports.chuck = require("./chuck.js")
-
+exports.wikipedia = require("./wikipedia.js")
