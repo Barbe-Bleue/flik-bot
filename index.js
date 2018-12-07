@@ -371,11 +371,9 @@ bot.on('message', message => {
   }
 
   // gif
-  if(command === "gif"){
-    var leGif = gif(args[0]);
-    leGif(function(err, previsions){
-      if(err) return console.log(err);
-      message.channel.send(previsions.url);
+  if(command === "gif") {
+    cmd.gif(args[0]).then(res => {
+      message.channel.send(res)
     });
   }
 
@@ -873,24 +871,7 @@ bot.on('message', message => {
   }
 
   // giphy
-  function gif(recherche){
-    var leGif = "";
-    return leGif = function(callback){
-      url = "http://api.giphy.com/v1/gifs/search?api_key=2a6166b6303a485088cd82579ada608f&q="+recherche+"&limit=20";
-    	request(url, function(err, response, body){
-    		try{
-    		  var nbRec = Math.floor(Math.random() * 20);
-    			var result = JSON.parse(body);
-    			var previsions = {
-    				url : result.data[nbRec].images.original.url,
-    			};
-    			callback(null, previsions);
-    		}catch(e){
-    			callback(e);
-    		}
-    	});
-    };
-  }
+  
 
   //getID Steam
   function getSteamID(pseudo){
