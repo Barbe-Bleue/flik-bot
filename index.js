@@ -3,7 +3,8 @@ const Discord = require('discord.js');
 const bot = new Discord.Client();
 const cmd = require ("./commands/index.js");
 const nodemailer = require('nodemailer');
-var request = require('request');
+const request  = require("request");
+
 var google = require('google')
 var feed = require('rss-to-json'); // pour les actus
 var http = require('http'); // pour le btc
@@ -31,9 +32,7 @@ var insultesJSON = require('./json/insultes.json');
 var pseudoJSON = require('./json/pseudo.json');
 var flagJSON = require("./json/flag.json");
 var cerveauTXT = "./datas/cerveau.txt";
-var docTXT = "./datas/doc.txt";
 var beaufTXT = "./datas/beauf.txt";
-
 
 //config
 var config = require('./json/config.json');
@@ -118,6 +117,8 @@ bot.on('message', message => {
       });
     });
   }
+  
+  
   // traduction
   if (command === "traduis"){
       var key = yandexApiKey;
@@ -268,7 +269,6 @@ bot.on('message', message => {
     	.setThumbnail("https://cdn.pixabay.com/photo/2016/05/20/20/20/weather-1405870_960_720.png")
     	.setTimestamp())
     });
-    
   }
 
   // Trafic
@@ -400,7 +400,7 @@ bot.on('message', message => {
   // pause gouter pour chaque membres
   if(command === "pause") {
     message.channel.send('Aight c\'est l\'heure de la pause :ok_hand: :coffee: :chocolate_bar: ');
-    
+
     for(var member in message.guild.members.array()){
       var userID =  message.guild.members.array()[member]['user'].id;
       cmd.pause().then( res => {
@@ -617,17 +617,11 @@ bot.on('message', message => {
 
   // doc
   if(command === "doc" || command === "help") {
-    fs.readFile(docTXT, 'utf8', function(err, data) {
-      if (!err) {
-        var laDoc = data.toString().split('\n');
-        var doc ='';
-
-        for (var i in laDoc){
-          if(doc[i] != '') doc += laDoc[i]+'\n';
-        } message.author.send(doc)
-      }   else console.log(err);
-    });
+  cmd.doc().then(res =>{
+     console.log(res)
+   });
   }
+  
   // QUESTIONS TEXTUELLES
 
   // Demande de kick
