@@ -1,0 +1,10 @@
+{
+  "ciel dégagé": ":sunny: ",
+  "partiellement ensoleillé": ":partly_sunny: ",
+  "peu nuageux": ":white_sun_small_cloud: ",
+  "nuageux": ":cloud: ",
+  "légères pluies": ":white_sun_rain_cloud: ",
+  "pluie modérée": ":cloud_rain:",
+  "fortes pluies": ":thunder_cloud_rain: ",
+  "couvert": ":white_sun_cloud:"
+}

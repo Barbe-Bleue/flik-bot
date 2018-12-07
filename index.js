@@ -1,6 +1,7 @@
 //VARIABLES
 const Discord = require('discord.js');
 const bot = new Discord.Client();
+const cmd = require ("./commands/index.js");
 const nodemailer = require('nodemailer');
 var request = require('request');
 var google = require('google')
@@ -29,13 +30,11 @@ var cancerJSON = require('./json/cancer.json');
 var insultesJSON = require('./json/insultes.json');
 var pauseJSON = require('./json/pause.json');
 var pseudoJSON = require('./json/pseudo.json');
-var meteoJSON = require("./json/meteo.json");
 var flagJSON = require("./json/flag.json");
 var cerveauTXT = "./datas/cerveau.txt";
 var docTXT = "./datas/doc.txt";
 var beaufTXT = "./datas/beauf.txt";
 
-const cmd = require ("./commands/index.js");
 
 //config
 var config = require('./json/config.json');
@@ -262,46 +261,15 @@ bot.on('message', message => {
 
   // meteo
   if(command === "meteo"){
-    var ville = args[0];
-    var demain = args[1];
-    var jour = 0;
-    var annonce = "aujourd'hui la température est de ";
-    var url;
-    if(demain != null && demain.toUpperCase() === "DEMAIN"){
-      jour = 1;
-      annonce = "demain la température sera de ";
-    }
-    var openweathermeteo = function(ville, jour, callback){
-      if (/^[a-zA-Z]/.test(ville)) {
-        url = "http://api.openweathermap.org/data/2.5/forecast/daily?q="+ville+"&mode=json&units=metric&cnt=2&lang=fr&appid=50d1f0d31cd8814419a3d8a06d208d4d";
-      }else{
-        url = "http://api.openweathermap.org/data/2.5/forecast/daily?zip="+ville+"&mode=json&units=metric&cnt=2&lang=fr&appid=50d1f0d31cd8814419a3d8a06d208d4d";
-      }
-
-    	request(url, function(err, response, body){
-    		try{
-    			var result = JSON.parse(body);
-    			var previsions = {
-            temperature : result.list[jour].temp.day,
-    				city : result.city.name,
-    				description : result.list[jour].weather[0].description
-    			};
-    			callback(null, previsions);
-    		}catch(e){
-    			callback(e);
-    		}
-    	});
-    };
-    openweathermeteo(ville, jour, function(err, previsions){
-    	if(err) return console.log(err);
-      const embed = new Discord.RichEmbed()
-      .setTitle("Meteo à "+previsions.city)
-      .setColor(0x10B8FE)
-      .setDescription(annonce + " "+previsions.temperature + "°C, " + previsions.description + " "+ meteoJSON[previsions.description])
-      .setThumbnail("https://cdn.pixabay.com/photo/2016/05/20/20/20/weather-1405870_960_720.png")
-      .setTimestamp()
-      message.channel.send({embed});
+    cmd.meteo(args).then(res => {
+        message.channel.send( new Discord.RichEmbed()
+    	.setTitle("Meteo à "+res.city)
+    	.setColor(0x10B8FE)
+    	.setDescription(res.annonce + " "+res.temperature + "°C, " + res.description + " "+ res.emoji)
+    	.setThumbnail("https://cdn.pixabay.com/photo/2016/05/20/20/20/weather-1405870_960_720.png")
+    	.setTimestamp())
     });
+    
   }
 
   // Trafic
