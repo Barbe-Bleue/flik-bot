@@ -327,16 +327,7 @@ bot.on('message', message => {
       });
     }
   }
-
-  // chien
-  if(command === "chien"){
-    var leChien = leChien(type, code);
-    leChien(function(err, previsions){
-    	if(err) return console.log(err);
-        message.channel.send(previsions.url);
-    });
-  }
-
+  
   // gif
   if(command === "gif") {
     cmd.gif(args[0]).then(res => {
@@ -732,25 +723,6 @@ bot.on('message', message => {
               bulletin[result[ligne].line["status"]] = result[ligne].title;
             }
           }callback(null,bulletin);
-    		}catch(e){
-    			callback(e);
-    		}
-    	});
-    };
-  }
-
-  // pour le chien
-  function leChien(type, code){
-    var leChien;
-    return leChien = function(callback){
-      url = "https://api.thedogapi.co.uk/v2/dog.php?limit=1";
-    	request(url, function(err, response, body){
-    		try{
-    			var result = JSON.parse(body);
-    			var previsions = {
-    				url : result.data[0].url,
-    			};
-    			callback(null, previsions);
     		}catch(e){
     			callback(e);
     		}
