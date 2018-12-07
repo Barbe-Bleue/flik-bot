@@ -31,12 +31,12 @@ var pauseJSON = require('./json/pause.json');
 var pseudoJSON = require('./json/pseudo.json');
 var meteoJSON = require("./json/meteo.json");
 var flagJSON = require("./json/flag.json");
-var cerveauTXT = "./cerveau.txt";
-var docTXT = "./doc.txt";
-var beaufTXT = "./beauf.txt";
+var cerveauTXT = "./datas/cerveau.txt";
+var docTXT = "./datas/doc.txt";
+var beaufTXT = "./datas/beauf.txt";
 
 //config
-var config = require('./config.json');
+var config = require('./json/config.json');
 var token = config.token; // token discord
 var prefix = config.prefix; // préfix des commandes
 var yandexApiKey = config.yandexApiKey; // pour traduction
@@ -45,7 +45,7 @@ var muteTime = config.muteTime; // pour temps de mute
 //CONNEXION
 bot.on('ready', () => {
   console.log('bot ok!');
-  bot.channels.first().send("Salut moi c'est vag, le meilleur bot du monde :ok_hand: tape 'doc' ou 'help' pour savoir tout ce que je peux faire :sunglasses: ");
+  //bot.channels..send("Salut moi c'est vag, le meilleur bot du monde :ok_hand: tape 'doc' ou 'help' pour savoir tout ce que je peux faire :sunglasses: ");
 });
 
 // Suppression de message
