@@ -35,6 +35,8 @@ var cerveauTXT = "./datas/cerveau.txt";
 var docTXT = "./datas/doc.txt";
 var beaufTXT = "./datas/beauf.txt";
 
+const cmd = require ("./commands/index.js");
+
 //config
 var config = require('./json/config.json');
 var token = config.token; // token discord
@@ -244,7 +246,7 @@ bot.on('message', message => {
 
   // decide choix1 choix2...
   if (command === ("decide"))
-    message.reply("Le choix est : " + args[Math.floor(Math.random() * args.length)]);
+    message.reply(cmd.decide(args));
 
   // suicide du bot
   if (command === "suicide"){
