@@ -894,8 +894,8 @@ bot.on('message', message => {
   }
 
   // SEARCH FUNCTION
-  function genreSearch(prenom){
-    cmd.gender(prenom).then(res => {
+  function genreSearch(name){
+    cmd.gender(name).then(res => {
       message.channel.send(res.name+': '+res.gender + ", sûr à " + res.accuracy + "%");
     });
   }
