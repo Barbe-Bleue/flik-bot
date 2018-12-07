@@ -447,13 +447,7 @@ bot.on('message', message => {
 
   // pic image random sur imgur
   if(command === "pic"){
-    var anysize = 5;//the size of string
-    var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPKRSTUVWXYZ";
-    var result="";
-    for( var m=0; m < anysize; m++ ){
-      result += charset[Math.floor(Math.random() * charset.length)];
-    }
-    message.channel.send("http://imgur.com/gallery/"+result);
+    message.channel.send(cmd.picture());
   }
 
   // actu
