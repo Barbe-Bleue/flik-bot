@@ -530,7 +530,21 @@ bot.on('message', message => {
       });
     }
   }
-
+  
+  // genre
+  if(command === "genre") {
+    cmd.gender(args).then(res => {
+      message.channel.send(res);
+    });
+  }
+  
+  // doc
+  if(command === "doc" || command === "help") {
+  cmd.doc().then(res =>{
+     console.log(res)
+   });
+  }
+  
   // RECHERCHES
   switch (command) {
     // wiki
@@ -541,19 +555,8 @@ bot.on('message', message => {
     case "amazon" :
       bangSearch(amazonSearch,'+',args);
       break;
-    // genre
-    case "genre" :
-      bangSearch(genreSearch,' ',args);
-      break;
   }
 
-  // doc
-  if(command === "doc" || command === "help") {
-  cmd.doc().then(res =>{
-     console.log(res)
-   });
-  }
-  
   // QUESTIONS TEXTUELLES
 
   // Demande de kick
@@ -566,7 +569,6 @@ bot.on('message', message => {
   }
 
   // DETECTEURS
-
   // Insulte detector
   if(cancerJSON[message.content]){
     message.channel.send(cancerJSON[message.content][Math.floor(Math.random() * cancerJSON[message.content].length)]);
@@ -673,18 +675,12 @@ bot.on('message', message => {
     }
   }
 
-  //Bye bye
+  // Bye bye
   function byebye(perdant) {
     message.channel.send("Bye bye "+perdant+" !");
     setTimeout(function(){ perdant.kick()}, 3000);
   }
-  
-  // SEARCH FUNCTION
-  function genreSearch(name){
-    cmd.gender(name).then(res => {
-      message.channel.send(res.name+': '+res.gender + ", sûr à " + res.accuracy + "%");
-    });
-  }
+
   
   // SEARCH FUNCTION
   function trad(text,lang,key){
