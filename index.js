@@ -326,20 +326,15 @@ bot.on('message', message => {
   // apprend une phrase
   if(command === "apprends") {
     if(args != ""){
-      var sentence = transformSentence(args.join(' '));
-      writeCerveau(sentence);
+      message.channel.send(cmd.writeBrain(args.join(' ')));
     }else{
       message.channel.sendMessage('Que veux tu me faire apprendre ?').then(() => {
         message.channel.awaitMessages(response => response.content.length > 0, {
           max: 1,
           time: 30000,
           errors: ['time'],
-        }).then((collected) => {
-            var newSavoir = true;
-            console.log(collected.first().content);
-            var sentence = transformSentence(collected.first().content);
-            writeCerveau(sentence);
-
+        }).then(collected => {
+            message.channel.send(cmd.writeBrain(collected.first().content));
           }).catch(() => {
             message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
           });
@@ -558,29 +553,6 @@ bot.on('message', message => {
     }
   }
 
-  // FONCTIONS
-  function writeCerveau(sentence) {
-    fs.readFile(cerveauTXT, 'utf8', function(err, data) {
-      if (!err || sentence !='') {
-        var savoir = data.toString().split('\n');
-
-        for(var line in savoir) {
-          if(sentence == savoir[line]){
-            var newSavoir = false;
-          }
-        }
-        if(newSavoir != false) {
-          fs.appendFile(cerveauTXT,sentence+'\n',"UTF-8",{'flags': 'a+'});
-          message.channel.send("Ok poto jm'en souviendrai :thumbsup: ");
-          newSavoir = false;
-        } else {
-          message.channel.send(":no_entry: Hey, je connais déjà ca ! :no_entry: ");
-          newSavoir = true;
-        }
-      }
-    });
-  }
-
   // mute
   function muteUser(victime,time){
     // Overwrite permissions for a message author
@@ -601,42 +573,7 @@ bot.on('message', message => {
       SEND_MESSAGES: true
     }).then(() => message.channel.send("On libère "+victime+", tu peux reparler maintenant :ok_hand: :slight_smile:")).catch(console.error);
   }
-
-  function transformSentence(sentence){
-    var sentenceArray = sentence.slice().trim().split(/ +/g );
-    // pronoms
-    if(sentenceArray[0] == "que")
-      sentenceArray.shift();
-
-    switch (sentenceArray[0]) {
-      case "tu" :
-        sentenceArray[0] = "je";
-        break;
-      case "je" :
-        sentenceArray[0] = message.author;
-        break;
-      case message.mentions.members.first():
-        sentenceArray[0] =  message.mentions.members.first();
-        break;
-    }
-    // verbe
-    switch (sentenceArray[1]) {
-      case "es":
-        sentenceArray[1] = "suis";
-        break;
-      case "suis":
-        sentenceArray[1] = "est";
-        break;
-      case "as":
-        sentenceArray[1] = "ai";
-        break;
-      case "as":
-        sentenceArray[1] = "ai";
-        break;
-    }
-    return sentence = sentenceArray.join(" ");
-  }
-
+  
   // Timer avant kick
   function handleTimer() {
     if(count === 0) {
