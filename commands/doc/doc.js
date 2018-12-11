@@ -1,14 +1,16 @@
 const fs = require("fs");
 const path = require('path');
+const doc = path.join(__dirname, './doc.txt')
+module.exports = () => {
+	let data = fs.readFileSync(doc, 'utf8')
+  let laDoc = data.toString().split('\n');
+  let cmd ='';
 
-module.exports = async () => {
-	let res = await fs.readFile(path.join(__dirname, './data.txt'), 'utf8',  function (err,data) {
-		if (err) {
-	    return console.log(err);
-	  } else {
-			return data;
+  for (var i in laDoc){
+    if(cmd[i] != '') {
+			cmd += laDoc[i]+'\n';
 		}
-	});
-	console.log(res);
+  }
+	return cmd
 }
 

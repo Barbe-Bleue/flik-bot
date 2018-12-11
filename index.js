@@ -56,16 +56,7 @@ bot.on("guildMemberAdd", member => {
   //console.log(member.user.username+member.guild.name);
   //console.log("Et maintenat on dit bonjour à "+member.user.username+" qui a rejoint"+member.guild.name+ " !" );
   //member.guild.channel.send(member.user.username+" has joined this server");
-  fs.readFile(docTXT, 'utf8', function(err, data) {
-    if (!err) {
-      var laDoc = data.toString().split('\n');
-      var doc ='';
-
-      for (var i in laDoc){
-        if(doc[i] != '') doc += laDoc[i]+'\n';
-      } member.send(doc);
-    } else console.log(err);
-  });
+  member.send(cmd.doc());
 });
 
 // Message
@@ -493,9 +484,7 @@ bot.on('message', message => {
   
   // doc
   if(command === "doc" || command === "help") {
-  cmd.doc().then(res =>{
-     console.log(res)
-   });
+    message.author.send(cmd.doc())
   }
   
   // RECHERCHES
