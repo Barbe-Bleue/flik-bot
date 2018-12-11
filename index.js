@@ -5,38 +5,37 @@ const cmd = require ("./commands/index.js");
 const nodemailer = require('nodemailer');
 const request  = require("request");
 
-var google = require('google')
-var feed = require('rss-to-json'); // pour les actus
-var http = require('http'); // pour le btc
-var translate = require('translate');
-var CoinMarketCap = require("node-coinmarketcap"); // pour le btc
-var options = {
+const google = require('google')
+const feed = require('rss-to-json'); // pour les actus
+const translate = require('translate');
+const CoinMarketCap = require("node-coinmarketcap"); // pour le btc
+const options = {
   events: true, // Enable event system
   refresh: 60, // Refresh time in seconds (Default: 60)
   convert: "EUR" // Convert price to different currencies. (Default USD)
 }
-var Nexmo = require('nexmo');
+const Nexmo = require('nexmo');
 const nexmoSMS = new Nexmo({
   apiKey: "7e6f3343",
   apiSecret: "2953fb71fcf9ea5f"
 });
 
-var coinmarketcap = new CoinMarketCap(options);
-var jsonfile = require('jsonfile');
+const coinmarketcap = new CoinMarketCap(options);
+const jsonfile = require('jsonfile');
 
-var nbR = 1; //pour la roulette
-var punitions = ["kick", "Changement de pseudo"]; //Textes des punitions
-var cancerJSON = require('./json/cancer.json');
-var insultesJSON = require('./json/insultes.json');
-var pseudoJSON = require('./json/pseudo.json');
-var flagJSON = require("./json/flag.json");
+const nbR = 1; //pour la roulette
+const punitions = ["kick", "Changement de pseudo"]; //Textes des punitions
+const cancerJSON = require('./json/cancer.json');
+const insultesJSON = require('./json/insultes.json');
+const pseudoJSON = require('./json/pseudo.json');
+const flagJSON = require("./json/flag.json");
 
 //config
-var config = require('./json/config.json');
-var token = config.token; // token discord
-var prefix = config.prefix; // préfix des commandes
-var yandexApiKey = config.yandexApiKey; // pour traduction
-var muteTime = config.muteTime; // pour temps de mute
+const config = require('./json/config.json');
+const token = config.token; // token discord
+const prefix = config.prefix; // préfix des commandes
+const yandexApiKey = config.yandexApiKey; // pour traduction
+const muteTime = config.muteTime; // pour temps de mute
 
 //CONNEXION
 bot.on('ready', () => {
