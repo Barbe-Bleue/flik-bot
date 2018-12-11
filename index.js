@@ -437,6 +437,53 @@ bot.on('message', message => {
     message.author.send(cmd.doc())
   }
 
+  // amazon search
+  if(command === "amazon" || command === "a") {
+    if(args.length > 1){
+      message.channel.send(cmd.amazon(args.join('+')));
+    } else if(args.length == 0) {
+      message.channel.send('tu veux quoi ?').then(() => {
+        message.channel.awaitMessages(response => response.content.length > 0 , {
+          max: 1,
+          time: 30000,
+          errors: ['time'],
+        }).then(collected => {
+            message.channel.send(cmd.amazon(collected.first().content));
+        }).catch(() => {
+            message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
+        });
+      });
+    } else {
+      message.channel.send(cmd.amazon(args[0]));
+    }
+  }
+
+  // wikipedia search
+  if(command === "wikipedia" || command === "wiki") {
+    if(args.length > 1) {
+      cmd.wikipedia(args.join('-')).then(res => {
+        message.channel.send(res);
+      });
+    } else if(args.length == 0) {
+      message.channel.send('tu veux quoi ?').then(() => {
+        message.channel.awaitMessages(response => response.content.length > 0 , {
+          max: 1,
+          time: 30000,
+          errors: ['time'],
+        }).then(collected => {
+            cmd.wikipedia(collected.first().content).then(res => {
+              message.channel.send(res)
+            });
+        }).catch(() => {
+            message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
+        });
+      });
+    } else {
+      cmd.wikipedia(args[0]).then(res => {
+        message.channel.send(res)
+      });
+    }
+  }
   // QUESTIONS TEXTUELLES
 
   // Demande de kick
@@ -492,51 +539,7 @@ bot.on('message', message => {
     setTimeout(function(){ perdant.kick()}, 3000);
   }
 
-  if(command === "amazon" || command === "a") {
-    if(args.length > 1){
-      message.channel.send(cmd.amazon(args.join('+')));
-    } else if(args.length == 0) {
-      message.channel.send('tu veux quoi ?').then(() => {
-        message.channel.awaitMessages(response => response.content.length > 0 , {
-          max: 1,
-          time: 30000,
-          errors: ['time'],
-        }).then(collected => {
-            message.channel.send(cmd.amazon(collected.first().content));
-        }).catch(() => {
-            message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
-        });
-      });
-    } else {
-      message.channel.send(cmd.amazon(args[0]));
-    }
-  }
 
-  if(command === "wikipedia" || command === "wiki") {
-    if(args.length > 1) {
-      cmd.wikipedia(args.join('-')).then(res => {
-        message.channel.send(res);
-      });
-    } else if(args.length == 0) {
-      message.channel.send('tu veux quoi ?').then(() => {
-        message.channel.awaitMessages(response => response.content.length > 0 , {
-          max: 1,
-          time: 30000,
-          errors: ['time'],
-        }).then(collected => {
-            cmd.wikipedia(collected.first().content).then(res => {
-              message.channel.send(res)
-            });
-        }).catch(() => {
-            message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
-        });
-      });
-    } else {
-      cmd.wikipedia(args[0]).then(res => {
-        message.channel.send(res)
-      });
-    }
-  }
 });
 
 bot.login(token);
