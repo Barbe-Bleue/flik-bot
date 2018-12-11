@@ -121,7 +121,7 @@ bot.on('message', message => {
   
   // traduction
   if (command === "traduis"){
-      var key = yandexApiKey;
+     var key = yandexApiKey;
 
     if(args != ""){
       var text = message.content.split(' ').slice(1, -1).join(' ');
@@ -177,13 +177,8 @@ bot.on('message', message => {
   // mute user
   if(command === "mute"){
     if(message.member.roles.find("name", "Admin")){
-      var victime = message.mentions.members.first();
-      if(args[1]) {
-        time = args[1] * 1000;
-      } else {
-        time = muteTime;
-      }
-      muteUser(victime,time);
+      let time = args[1] ? args[1] * 1000 : muteTime
+      muteUser( message.mentions.members.first(),time);
     } else {
       message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
     }
@@ -201,13 +196,13 @@ bot.on('message', message => {
   // kick au hasard de la part de l'admin
   if (command === "kick"){
     if(message.member.roles.find("name", "Admin")) {
-      var perdant = message.guild.members.random();
+      let perdant = message.guild.members.random();
       message.channel.send("Roulette russe de l'admin ! Un kick au hasard !");
       if(perdant.kickable == false) {
         message.channel.send("Ok ça tombe sur l'admin on peut rien faire.");
       } else {
         message.channel.send(perdant.displayName+" a perdu.");
-        var timer = setInterval(function() { handleTimer(5); }, 1000);
+        setInterval(function() { handleTimer(5); }, 1000);
       }
     }
   }
@@ -238,9 +233,10 @@ bot.on('message', message => {
   }
 
   // decide choix1 choix2...
-  if (command === ("decide"))
+  if (command === ("decide")) {
     message.reply(cmd.decide(args));
-
+  }
+  
   // suicide du bot
   if (command === "suicide"){
     if(message.member.roles.find("name", "Admin")){
@@ -256,7 +252,7 @@ bot.on('message', message => {
   // meteo
   if(command === "meteo"){
     cmd.meteo(args).then(res => {
-        message.channel.send( new Discord.RichEmbed()
+      message.channel.send( new Discord.RichEmbed()
     	.setTitle("Meteo à "+res.city)
     	.setColor(0x10B8FE)
     	.setDescription(res.annonce + " "+res.temperature + "°C, " + res.description + " "+ res.emoji)
@@ -319,10 +315,6 @@ bot.on('message', message => {
     	});
     };
   }
-  
-  
-  
-  
   
   // gif
   if(command === "gif") {
