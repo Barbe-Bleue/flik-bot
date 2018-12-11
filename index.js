@@ -2,9 +2,14 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const cmd = require ("./commands/index.js");
-let nbR = 1;
+//config
+const config = require('./json/config.json');
+const token = config.token; // token discord
+const prefix = config.prefix; // préfix des commandes
+const yandexApiKey = config.yandexApiKey; // pour traduction
+const muteTime = config.muteTime; // pour temps de mute
+
 const google = require('google')
-const feed = require('rss-to-json'); // pour les actus
 const CoinMarketCap = require("node-coinmarketcap"); // pour le btc
 const options = {
   events: true, // Enable event system
@@ -13,13 +18,7 @@ const options = {
 }
 const coinmarketcap = new CoinMarketCap(options);
 const pseudoJSON = require('./json/pseudo.json');
-
-//config
-const config = require('./json/config.json');
-const token = config.token; // token discord
-const prefix = config.prefix; // préfix des commandes
-const yandexApiKey = config.yandexApiKey; // pour traduction
-const muteTime = config.muteTime; // pour temps de mute
+let nbR = 1;
 
 //CONNEXION
 bot.on('ready', () => {
@@ -335,24 +334,9 @@ bot.on('message', message => {
   }
 
   // actu
-  if(command === "actu"){
-
-    var actu=" ";
-    feed.load('http://www.bfmtv.com/rss/info/flux-rss/flux-toutes-les-actualites/', function(err, rss){
-      for(i = 0; i <= 1; i++){
-
-        const embed = new Discord.RichEmbed()
-        .setTitle(rss.items[i].title)
-        .setAuthor(bot.user.username, bot.user.avatarURL)
-        .setColor(0x00AE86)
-        //.setDescription(rss.items[i].description)
-        .setFooter("Vag", bot.user.avatarURL)
-        .setImage(rss.items[i].enclosures[0].url)
-        .setThumbnail("https://upload.wikimedia.org/wikipedia/commons/4/40/BFM_TV_logo.png")
-        .setTimestamp()
-        .setURL(rss.items[i].url)
-        message.channel.send({embed});
-      }
+  if(command === "actu") {
+    cmd.actu(bot.user).then(res => {
+      message.reply(res)
     });
   }
 
