@@ -1,9 +1,10 @@
 const fs = require("fs");
 const path = require('path');
+const brain = path.join(__dirname, './cerveau.txt');
 
 module.exports = () => {	
 	try {
-		let data = fs.readFileSync(path.join(__dirname, './cerveau.txt'), 'utf8')
+		let data = fs.readFileSync(brain, 'utf8')
     let grandSavoir = data.toString().split('\n');
     let savoir ='';
 
