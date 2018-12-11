@@ -28,7 +28,6 @@ const punitions = ["kick", "Changement de pseudo"]; //Textes des punitions
 const cancerJSON = require('./json/cancer.json');
 const insultesJSON = require('./json/insultes.json');
 const pseudoJSON = require('./json/pseudo.json');
-const flagJSON = require("./json/flag.json");
 
 //config
 const config = require('./json/config.json');
@@ -108,29 +107,31 @@ bot.on('message', message => {
   
   // traduction
   if (command === "traduis"){
-     var key = yandexApiKey;
-
-    if(args != ""){
-      var text = message.content.split(' ').slice(1, -1).join(' ');
-      var lang = message.content.split(" ").splice(-1);
-      trad(text,lang,key);
-    }else {
+    if(args != "") {
+      let text = message.content.split(' ').slice(1, -1).join(' ');
+      let lang = message.content.split(" ").splice(-1);
+      cmd.translate(text,lang,yandexApiKey).then(res => {
+        message.channel.send(res);
+      });
+    } else {
       message.reply('Que veux tu me faire traduire ?').then(() => {
         message.channel.awaitMessages(responseText => responseText.content.length > 0, {
           max: 1,
           time: 30000,
           errors: ['time'],
         }).then((collected) => {
-            var text = collected.first().content;
+            let text = collected.first().content;
             message.reply('en quelle langue ?').then(() => {
               message.channel.awaitMessages(responseLang => responseLang.content.length > 0, {
                 max: 1,
                 time: 30000,
                 errors: ['time'],
-              }).then((collectedLang) => {
-                var lang = collectedLang.first().content;
+              }).then(collectedLang => {
+                let lang = collectedLang.first().content;
                   if(text && lang){
-                    trad(text,lang,key);
+                    cmd.translate(text,lang,yandexApiKey).then(res => {
+                      message.channel.send(res)
+                    });
                   }else(
                     message.reply("Il me faut un text et une langue")
                   )
@@ -551,32 +552,6 @@ bot.on('message', message => {
   function byebye(perdant) {
     message.channel.send("Bye bye "+perdant+" !");
     setTimeout(function(){ perdant.kick()}, 3000);
-  }
-
-  
-  // SEARCH FUNCTION
-  function trad(text,lang,key){
-    var flag =""
-    country = lang.toString();
-
-    if(flagJSON[country]){
-      lang = flagJSON[country].code;
-      var flag = flagJSON[country].flag;
-    }else {
-      lang = country;
-      var flag = flagJSON["default"].flag;
-    }
-
-    var url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key="+key+"&text="+text+"&lang="+lang+"&format=plain";
-    request(url, function(err, resopnse, json){
-      const embed = new Discord.RichEmbed()
-      .setTitle("Traduction")
-      .setColor(0xFF0000)
-      .setDescription(JSON.parse(json).text)
-      .setThumbnail(flag)
-      .setTimestamp()
-      message.channel.send({embed});
-    });
   }
 
   if(command === "amazon" || command === "a") {
