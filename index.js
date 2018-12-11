@@ -12,9 +12,6 @@ const options = {
   convert: "EUR" // Convert price to different currencies. (Default USD)
 }
 const coinmarketcap = new CoinMarketCap(options);
-
-const cancerJSON = require('./json/cancer.json');
-const insultesJSON = require('./json/insultes.json');
 const pseudoJSON = require('./json/pseudo.json');
 
 //config
@@ -452,9 +449,8 @@ bot.on('message', message => {
 
   // DETECTEURS
   // Insulte detector
-  if(cancerJSON[message.content]){
-    message.channel.send(cancerJSON[message.content][Math.floor(Math.random() * cancerJSON[message.content].length)]);
-  }
+  let swear = cmd.insult(message.content);
+  swear ? message.reply(swear) : null
 
   // Insulte detector
   if(insultesJSON['insultes'].filter(item => message.content.includes(item)).length >= 1) {
