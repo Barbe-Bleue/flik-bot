@@ -26,7 +26,6 @@ var jsonfile = require('jsonfile');
 
 var nbR = 1; //pour la roulette
 var punitions = ["kick", "Changement de pseudo"]; //Textes des punitions
-var fs = require("fs"); //obligtoire pour des fonctions
 var cancerJSON = require('./json/cancer.json');
 var insultesJSON = require('./json/insultes.json');
 var pseudoJSON = require('./json/pseudo.json');
@@ -487,18 +486,6 @@ bot.on('message', message => {
     message.author.send(cmd.doc())
   }
   
-  // RECHERCHES
-  switch (command) {
-    // wiki
-    case "wiki" :
-      bangSearch(wikiSearch,'_',args);
-      break;
-    // afr amazon fr
-    case "amazon" :
-      bangSearch(amazonSearch,'+',args);
-      break;
-  }
-
   // QUESTIONS TEXTUELLES
 
   // Demande de kick
@@ -593,41 +580,49 @@ bot.on('message', message => {
     });
   }
 
-  function wikiSearch(recherche){
-    cmd.wikipedia(recherche).then(res => {
-       message.channel.send(res);
-    })
-  }
-
-  function amazonSearch(recherche){
-    var url = "https://www.amazon.fr/s/ref=nb_sb_noss?__mk_fr_FR=%C3%85M%C3%85%C5%BD%C3%95%C3%91&url=search-alias%3Daps&field-keywords="+recherche;
-    const embed = new Discord.RichEmbed()
-        .setTitle("Recherche amazon pour: "+recherche)
-        .setColor(0xF3A847)
-        .setDescription(url)
-        .setThumbnail("https://upload.wikimedia.org/wikipedia/commons/b/b4/Amazon-icon.png")
-        .setTimestamp()
-        .setURL(url)
-        message.channel.send({embed});
-  }
-
-  function bangSearch(searchFunctionName,keywordSeparator,args){
+  if(command === "amazon" || command === "a") {
     if(args.length > 1){
-      searchFunctionName(args.join(keywordSeparator));
-    }else if (args.length == 0) {
+      message.channel.send(cmd.amazon(args.join('+')));
+    } else if(args.length == 0) {
       message.channel.send('tu veux quoi ?').then(() => {
         message.channel.awaitMessages(response => response.content.length > 0 , {
           max: 1,
           time: 30000,
           errors: ['time'],
-        }).then((collected) => {
-          searchFunctionName(collected.first().content);
+        }).then(collected => {
+            message.channel.send(cmd.amazon(collected.first().content));
         }).catch(() => {
-          message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
+            message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
         });
       });
-    }else{
-      searchFunctionName(args[0]);
+    } else {
+      message.channel.send(cmd.amazon(args[0]));
+    }
+  }
+  
+  if(command === "wikipedia" || command === "wiki") {
+    if(args.length > 1) {
+      cmd.wikipedia(args.join('-')).then(res => {
+        message.channel.send(res);
+      });
+    } else if(args.length == 0) {
+      message.channel.send('tu veux quoi ?').then(() => {
+        message.channel.awaitMessages(response => response.content.length > 0 , {
+          max: 1,
+          time: 30000,
+          errors: ['time'],
+        }).then(collected => {
+            cmd.wikipedia(collected.first().content).then(res => {
+              message.channel.send(res)
+            });
+        }).catch(() => {
+            message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
+        });
+      });
+    } else {
+      cmd.wikipedia(args[0]).then(res => {
+        message.channel.send(res)
+      });
     }
   }
 });
