@@ -2,29 +2,17 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const cmd = require ("./commands/index.js");
-const nodemailer = require('nodemailer');
-const request  = require("request");
 
 const google = require('google')
 const feed = require('rss-to-json'); // pour les actus
-const translate = require('translate');
 const CoinMarketCap = require("node-coinmarketcap"); // pour le btc
 const options = {
   events: true, // Enable event system
   refresh: 60, // Refresh time in seconds (Default: 60)
   convert: "EUR" // Convert price to different currencies. (Default USD)
 }
-const Nexmo = require('nexmo');
-const nexmoSMS = new Nexmo({
-  apiKey: "7e6f3343",
-  apiSecret: "2953fb71fcf9ea5f"
-});
-
 const coinmarketcap = new CoinMarketCap(options);
-const jsonfile = require('jsonfile');
 
-const nbR = 1; //pour la roulette
-const punitions = ["kick", "Changement de pseudo"]; //Textes des punitions
 const cancerJSON = require('./json/cancer.json');
 const insultesJSON = require('./json/insultes.json');
 const pseudoJSON = require('./json/pseudo.json');
@@ -67,44 +55,6 @@ bot.on('message', message => {
   //var adminCommands = new Array("ban", "kick", "suicide", "mute","unmute");
 
   // COMMANDES !
-  if (command === "sms"){
-    message.author.send('tape le numero de téléphone suivit du message. Exemple: ***0610101010 salut comment ca va ?***').then(() => {
-      message.author.dmChannel.awaitMessages(response => response.author.id === message.author.id , {
-       max: 1,
-       time: 30000,
-       errors: ['time'],
-      }).then((collected) => {
-        var numberPhone = collected.first().content.split(" ")[0];
-        var messageText = collected.first().content.split(" ").slice(1).join(' ');
-
-        if(isNaN(numberPhone)){
-          message.author.send("Le numero n'est pas correct, relace la commande **sms**");
-        }else if(numberPhone.length > 11 || numberPhone.length < 10)  {
-          message.author.send("Le numero n'est pas correct, relace la commande **sms**");
-        }else{
-          if(numberPhone.charAt(0) == 0){
-            numberPhone = numberPhone.replace('0','33');
-          }
-          nexmoSMS.message.sendSms(
-            config.myNumber, numberPhone, messageText,
-            (err, responseData) => {
-              if (err) {
-                message.autor.send("Erreur lors de l'envoie :calling: :x:")
-                console.log(err);
-              } else {
-                message.author.send(" Message envoyé ! :calling: :white_check_mark:")
-                console.dir(responseData);
-              }
-            }
-          );
-        }
-      }).catch(() => {
-        message.author.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
-      });
-    });
-  }
-  
-  
   // traduction
   if (command === "traduis"){
     if(args != "") {
@@ -197,6 +147,9 @@ bot.on('message', message => {
 
   // roulette russe
   if(command === "roulette") {
+    const nbR = 1;
+    const punitions = ["kick", "Changement de pseudo"];
+
     message.channel.send("Jeu de la roulette russe : "+ nbR +"/6 chance d'avoir une punition.");
     if(Math.floor(Math.random() * (6-nbR)) == 0) {
       var puni = Math.floor(Math.random()*punitions.length);
