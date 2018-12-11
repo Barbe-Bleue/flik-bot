@@ -10,13 +10,6 @@ const yandexApiKey = config.yandexApiKey; // pour traduction
 const muteTime = config.muteTime; // pour temps de mute
 
 const google = require('google')
-const CoinMarketCap = require("node-coinmarketcap"); // pour le btc
-const options = {
-  events: true, // Enable event system
-  refresh: 60, // Refresh time in seconds (Default: 60)
-  convert: "EUR" // Convert price to different currencies. (Default USD)
-}
-const coinmarketcap = new CoinMarketCap(options);
 const pseudoJSON = require('./json/pseudo.json');
 let nbR = 1;
 
@@ -385,22 +378,9 @@ bot.on('message', message => {
 
   // Btc
   if(command == "coin" || command == "btc"){
-    if(args.length == 0){
-      coinmarketcap.get("bitcoin", coin => {
-        message.channel.send(":dollar: **"+coin.price_usd+" $** :dollar:");
-      });
-    }else if(args.length > 0){
-      coinmarketcap.multi(coins => {
-        var multiCoin = "";
-        for (var i = 0; i < args.length; i++) {
-          crypto = args[i].toUpperCase();
-          if(coins.get(crypto)){
-            multiCoin += crypto+" : "+coins.get(crypto).price_usd+" :dollar: \n";
-          }else(message.channel.send("Je ne connais pas la monnaie **"+crypto+"** désolé :confused: "))
-        }
-        message.channel.send(multiCoin);
-      });
-    }
+    cmd.coin(args).then(res => {
+      message.reply(res)
+    });
   }
 
   // genre
