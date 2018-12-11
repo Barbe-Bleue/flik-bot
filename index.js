@@ -453,14 +453,11 @@ bot.on('message', message => {
   swear ? message.reply(swear) : null
 
   // Insulte detector
-  if(insultesJSON['insultes'].filter(item => message.content.includes(item)).length >= 1) {
-    var mechant = message.member;
-    message.reply(':oncoming_police_car: :rotating_light: POLICE DES GROS MOTS :rotating_light: :oncoming_police_car:');
-    if(mechant.kickable == true){
-      muteUser(mechant,config.muteTime);
-    }else {
-      message.channel.send("Ohw c'est vous admin ? Excuser moi pour le dérangement")
-    }
+  let police = cmd.police(message);
+  if(police) {
+    message.reply(police.police);
+    message.reply(police.msg)
+    police.mutable ? muteUser(message.member,config.muteTime) : null;
   }
 
   // mute
