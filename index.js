@@ -362,16 +362,7 @@ bot.on('message', message => {
 
   // malou exprime tout le savoir
   if(command === "malou") {
-    fs.readFile(cerveauTXT, 'utf8', function(err, data) {
-      if (!err) {
-        var grandSavoir = data.toString().split('\n');
-        var savoir ='';
-
-        for (var i in grandSavoir){
-          if(savoir[i] != '') savoir += grandSavoir[i]+'\n';
-        } message.channel.send(savoir);
-      }else console.log(err);
-    });
+    message.channel.send(cmd.malou())
   }
 
   // pause gouter pour chaque membres
