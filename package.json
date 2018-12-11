@@ -19,19 +19,14 @@
     "express": "^4.16.2",
     "fs": "^0.0.1-security",
     "google": "^2.1.0",
-    "google-translate": "^2.0.5",
     "jsonfile": "^4.0.0",
     "nexmo": "^2.1.1",
     "node-coinmarketcap": "^0.2.0",
-    "nodemailer": "^4.3.1",
     "nodemon": "^1.12.1",
     "opusscript": "0.0.3",
     "path": "^0.12.7",
     "python": "0.0.4",
-    "rss-to-json": "^1.0.2",
-    "sendmail": "^1.2.0",
-    "strawpoll": "^1.1.0",
-    "translate": "^1.0.1"
+    "strawpoll": "^1.1.0"
   },
   "repository": "git+https://github.com/Barbe-Bleue/vag-bot.git",
   "bugs": {
