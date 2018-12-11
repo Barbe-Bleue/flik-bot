@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require('path');
+
 module.exports = () => {	
-	
 	try {
 		let data = fs.readFileSync(path.join(__dirname, './cerveau.txt'), 'utf8') 
 		let savoir = data.toString().split('\n');
@@ -9,12 +9,6 @@ module.exports = () => {
 		return res
 	} catch (e) {
 		console.log(e);
-	} finally {
-		
-	}
-	
-	
-
-		
+	}	
 }
 
