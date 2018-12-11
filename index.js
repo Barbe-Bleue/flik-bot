@@ -2,7 +2,7 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const cmd = require ("./commands/index.js");
-
+let nbR = 1;
 const google = require('google')
 const feed = require('rss-to-json'); // pour les actus
 const CoinMarketCap = require("node-coinmarketcap"); // pour le btc
@@ -141,18 +141,24 @@ bot.on('message', message => {
       }
     }
   }
+  // Timer avant kick
+  function handleTimer(count) {
+    if(count === 0) {
+      clearInterval(timer);
+      byebye(perdant);
+    } else {
+      message.channel.send(count);
+      count--;
+    }
+  }
 
   // roulette russe
   if(command === "roulette") {
-    const nbR = 1;
-    const punitions = ["kick", "Changement de pseudo"];
-
     message.channel.send("Jeu de la roulette russe : "+ nbR +"/6 chance d'avoir une punition.");
+    const punitions = ["kick", "Changement de pseudo"];
     if(Math.floor(Math.random() * (6-nbR)) == 0) {
-      var puni = Math.floor(Math.random()*punitions.length);
-
+      let puni = Math.floor(Math.random()*punitions.length);
       message.channel.send("PAN \nPunition : " + punitions[puni]);
-
       switch(puni) {
         case 0:
           message.member.kick("Vous avez perdu la roulette");
@@ -174,7 +180,7 @@ bot.on('message', message => {
   if (command === ("decide")) {
     message.reply(cmd.decide(args));
   }
-  
+
   // suicide du bot
   if (command === "suicide"){
     if(message.member.roles.find("name", "Admin")){
@@ -205,8 +211,8 @@ bot.on('message', message => {
     		.setTimestamp())
     })
   }
-  
-  
+
+
   // pour le trafic
   function leTrafic(type, code){
     var transports;
@@ -248,7 +254,7 @@ bot.on('message', message => {
     	});
     };
   }
-  
+
   // gif
   if(command === "gif") {
     cmd.gif(args[0]).then(res => {
@@ -289,8 +295,8 @@ bot.on('message', message => {
   if(command === "pause") {
     message.channel.send('Aight c\'est l\'heure de la pause :ok_hand: :coffee: :chocolate_bar: ');
 
-    for(var member in message.guild.members.array()){
-      var userID =  message.guild.members.array()[member]['user'].id;
+    for(let member in message.guild.members.array()){
+      let userID =  message.guild.members.array()[member]['user'].id;
       cmd.pause().then( res => {
         message.channel.send('<@'+userID+'> : '+res.manger+' | '+res.boire);
       })
@@ -310,7 +316,7 @@ bot.on('message', message => {
     google.tld = 'fr';
     google.nextText='Plus';
     google.protocol = 'https';
-    
+
     google(args, function (err, res){
       res.links.forEach(function(link) {
          message.channel.send( new Discord.RichEmbed()
@@ -360,7 +366,7 @@ bot.on('message', message => {
       .setThumbnail("http://pngimg.com/uploads/chuck_norris/chuck_norris_PNG1.png")
       .setFooter("Chuck Norris")
       .setTimestamp());
-    });      
+    });
   }
 
   // beauf
@@ -418,19 +424,19 @@ bot.on('message', message => {
       });
     }
   }
-  
+
   // genre
   if(command === "genre") {
     cmd.gender(args).then(res => {
       message.channel.send(res);
     });
   }
-  
+
   // doc
   if(command === "doc" || command === "help") {
     message.author.send(cmd.doc())
   }
-  
+
   // QUESTIONS TEXTUELLES
 
   // Demande de kick
@@ -463,7 +469,7 @@ bot.on('message', message => {
     }).then(() => {
       message.channel.send(victime+" a été mute pour "+time / 1000+" secondes. Fallait pas faire chier :kissing_heart:")
     }).catch(console.error);
-    
+
     // temps avant de ban
     setTimeout(function(){
       unmuteUser(victime)
@@ -477,17 +483,8 @@ bot.on('message', message => {
       SEND_MESSAGES: true
     }).then(() => message.channel.send("On libère "+victime+", tu peux reparler maintenant :ok_hand: :slight_smile:")).catch(console.error);
   }
-  
-  // Timer avant kick
-  function handleTimer() {
-    if(count === 0) {
-      clearInterval(timer);
-      byebye(perdant);
-    } else {
-      message.channel.send(count);
-      count--;
-    }
-  }
+
+
 
   // Bye bye
   function byebye(perdant) {
@@ -514,7 +511,7 @@ bot.on('message', message => {
       message.channel.send(cmd.amazon(args[0]));
     }
   }
-  
+
   if(command === "wikipedia" || command === "wiki") {
     if(args.length > 1) {
       cmd.wikipedia(args.join('-')).then(res => {
