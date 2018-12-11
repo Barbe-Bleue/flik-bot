@@ -3,11 +3,11 @@ const path = require('path');
 const beauf = path.join(__dirname, './beauf.txt');
 const Discord = require('discord.js');
 
-module.exports = () => {	
+module.exports = () => {
 	try {
 		let data = fs.readFileSync(beauf, 'utf8');
 		let beaufFact = data.toString().split('\n');
-		
+
 		if(beaufFact !=''){
 			return(new Discord.RichEmbed()
 				.setTitle("Le beauf")
@@ -19,9 +19,8 @@ module.exports = () => {
 		else {
 			return "Hey, flemme me casse pas les couilles";
 		}
-			
+
 	} catch (e) {
 		console.log(e);
-	}	
+	}
 }
-
