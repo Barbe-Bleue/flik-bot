@@ -190,13 +190,8 @@ bot.on('message', message => {
   // meteo
   if(command === "meteo"){
     cmd.meteo(args).then(res => {
-      message.channel.send( new Discord.RichEmbed()
-    	.setTitle("Meteo à "+res.city)
-    	.setColor(0x10B8FE)
-    	.setDescription(res.annonce + " "+res.temperature + "°C, " + res.description + " "+ res.emoji)
-    	.setThumbnail("https://cdn.pixabay.com/photo/2016/05/20/20/20/weather-1405870_960_720.png")
-    	.setTimestamp())
-    });
+      message.reply(res)
+    })
   }
 
   // Trafic
