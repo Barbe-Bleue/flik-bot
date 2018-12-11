@@ -357,17 +357,7 @@ bot.on('message', message => {
 
   // savoir exprime 1 savoir
   if(command === "savoir") {
-    fs.readFile(cerveauTXT, 'utf8', function(err, data) {
-      if (!err) {
-        var savoir = data.toString().split('\n');
-
-        if(savoir !='') message.channel.send(savoir[Math.floor(Math.random() * savoir.length)]);
-        else message.channel.send("Hey, flemme me casse pas les couilles");
-
-      } else {
-        console.log(err);
-      }
-    });
+    message.channel.send(cmd.savoir())
   }
 
   // malou exprime tout le savoir
