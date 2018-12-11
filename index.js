@@ -359,13 +359,7 @@ bot.on('message', message => {
   // chuck
   if(command === "chuck"){
     cmd.chuck().then(res => {
-      message.channel.send(new Discord.RichEmbed()
-      .setTitle("Chuck Norris fact !")
-      .setColor(0xB87753)
-      .setDescription(res.fact)
-      .setThumbnail("http://pngimg.com/uploads/chuck_norris/chuck_norris_PNG1.png")
-      .setFooter("Chuck Norris")
-      .setTimestamp());
+      message.reply(res);
     });
   }
 
