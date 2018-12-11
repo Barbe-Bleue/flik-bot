@@ -31,8 +31,6 @@ var cancerJSON = require('./json/cancer.json');
 var insultesJSON = require('./json/insultes.json');
 var pseudoJSON = require('./json/pseudo.json');
 var flagJSON = require("./json/flag.json");
-var cerveauTXT = "./datas/cerveau.txt";
-var beaufTXT = "./datas/beauf.txt";
 
 //config
 var config = require('./json/config.json');
@@ -432,20 +430,7 @@ bot.on('message', message => {
 
   // beauf
   if(command === "beauf") {
-    fs.readFile(beaufTXT, 'utf8', function(err, data) {
-      if (!err) {
-        var beauf = data.toString().split('\n');
-        if(beauf !=''){
-          const embed = new Discord.RichEmbed()
-          .setTitle("Le beauf")
-          .setColor(0x00AE86)
-          .setDescription(  beauf[Math.floor(Math.random() * beauf.length)])
-          .setThumbnail("http://image.noelshack.com/fichiers/2017/34/2/1503406665-beaufdefrance.png")
-          message.channel.send({embed});
-        }
-        else message.channel.send("Hey, flemme me casse pas les couilles");
-      } else console.log(err);
-    });
+    message.channel.send(cmd.beauf());
   }
 
   // Rename
@@ -558,8 +543,10 @@ bot.on('message', message => {
     // Overwrite permissions for a message author
     message.channel.overwritePermissions(victime, {
       SEND_MESSAGES: false
-    }).then(() => message.channel.send(victime+" a été mute pour "+time / 1000+" secondes. Fallait pas faire chier :kissing_heart:")).catch(console.error);
-
+    }).then(() => {
+      message.channel.send(victime+" a été mute pour "+time / 1000+" secondes. Fallait pas faire chier :kissing_heart:")
+    }).catch(console.error);
+    
     // temps avant de ban
     setTimeout(function(){
       unmuteUser(victime)
