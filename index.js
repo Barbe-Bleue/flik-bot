@@ -177,41 +177,7 @@ bot.on('message', message => {
     }
   }
 
-  if(command === "chat" || command === "cat") {
-    cmd.cat().then(res => message.channel.send(res));
-  }
   
-  if(command ===  "catfact") {
-    cmd.catFact().then(res => message.channel.send(res));
-  }
-  
-  if(command === "chuck"){
-    cmd.chuck().then(res => message.reply(res));
-  }
-  
-  if(command === "traffic" || command === "trafic"){
-    cmd.trafic(args).then(res => message.reply(res));
-  }
-   
-  if(command === "gif") {
-    cmd.gif(args[0]).then(res => message.channel.send(res));
-  }
-  
-  if(command === "meteo"){
-    cmd.meteo(args).then(res => message.reply(res));
-  }
-  
-  if(command === "actu") {
-    cmd.news(bot.user).then(res => message.reply(res));
-  }
-  
-  if(command == "coin" || command == "btc"){
-    cmd.coin(args).then(res => message.reply(res));
-  }
-
-  if(command === "genre") {
-    cmd.gender(args).then(res => message.reply(res));
-  }
   
   if(command === "apprends") {
     if(args != ""){
@@ -226,35 +192,7 @@ bot.on('message', message => {
       });
     }
   }
-
-  if(command === "savoir") {
-    message.channel.send(cmd.knowledge())
-  }
-
-  if(command === "malou") {
-    message.channel.send(cmd.brain())
-  }
-  
-  if(command === "pic"){
-    message.channel.send(cmd.picture());
-  }
-  
-  if(command === "beauf") {
-    message.channel.send(cmd.beauf());
-  }
-  
-  if(command === "doc" || command === "help") {
-    message.author.send(cmd.doc())
-  }
-  
-  if(command === "h1z1" || command ==="top") {
-    message.reply(cmd.topGame(args));
-  }
-
-  if (command === "decide") {
-    message.reply(cmd.decide(args));
-  }
-  
+    
   if(command === "pause" || command === "break") {
     message.channel.send('Aight c\'est l\'heure de la pause :ok_hand: :coffee: :chocolate_bar: ');
 
@@ -323,6 +261,63 @@ bot.on('message', message => {
     }
   }
   
+  switch(command) {
+    case "savoir":
+      message.channel.send(cmd.knowledge());
+      break;
+    case "malou":
+      message.channel.send(cmd.brain());
+      break;
+    case "pic":
+      message.channel.send(cmd.picture());
+      break;
+    case "beauf":
+      message.channel.send(cmd.beauf());
+      break;
+    case "doc":
+    case "help":
+      message.author.send(cmd.doc());
+      break;
+    case "h1z1":
+    case "top":
+      message.reply(cmd.topGame(args));
+      break;
+    case "decide":
+      message.reply(cmd.decide(args));
+      break;
+    case "chat":
+    case "cat":
+      cmd.cat().then(res => message.channel.send(res));
+      break;
+    case "catfact":
+      cmd.catFact().then(res => message.channel.send(res));
+      break;
+    case "chuck":
+      cmd.chuck().then(res => message.reply(res));
+      break;
+    case "traffic":
+    case "trafic":
+      cmd.trafic(args).then(res => message.reply(res));
+      break;
+    case "gif":
+      cmd.gif(args[0]).then(res => message.channel.send(res));
+      break;
+    case "meteo":
+      cmd.meteo(args).then(res => message.reply(res));
+      break;
+    case "actu":
+      cmd.news(bot.user).then(res => message.reply(res));
+      break;
+    case "coin":
+      cmd.coin(args).then(res => message.reply(res));
+      break;
+    case "genre":
+      cmd.gender(args).then(res => message.reply(res));
+      break;
+    default:
+      return;
+   } 
+   
   if (message.content.toUpperCase().includes("KICK MOI")){
     if(isAdmin) {
       message.channel.send("Je peux pas te kick t'es admin.");
