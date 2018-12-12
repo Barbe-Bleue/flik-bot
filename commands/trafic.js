@@ -5,17 +5,29 @@ module.exports = async args => {
 	let infoTrafic = "";
 	let statusMessage;
 	let type;
+	let code;
 	
-	if(args[0] === "metros" || args[0] === "metro") {
+	if(args[0] === "metros" || args[0] === "metro" ) {
 		type = "metros"
 	} else if (args[0] === "rers" || args[0] === "rer") {
 		type = "rers"
+	} else {
+		if(!isNaN(args[0])) {
+			code = args[0];
+			type = "metros"
+		} else if(args[0].length === 1) {
+			code = args[0];
+			type = "rers"
+		}
 	}
-	
+
 	let res = await axios.get("https://api-ratp.pierre-grimaud.fr/v3/traffic/"+type);
 	
 	if(args.length === 1) {
-		if(type === "metros") {
+		if(code) {
+			let res = await axios.get("https://api-ratp.pierre-grimaud.fr/v3/traffic/"+type+"/"+code);
+			infoTrafic = getCodeTrafic(res,type,code);
+		} else if(type === "metros") {
 			res.data.result.metros.forEach(item => {
 				statusMessage = getStatusMessage(item.title,item.message);
 				infoTrafic += "Ligne **"+item.line+"**: "+statusMessage+"\n";
@@ -25,20 +37,33 @@ module.exports = async args => {
 				statusMessage = getStatusMessage(item.title,item.message);
 				infoTrafic += "Ligne **"+item.line+"**: "+statusMessage+"\n";
 			})
-		}	
+		}
 	} else if(args.length == 2) {
 		let res = await axios.get("https://api-ratp.pierre-grimaud.fr/v3/traffic/"+type+"/"+args[1]);
-		statusMessage = getStatusMessage(res.data.result.title,res.data.result.message);
-		infoTrafic += "Ligne **"+	res.data.result.line+"**: "+statusMessage+"\n";
+		infoTrafic = getCodeTrafic(res,type,code);
+	}
+	
+	function getCodeTrafic(res,type,code) {
+		let status = getStatusMessage(res.data.result.title,res.data.result.message);
+		return  "Ligne **"+	res.data.result.line+"**: "+status+"\n";
 	}
 	
 	function getStatusMessage(title, message) {
-		let statusMessage;
-		if(title === "Trafic normal") statusMessage = (":white_check_mark: : "+message);
-		else if(title === "Travaux") statusMessage = (":warning: : "+message);
-		else if(title === "Trafic perturbé") statusMessage = (":octagonal_sign: : "+message);
-		else if (title === "Trafic très perturbé") statusMessage = (":poop: : " +message);
-		return statusMessage
+		switch(title) {
+			case "Trafic normal":
+				return ":white_check_mark: : "+message;
+				break;
+			case "Travaux":
+				return ":warning: : "+message;
+				break;
+			case "Trafic perturbé":
+				return ":octagonal_sign: : "+message;
+				break;
+			case "Trafic très perturbé":
+				return ":poop: : " +message;
+			default:
+				return;
+ 		}
 	}
 	
 	return (new Discord.RichEmbed()
