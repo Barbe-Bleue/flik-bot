@@ -71,6 +71,6 @@ module.exports = async args => {
 		.setColor(0x4AC1AE)
 		.setDescription(infoTrafic)
 		.setThumbnail("https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/RATP.svg/637px-RATP.svg.png")
-		.setTimestamp());
+		.setTimestamp()
+	);
 }
-
