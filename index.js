@@ -241,6 +241,12 @@ bot.on('message', message => {
     });
   }
 
+  // chat 
+  if(command ===  "chat" || command === "cat") {
+    cmd.cat().then(res => {
+      message.channel.send(res)
+    });
+  }
   // apprend une phrase
   if(command === "apprends") {
     if(args != ""){
