@@ -1,13 +1,13 @@
-//VARIABLES
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const cmd = require ("./commands/index.js");
-//config
+
 const config = require('./config.json');
-const token = config.token; // token discord
-const prefix = config.prefix; // préfix des commandes
-const muteTime = config.muteTime; // pour temps de mute
+const token = config.token;
+const prefix = config.prefix; 
+const muteTime = config.muteTime; 
 const awaitMessagesOptions = config.awaitMessagesOptions
+const errorMessage = config.errorMessage
 let timeBeforeKick =  config.timeBeforeKick
 let nbR = 1;
 
@@ -47,24 +47,28 @@ bot.on('message', message => {
       });
     } else {
       message.reply('Que veux tu me faire traduire ?').then(() => {
-        message.channel.awaitMessages(responseText => responseText.content.length > 0, awaitMessagesOptions).then(collecte => {
+        message.channel.awaitMessages(responseText => responseText.content.length > 0, awaitMessagesOptions)
+        .then(collecte => {
             let text = collected.first().content;
-            message.reply('en quelle langue ?').then(() => {
-              message.channel.awaitMessages(responseLang => responseLang.content.length > 0,awaitMessagesOptions).then(collectedLang => {
+            message.reply('en quelle langue ?')
+            .then(() => {
+              message.channel.awaitMessages(responseLang => responseLang.content.length > 0,awaitMessagesOptions)
+              .then(collectedLang => {
                 let lang = collectedLang.first().content;
                   if(text && lang){
-                    cmd.translate(text,lang).then(res => {
+                    cmd.translate(text,lang)
+                    .then(res => {
                       message.reply(res)
                     });
-                  }else(
+                  }else {
                     message.reply("Il me faut un text et une langue")
-                  )
+                  }
                 }).catch(() => {
-                  message.reply('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
+                  message.reply(errorMessage.waitingToMuch);
                 });
             });
           }).catch(() => {
-            message.reply('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
+            message.reply(errorMessage.waitingToMuch);
           });
       });
     }
@@ -83,7 +87,7 @@ bot.on('message', message => {
         message.reply("Je peux pas bannir tout le monde ca ne se fait pas !");
       }
     } else {
-      message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
+      message.reply(errorMessage.notAdmin);
     }
   }
 
@@ -91,7 +95,7 @@ bot.on('message', message => {
     if(isAdmin){
       muteUser(message.mentions.members.first(), args[1] ? args[1] * 1000 : muteTime);
     } else {
-      message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
+      message.reply(errorMessage.notAdmin);
     }
   }
   
@@ -99,7 +103,7 @@ bot.on('message', message => {
     if(isAdmin) {
       unmuteUser(message.mentions.members.first());
     } else {
-      message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
+      message.reply(errorMessage.notAdmin);
     }
   }
 
@@ -108,7 +112,7 @@ bot.on('message', message => {
       let perdant = message.guild.members.random();
       message.channel.send("Roulette russe de l'admin ! Un kick au hasard !")
       .then(() => {
-        if(isAdmin) {
+        if(!isAdmin) {
           message.channel.send("Ok ça tombe sur l'admin on peut rien faire.");
         } else {
           message.channel.send(perdant.displayName+" a perdu.").then(() => {
@@ -118,7 +122,7 @@ bot.on('message', message => {
         }
       });
     } else {
-      message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
+      message.reply(errorMessage.notAdmin);
     }
   }
   
@@ -179,7 +183,7 @@ bot.on('message', message => {
         bot.destroy();
       }, 2000);
     }else {
-      message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
+      message.reply(errorMessage.notAdmin);
     }
   }
 
@@ -267,7 +271,7 @@ bot.on('message', message => {
         message.channel.awaitMessages(response => response.content.length > 0, awaitMessagesOptions).then(collected => {
             message.channel.send(cmd.writeBrain(collected.first().content));
           }).catch(() => {
-            message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
+            message.channel.send(errorMessage.waitingToMuch);
           });
       });
     }
@@ -321,7 +325,7 @@ bot.on('message', message => {
       message.mentions.members.first().setNickname(args[1]);
       message.channel.send("Hey @everyone ! "+message.author+" a changé le nom de "+message.mentions.members.first()+" en ***"+args[1]+"***");
     }else if (args[1] && !isAdmin) {
-      message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
+      message.reply(errorMessage.notAdmin);
     }else if(args[0]){
       message.member.setNickname(args[0]);
       message.channel.send("Hey @everyone ! "+message.author+" a changé son nom en ***"+args+"***");
@@ -369,7 +373,7 @@ bot.on('message', message => {
         message.channel.awaitMessages(response => response.content.length > 0 ,awaitMessagesOptions).then(collected => {
             message.reply(cmd.amazon(collected.first().content));
         }).catch(() => {
-            message.reply('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
+            message.reply(errorMessage.waitingToMuch);
         });
       });
     } else {
@@ -384,12 +388,14 @@ bot.on('message', message => {
       });
     } else if(args.length == 0) {
       message.reply('tu veux quoi ?').then(() => {
-        message.channel.awaitMessages(response => response.content.length > 0 ,awaitMessagesOptions).then(collected => {
-            cmd.wikipedia(collected.first().content).then(res => {
+        message.channel.awaitMessages(response => response.content.length > 0 ,awaitMessagesOptions)
+        .then(collected => {
+            cmd.wikipedia(collected.first().content)
+            .then(res => {
               message.reply(res)
             });
         }).catch(() => {
-            message.reply('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
+          message.reply(errorMessage.waitingToMuch);
         });
       });
     } else {
@@ -437,10 +443,6 @@ bot.on('message', message => {
     message.channel.overwritePermissions(victime, {
       SEND_MESSAGES: true
     }).then(() => message.channel.send("On libère "+victime+", tu peux reparler maintenant :ok_hand: :slight_smile:")).catch(console.error);
-  }
-
-  function byebye(perdant) {
-   
   }
 });
 
