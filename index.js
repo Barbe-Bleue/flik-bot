@@ -193,58 +193,11 @@ bot.on('message', message => {
     })
   }
 
-  if(command === "trafic"){
+  if(command === "traffic" || command === "trafic"){
     cmd.trafic(args).then(res => {
-      	message.channel.send(new Discord.RichEmbed()
-    		.setTitle("Info traffic")
-    		.setColor(0x4AC1AE)
-    		.setDescription(res)
-    		.setThumbnail("https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/RATP.svg/637px-RATP.svg.png")
-    		.setTimestamp())
+      message.reply(res)
     });
   }
-  
-  function leTrafic(type, code){
-    var transports;
-    return transports = function(callback){
-      url = "https://api-ratp.pierre-grimaud.fr/v3/traffic/"+type+"/"+code;
-    	request(url, function(err, response, body){
-    		try{
-    			var result = JSON.parse(body);
-    			var previsions = {
-      			status : result.result.title,
-    				message : result.result.message,
-    			};
-    			callback(null, previsions);
-    		}catch(e){
-    			callback(e);
-    		}
-    	});
-    };
-  }
-
-  function bulletin(type) {
-    var transports;
-    return transports = function(callback){
-      url = "https://api-ratp.pierre-grimaud.fr/v3/traffic/"+type;
-    	request(url, function(err, response, body){
-    		try{
-    			var jsonBulletin = JSON.parse(body);
-          var result = jsonBulletin.result.rers
-          var bulletin = [];
-          for(ligne in result){
-            if(ligne !== null){
-              bulletin[result[ligne].line] = result[ligne].message;
-              bulletin[result[ligne].line["status"]] = result[ligne].title;
-            }
-          }callback(null,bulletin);
-    		}catch(e){
-    			callback(e);
-    		}
-    	});
-    };
-  }
-
   if(command === "gif") {
     cmd.gif(args[0]).then(res => {
       message.channel.send(res)
