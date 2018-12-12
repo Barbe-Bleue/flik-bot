@@ -2,6 +2,7 @@
 	"token": "",
 	"prefix": "!",
 	"yandexApiKey": "trnsl.1.1.20181211T181140Z.3884d084b7fb00dc.f021090dcfa72a6d8d11677d1c1edbe45b923432",
+	"genderApiKey": "kXRfKPCeGsNKcUwseW",
 	"muteTime": "10000",
 	"awaitMessagesOptions" : {
 		"max": 1,
