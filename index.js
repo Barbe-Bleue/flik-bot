@@ -3,14 +3,13 @@ const Discord = require('discord.js');
 const bot = new Discord.Client();
 const cmd = require ("./commands/index.js");
 //config
-const config = require('./json/config.json');
+const config = require('./config.json');
 const token = config.token; // token discord
 const prefix = config.prefix; // préfix des commandes
 const yandexApiKey = config.yandexApiKey; // pour traduction
 const muteTime = config.muteTime; // pour temps de mute
 
 const google = require('google')
-const pseudos = ["Bob le bricoleur","Suppoman","Voleur de crypto","Grandad Harol","Shitcoin"]
 let nbR = 1;
 
 //CONNEXION
@@ -146,6 +145,7 @@ bot.on('message', message => {
 
   // roulette russe
   if(command === "roulette") {
+    const pseudos = ["Bob le bricoleur","Suppoman","Voleur de crypto","Grandad Harol","Shitcoin"];
     message.channel.send("Jeu de la roulette russe : "+ nbR +"/6 chance d'avoir une punition.");
     const punitions = ["kick", "Changement de pseudo"];
     if(Math.floor(Math.random() * (6-nbR)) == 0) {
