@@ -1,9 +1,9 @@
 module.exports = () => {
-	let charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPKRSTUVWXYZ";
-	let result="";
+	let charset = "01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghiklmnopqrstuvwxyz";
+	let source="";
 
-	for(let i = 0; i < 7; i++ ){
-		result += charset[Math.floor(Math.random() * charset.length)];
+	for(let i = 0; i < 5; i++ ){
+		source += charset[Math.floor(Math.random() * charset.length)];
 	}
-	return "http://imgur.com/gallery/"+result
+	return "http://i.imgur.com/"+source+".jpg"
 }
