@@ -147,7 +147,6 @@ bot.on('message', message => {
    timeoutMyOswego = setTimeout(countdown, 1000);
   } 
  
-  
   if(command === "roulette") {
     const pseudos = ["Bob le bricoleur","Suppoman","Voleur de crypto","Grandad Harol","Shitcoin"];
     message.channel.send("Jeu de la roulette russe : "+ nbR +"/6 chance d'avoir une punition.");
@@ -171,11 +170,7 @@ bot.on('message', message => {
       nbR += 1;
     }
   }
-
-  if (command === ("decide")) {
-    message.reply(cmd.decide(args));
-  }
-
+  
   if (command === "suicide"){
     if(isAdmin){
       message.channel.send("@everyone Ah ok on me bute comme ça :tired_face: :gun:");
@@ -187,24 +182,19 @@ bot.on('message', message => {
     }
   }
 
-  if(command === "meteo"){
-    cmd.meteo(args).then(res => {
-      message.reply(res)
-    })
-  }
-
   if(command === "traffic" || command === "trafic"){
     cmd.trafic(args).then(res => {
       message.reply(res)
     });
   }
+   
   if(command === "gif") {
     cmd.gif(args[0]).then(res => {
       message.channel.send(res)
     });
   }
 
-  if(command ===  "chat" || command === "cat") {
+  if(command === "chat" || command === "cat") {
     cmd.cat().then(res => {
       message.channel.send(res)
     });
@@ -213,6 +203,36 @@ bot.on('message', message => {
   if(command ===  "catfact") {
     cmd.catFact().then(res => {
       message.channel.send(res)
+    });
+  }
+  
+  if(command === "meteo"){
+    cmd.meteo(args).then(res => {
+      message.reply(res)
+    })
+  }
+  
+  if(command === "actu") {
+    cmd.news(bot.user).then(res => {
+      message.reply(res)
+    });
+  }
+  
+  if(command === "chuck"){
+    cmd.chuck().then(res => {
+      message.reply(res);
+    });
+  }
+  
+  if(command == "coin" || command == "btc"){
+    cmd.coin(args).then(res => {
+      message.reply(res)
+    });
+  }
+
+  if(command === "genre") {
+    cmd.gender(args).then(res => {
+      message.reply(res);
     });
   }
   
@@ -237,7 +257,27 @@ bot.on('message', message => {
   if(command === "malou") {
     message.channel.send(cmd.brain())
   }
+  
+  if(command === "pic"){
+    message.channel.send(cmd.picture());
+  }
+  
+  if(command === "beauf") {
+    message.channel.send(cmd.beauf());
+  }
+  
+  if(command === "doc" || command === "help") {
+    message.author.send(cmd.doc())
+  }
+  
+  if(command === "h1z1") {
+    message.reply(cmd.topGame());
+  }
 
+  if (command === "decide") {
+    message.reply(cmd.decide(args));
+  }
+  
   if(command === "pause") {
     message.channel.send('Aight c\'est l\'heure de la pause :ok_hand: :coffee: :chocolate_bar: ');
 
@@ -248,38 +288,14 @@ bot.on('message', message => {
       })
     }
   }
-
-  if(command === "h1z1") {
-    message.channel.send(cmd.topGame());
-  }
-
-  if(command === "pic"){
-    message.channel.send(cmd.picture());
-  }
-
-  if(command === "actu") {
-    cmd.news(bot.user).then(res => {
-      message.reply(res)
-    });
-  }
   
-  if(command === "chuck"){
-    cmd.chuck().then(res => {
-      message.reply(res);
-    });
-  }
-
-  if(command === "beauf") {
-    message.channel.send(cmd.beauf());
-  }
-
-  if(command == "rename"){
-    if(args[1] && isAdmin){
+  if(command == "rename") {
+    if(args[1] && isAdmin) {
       message.mentions.members.first().setNickname(args[1]);
       message.channel.send("Hey @everyone ! "+message.author+" a changé le nom de "+message.mentions.members.first()+" en ***"+args[1]+"***");
     }else if (args[1] && !isAdmin) {
       message.reply(errorMessage.notAdmin);
-    }else if(args[0]){
+    }else if(args[0]) {
       message.member.setNickname(args[0]);
       message.channel.send("Hey @everyone ! "+message.author+" a changé son nom en ***"+args+"***");
     }else{
@@ -287,8 +303,8 @@ bot.on('message', message => {
     }
   }
 
-  if(command == "sondage"){
-    if(args.length > 1){
+  if(command == "sondage") {
+    if(args.length > 1) {
       choix = args.join(" ");
       message.channel.send(":apple:***SONDAGE :apple:\n"+choix+"***")
         .then(function (message) {
@@ -302,23 +318,7 @@ bot.on('message', message => {
     }
   }
 
-  if(command == "coin" || command == "btc"){
-    cmd.coin(args).then(res => {
-      message.reply(res)
-    });
-  }
-
-  if(command === "genre") {
-    cmd.gender(args).then(res => {
-      message.reply(res);
-    });
-  }
-
-  if(command === "doc" || command === "help") {
-    message.author.send(cmd.doc())
-  }
-
-  if(command === "amazon" || command === "a" || command === "afr") {
+  if(command === "amazon" || command === "afr") {
     if(args.length > 1){
       message.reply(cmd.amazon(args.join('+')));
     } else if(args.length == 0) {
