@@ -42,9 +42,7 @@ bot.on('message', message => {
     if(args != "") {
       let text = message.content.split(' ').slice(1, -1).join(' ');
       let lang = message.content.split(" ").splice(-1);
-      cmd.translate(text,lang).then(res => {
-        message.reply(res);
-      });
+      cmd.translate(text,lang).then(res => message.reply(res));
     } else {
       message.reply('Que veux tu me faire traduire ?').then(() => {
         message.channel.awaitMessages(responseText => responseText.content.length > 0, awaitMessagesOptions)
@@ -57,9 +55,7 @@ bot.on('message', message => {
                 let lang = collectedLang.first().content;
                   if(text && lang){
                     cmd.translate(text,lang)
-                    .then(res => {
-                      message.reply(res)
-                    });
+                    .then(res => message.reply(res));
                   }else {
                     message.reply("Il me faut un text et une langue")
                   }
@@ -173,7 +169,7 @@ bot.on('message', message => {
   if (command === "suicide"){
     if(isAdmin){
       message.channel.send("@everyone Ah ok on me bute comme ça :tired_face: :gun:");
-      setTimeout(function(){
+      setTimeout(() => {
         bot.destroy();
       }, 2000);
     }else {
@@ -181,58 +177,40 @@ bot.on('message', message => {
     }
   }
 
-  if(command === "traffic" || command === "trafic"){
-    cmd.trafic(args).then(res => {
-      message.reply(res)
-    });
-  }
-   
-  if(command === "gif") {
-    cmd.gif(args[0]).then(res => {
-      message.channel.send(res)
-    });
-  }
-
   if(command === "chat" || command === "cat") {
-    cmd.cat().then(res => {
-      message.channel.send(res)
-    });
+    cmd.cat().then(res => message.channel.send(res));
   }
   
   if(command ===  "catfact") {
-    cmd.catFact().then(res => {
-      message.channel.send(res)
-    });
-  }
-  
-  if(command === "meteo"){
-    cmd.meteo(args).then(res => {
-      message.reply(res)
-    })
-  }
-  
-  if(command === "actu") {
-    cmd.news(bot.user).then(res => {
-      message.reply(res)
-    });
+    cmd.catFact().then(res => message.channel.send(res));
   }
   
   if(command === "chuck"){
-    cmd.chuck().then(res => {
-      message.reply(res);
-    });
+    cmd.chuck().then(res => message.reply(res));
+  }
+  
+  if(command === "traffic" || command === "trafic"){
+    cmd.trafic(args).then(res => message.reply(res));
+  }
+   
+  if(command === "gif") {
+    cmd.gif(args[0]).then(res => message.channel.send(res));
+  }
+  
+  if(command === "meteo"){
+    cmd.meteo(args).then(res => message.reply(res));
+  }
+  
+  if(command === "actu") {
+    cmd.news(bot.user).then(res => message.reply(res));
   }
   
   if(command == "coin" || command == "btc"){
-    cmd.coin(args).then(res => {
-      message.reply(res)
-    });
+    cmd.coin(args).then(res => message.reply(res));
   }
 
   if(command === "genre") {
-    cmd.gender(args).then(res => {
-      message.reply(res);
-    });
+    cmd.gender(args).then(res => message.reply(res));
   }
   
   if(command === "apprends") {
@@ -269,7 +247,7 @@ bot.on('message', message => {
     message.author.send(cmd.doc())
   }
   
-  if(command === "h1z1") {
+  if(command === "h1z1" || command ==="top") {
     message.reply(cmd.topGame(args));
   }
 
@@ -277,18 +255,18 @@ bot.on('message', message => {
     message.reply(cmd.decide(args));
   }
   
-  if(command === "pause") {
+  if(command === "pause" || command === "break") {
     message.channel.send('Aight c\'est l\'heure de la pause :ok_hand: :coffee: :chocolate_bar: ');
 
     for(let member in message.guild.members.array()){
       let userID =  message.guild.members.array()[member]['user'].id;
-      cmd.pause().then( res => {
+      cmd.pause().then(res => {
         message.channel.send('<@'+userID+'> : '+res.manger+' | '+res.boire);
-      })
+      });
     }
   }
   
-  if(command == "rename") {
+  if(command === "rename") {
     if(args[1] && isAdmin) {
       message.mentions.members.first().setNickname(args[1]);
       message.channel.send("Hey @everyone ! "+message.author+" a changé le nom de "+message.mentions.members.first()+" en ***"+args[1]+"***");
@@ -302,7 +280,7 @@ bot.on('message', message => {
     }
   }
 
-  if(command == "sondage") {
+  if(command === "sondage") {
     if(args.length > 1) {
       message.channel.send(":apple:***SONDAGE :apple:\n"+args.join(" ")+"***")
       .then(message => {
@@ -331,17 +309,13 @@ bot.on('message', message => {
 
   if(command === "wikipedia" || command === "wiki") {
     if(args.length >= 1) {
-      cmd.wikipedia(args.join('-')).then(res => {
-        message.channel.send(res);
-      });
+      cmd.wikipedia(args.join('-')).then(res => message.channel.send(res));
     } else if(args.length == 0) {
       message.reply('tu veux quoi ?').then(() => {
         message.channel.awaitMessages(response => response.content.length > 0 ,awaitMessagesOptions)
         .then(collected => {
-            cmd.wikipedia(collected.first().content)
-            .then(res => {
-              message.reply(res)
-            });
+          cmd.wikipedia(collected.first().content)
+          .then(res => message.reply(res));
         }).catch(() => {
           message.reply(errorMessage.waitingToMuch);
         });
@@ -350,9 +324,9 @@ bot.on('message', message => {
   }
   
   if (message.content.toUpperCase().includes("KICK MOI")){
-    if(isAdmin){
+    if(isAdmin) {
       message.channel.send("Je peux pas te kick t'es admin.");
-    }else{
+    } else{
       message.reply("ok.").then(() => message.member.kick());
     }
   }
