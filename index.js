@@ -271,7 +271,7 @@ bot.on('message', message => {
   }
   
   if(command === "h1z1") {
-    message.reply(cmd.topGame());
+    message.reply(cmd.topGame(args));
   }
 
   if (command === "decide") {
