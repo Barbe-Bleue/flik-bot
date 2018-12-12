@@ -8,7 +8,6 @@ const token = config.token; // token discord
 const prefix = config.prefix; // préfix des commandes
 const muteTime = config.muteTime; // pour temps de mute
 const awaitMessagesOptions = config.awaitMessagesOptions
-const google = require('google')
 let nbR = 1;
 
 //CONNEXION
@@ -282,27 +281,6 @@ bot.on('message', message => {
   // top
   if(command === "h1z1") {
     message.channel.send(cmd.topGame());
-  }
-
-  // google recherche google
-  if(command === "google"){
-    google.l
-    google.resultsPerPage = 5;
-    google.lang = 'fr';
-    google.tld = 'fr';
-    google.nextText='Plus';
-    google.protocol = 'https';
-
-    google(args, function (err, res){
-      res.links.forEach(function(link) {
-         message.channel.send( new Discord.RichEmbed()
-        .setTitle(link.title)
-        .setColor(0x4285F4)
-        .setDescription(link.description)
-        .setThumbnail("http://diylogodesigns.com/blog/wp-content/uploads/2016/04/google-logo-icon-PNG-Transparent-Background.png")
-        .setURL(link.href))
-  		})
-    });
   }
 
   // pic image random sur imgur
