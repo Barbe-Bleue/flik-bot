@@ -10,7 +10,7 @@ const muteTime = config.muteTime; // pour temps de mute
 const awaitMessagesOptions = config.awaitMessagesOptions
 let nbR = 1;
 
-//CONNEXION
+// Initialisation du bot
 bot.on('ready', () => {
   console.log('bot ok!');
   //bot.sendMessage("Salut moi c'est vag, le meilleur bot du monde :ok_hand: tape 'doc' ou 'help' pour savoir tout ce que je peux faire :sunglasses: ")
@@ -22,7 +22,7 @@ bot.on('messageDelete', message => {
   message.author.kickable ? message.member.setNickname("supprimeur") : null
 });
 
-// Member join
+// Membre rejoint le discord
 bot.on("guildMemberAdd", member => {
   //console.log(member.user.username+member.guild.name);
   //console.log("Et maintenat on dit bonjour à "+member.user.username+" qui a rejoint"+member.guild.name+ " !" );
@@ -33,13 +33,10 @@ bot.on("guildMemberAdd", member => {
 // Message
 bot.on('message', message => {
 
-  // args & commands & check if admin
   const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
   const isAdmin = !message.author.kickable
 
-  // COMMANDES !
-  // traduction
   if (command === "traduis"){
     if(args != "") {
       let text = message.content.split(' ').slice(1, -1).join(' ');
@@ -72,7 +69,6 @@ bot.on('message', message => {
     }
   }
 
-  // Ban
   if (command === "ban"){
     if(isAdmin){
       var member = message.mentions.members.first();
@@ -88,7 +84,6 @@ bot.on('message', message => {
     }
   }
 
-  // mute user
   if(command === "mute"){
     if(isAdmin){
       muteUser(message.mentions.members.first(), args[1] ? args[1] * 1000 : muteTime);
@@ -96,8 +91,7 @@ bot.on('message', message => {
       message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
     }
   }
-
-  // unmute user
+  
   if(command =="unmute"){
     if(isAdmin) {
       unmuteUser(message.mentions.members.first());
@@ -106,7 +100,6 @@ bot.on('message', message => {
     }
   }
 
-  // kick au hasard de la part de l'admin
   if (command === "kick"){
     if(isAdmin) {
       let perdant = message.guild.members.random();
@@ -119,7 +112,6 @@ bot.on('message', message => {
       }
     }
   }
-  // Timer avant kick
   function handleTimer(count) {
     if(count === 0) {
       clearInterval(timer);
@@ -130,7 +122,6 @@ bot.on('message', message => {
     }
   }
 
-  // roulette russe
   if(command === "roulette") {
     const pseudos = ["Bob le bricoleur","Suppoman","Voleur de crypto","Grandad Harol","Shitcoin"];
     message.channel.send("Jeu de la roulette russe : "+ nbR +"/6 chance d'avoir une punition.");
@@ -155,12 +146,10 @@ bot.on('message', message => {
     }
   }
 
-  // decide choix1 choix2...
   if (command === ("decide")) {
     message.reply(cmd.decide(args));
   }
 
-  // suicide du bot
   if (command === "suicide"){
     if(isAdmin){
       message.channel.send("@everyone Ah ok on me bute comme ça :tired_face: :gun:");
@@ -172,14 +161,12 @@ bot.on('message', message => {
     }
   }
 
-  // meteo
   if(command === "meteo"){
     cmd.meteo(args).then(res => {
       message.reply(res)
     })
   }
 
-  // Trafic
   if(command === "trafic"){
     cmd.trafic(args).then(res => {
       	message.channel.send(new Discord.RichEmbed()
@@ -190,9 +177,7 @@ bot.on('message', message => {
     		.setTimestamp())
     });
   }
-
-
-  // pour le trafic
+  
   function leTrafic(type, code){
     var transports;
     return transports = function(callback){
@@ -234,28 +219,24 @@ bot.on('message', message => {
     };
   }
 
-  // gif
   if(command === "gif") {
     cmd.gif(args[0]).then(res => {
       message.channel.send(res)
     });
   }
 
-  // chat 
   if(command ===  "chat" || command === "cat") {
     cmd.cat().then(res => {
       message.channel.send(res)
     });
   }
   
-  // fact sur les chats
   if(command ===  "catfact") {
     cmd.catFact().then(res => {
       message.channel.send(res)
     });
   }
   
-  // apprend une phrase
   if(command === "apprends") {
     if(args != ""){
       message.channel.send(cmd.writeBrain(args.join(' ')));
@@ -270,17 +251,14 @@ bot.on('message', message => {
     }
   }
 
-  // savoir exprime 1 savoir
   if(command === "savoir") {
     message.channel.send(cmd.knowledge())
   }
 
-  // malou exprime tout le savoir
   if(command === "malou") {
     message.channel.send(cmd.brain())
   }
 
-  // pause gouter pour chaque membres
   if(command === "pause") {
     message.channel.send('Aight c\'est l\'heure de la pause :ok_hand: :coffee: :chocolate_bar: ');
 
@@ -292,36 +270,30 @@ bot.on('message', message => {
     }
   }
 
-  // top
   if(command === "h1z1") {
     message.channel.send(cmd.topGame());
   }
 
-  // pic image random sur imgur
   if(command === "pic"){
     message.channel.send(cmd.picture());
   }
 
-  // actu
   if(command === "actu") {
     cmd.news(bot.user).then(res => {
       message.reply(res)
     });
   }
-
-  // chuck
+  
   if(command === "chuck"){
     cmd.chuck().then(res => {
       message.reply(res);
     });
   }
 
-  // beauf
   if(command === "beauf") {
     message.channel.send(cmd.beauf());
   }
 
-  // Rename
   if(command == "rename"){
     if(args[1] && isAdmin){
       message.mentions.members.first().setNickname(args[1]);
@@ -336,7 +308,6 @@ bot.on('message', message => {
     }
   }
 
-  // Sondage
   if(command == "sondage"){
     if(args.length > 1){
       choix = args.join(" ");
@@ -352,26 +323,22 @@ bot.on('message', message => {
     }
   }
 
-  // Btc
   if(command == "coin" || command == "btc"){
     cmd.coin(args).then(res => {
       message.reply(res)
     });
   }
 
-  // genre
   if(command === "genre") {
     cmd.gender(args).then(res => {
       message.reply(res);
     });
   }
 
-  // doc
   if(command === "doc" || command === "help") {
     message.author.send(cmd.doc())
   }
 
-  // amazon search
   if(command === "amazon" || command === "a" || command === "afr") {
     if(args.length > 1){
       message.reply(cmd.amazon(args.join('+')));
@@ -388,7 +355,6 @@ bot.on('message', message => {
     }
   }
 
-  // wikipedia search
   if(command === "wikipedia" || command === "wiki") {
     if(args.length > 1) {
       cmd.wikipedia(args.join('-')).then(res => {
@@ -410,9 +376,7 @@ bot.on('message', message => {
       });
     }
   }
-  // QUESTIONS TEXTUELLES
-
-  // Demande de kick
+  
   if (message.content.toUpperCase().includes("KICK MOI")){
     if(isAdmin){
       message.channel.send("Je peux pas te kick t'es admin.");
@@ -422,12 +386,9 @@ bot.on('message', message => {
     }
   }
 
-  // DETECTEURS
-  // Insulte detector
   let swear = cmd.insult(message.content);
   swear ? message.reply(swear) : null
 
-  // Insulte detector
   let police = cmd.police(message);
   if(police) {
     message.reply(police.police);
@@ -435,7 +396,6 @@ bot.on('message', message => {
     police.mutable ? muteUser(message.member,config.muteTime) : null;
   }
 
-  // mute
   function muteUser(victime,time){
     // Overwrite permissions for a message author
     message.channel.overwritePermissions(victime, {
@@ -450,7 +410,6 @@ bot.on('message', message => {
     },time);
   }
 
-  // unmute
   function unmuteUser(victime){
     // Overwrite permissions for a message author
     message.channel.overwritePermissions(victime, {
@@ -458,7 +417,6 @@ bot.on('message', message => {
     }).then(() => message.channel.send("On libère "+victime+", tu peux reparler maintenant :ok_hand: :slight_smile:")).catch(console.error);
   }
 
-  // Bye bye
   function byebye(perdant) {
     message.channel.send("Bye bye "+perdant+" !");
     setTimeout(function(){ perdant.kick()}, 3000);
