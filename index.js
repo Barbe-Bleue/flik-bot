@@ -8,13 +8,13 @@ const prefix = config.prefix;
 const muteTime = config.muteTime; 
 const awaitMessagesOptions = config.awaitMessagesOptions
 const errorMessage = config.errorMessage
+
 let timeBeforeKick =  config.timeBeforeKick
 let nbR = 1;
 
 // Initialisation du bot
 bot.on('ready', () => {
   console.log('bot ok!');
-  //bot.sendMessage("Salut moi c'est vag, le meilleur bot du monde :ok_hand: tape 'doc' ou 'help' pour savoir tout ce que je peux faire :sunglasses: ")
 });
 
 // Suppression de message
@@ -25,9 +25,6 @@ bot.on('messageDelete', message => {
 
 // Membre rejoint le discord
 bot.on("guildMemberAdd", member => {
-  //console.log(member.user.username+member.guild.name);
-  //console.log("Et maintenat on dit bonjour à "+member.user.username+" qui a rejoint"+member.guild.name+ " !" );
-  //member.guild.channel.send(member.user.username+" a rejoint les cancers");
   member.send(cmd.doc());
 });
 
@@ -121,27 +118,6 @@ bot.on('message', message => {
     }
   }
   
-  function wait(ms) {
-    var start = new Date().getTime();
-    var end = start;
-    while(end < start + ms) {
-      end = new Date().getTime();
-    }
-  }
-  
-  function countdown(perdant) {
-    message.channel.send(timeBeforeKick)
-    if (timeBeforeKick == 1) {
-      message.channel.send("https://gph.is/29dBRmh");
-      wait(1000);
-      perdant.kick();
-      return;
-   } else {
-     timeBeforeKick--;
-   }
-   timeoutMyOswego = setTimeout(countdown, 1000);
-  } 
- 
   if(command === "roulette") {
     const pseudos = ["Bob le bricoleur","Suppoman","Voleur de crypto","Grandad Harol","Shitcoin"];
     message.channel.send("Jeu de la roulette russe : "+ nbR +"/6 chance d'avoir une punition.");
@@ -176,8 +152,6 @@ bot.on('message', message => {
       message.reply(errorMessage.notAdmin);
     }
   }
-
-  
   
   if(command === "apprends") {
     if(args != ""){
@@ -353,6 +327,27 @@ bot.on('message', message => {
     message.channel.overwritePermissions(victime, {
       SEND_MESSAGES: true
     }).then(() => message.channel.send("On libère "+victime+", tu peux reparler maintenant :ok_hand: :slight_smile:"));
+  }
+  
+  function countdown(perdant) {
+    message.channel.send(timeBeforeKick)
+    if (timeBeforeKick == 1) {
+      message.channel.send("https://gph.is/29dBRmh");
+      wait(1000);
+      perdant.kick();
+      return;
+   } else {
+     timeBeforeKick--;
+   } 
+   timeoutMyOswego = setTimeout(countdown, 1000);
+  }
+  
+  function wait(ms) {
+    var start = new Date().getTime();
+    var end = start;
+    while(end < start + ms) {
+      end = new Date().getTime();
+    }
   }
 });
 
