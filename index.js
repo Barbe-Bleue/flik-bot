@@ -6,9 +6,8 @@ const cmd = require ("./commands/index.js");
 const config = require('./config.json');
 const token = config.token; // token discord
 const prefix = config.prefix; // préfix des commandes
-const yandexApiKey = config.yandexApiKey; // pour traduction
 const muteTime = config.muteTime; // pour temps de mute
-
+const awaitMessagesOptions = config.awaitMessagesOptions
 const google = require('google')
 let nbR = 1;
 
@@ -21,7 +20,7 @@ bot.on('ready', () => {
 // Suppression de message
 bot.on('messageDelete', message => {
 	message.channel.send('Ohlala pas bien ! <@'+message.author.id+'> a supprimer son message **'+message.content+'** !');
-  message.member.kickable ? message.member.setNickname("supprimeur") : null
+  message.author.kickable ? message.member.setNickname("supprimeur") : null
 });
 
 // Member join
@@ -35,13 +34,10 @@ bot.on("guildMemberAdd", member => {
 // Message
 bot.on('message', message => {
 
-  // args & commands
+  // args & commands & check if admin
   const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
   const isAdmin = !message.author.kickable
-
-  // check admin
-  //var adminCommands = new Array("ban", "kick", "suicide", "mute","unmute");
 
   // COMMANDES !
   // traduction
@@ -49,26 +45,18 @@ bot.on('message', message => {
     if(args != "") {
       let text = message.content.split(' ').slice(1, -1).join(' ');
       let lang = message.content.split(" ").splice(-1);
-      cmd.translate(text,lang,yandexApiKey).then(res => {
+      cmd.translate(text,lang).then(res => {
         message.channel.send(res);
       });
     } else {
       message.reply('Que veux tu me faire traduire ?').then(() => {
-        message.channel.awaitMessages(responseText => responseText.content.length > 0, {
-          max: 1,
-          time: 30000,
-          errors: ['time'],
-        }).then((collected) => {
+        message.channel.awaitMessages(responseText => responseText.content.length > 0, awaitMessagesOptions).then((collected) => {
             let text = collected.first().content;
             message.reply('en quelle langue ?').then(() => {
-              message.channel.awaitMessages(responseLang => responseLang.content.length > 0, {
-                max: 1,
-                time: 30000,
-                errors: ['time'],
-              }).then(collectedLang => {
+              message.channel.awaitMessages(responseLang => responseLang.content.length > 0,awaitMessagesOptions).then(collectedLang => {
                 let lang = collectedLang.first().content;
                   if(text && lang){
-                    cmd.translate(text,lang,yandexApiKey).then(res => {
+                    cmd.translate(text,lang).then(res => {
                       message.channel.send(res)
                     });
                   }else(
@@ -87,7 +75,7 @@ bot.on('message', message => {
 
   // Ban
   if (command === "ban"){
-    if(message.member.roles.find("name", "Admin")){
+    if(isAdmin){
       var member = message.mentions.members.first();
       if(member){
         member.kick().then((member) => {
@@ -260,11 +248,7 @@ bot.on('message', message => {
       message.channel.send(cmd.writeBrain(args.join(' ')));
     }else{
       message.channel.sendMessage('Que veux tu me faire apprendre ?').then(() => {
-        message.channel.awaitMessages(response => response.content.length > 0, {
-          max: 1,
-          time: 30000,
-          errors: ['time'],
-        }).then(collected => {
+        message.channel.awaitMessages(response => response.content.length > 0, awaitMessagesOptions).then(collected => {
             message.channel.send(cmd.writeBrain(collected.first().content));
           }).catch(() => {
             message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
@@ -347,10 +331,10 @@ bot.on('message', message => {
 
   // Rename
   if(command == "rename"){
-    if(args[1] && message.member.roles.find("name", "Admin")){
+    if(args[1] && isAdmin){
       message.mentions.members.first().setNickname(args[1]);
       message.channel.send("Hey @everyone ! "+message.author+" a changé le nom de "+message.mentions.members.first()+" en ***"+args[1]+"***");
-    }else if (args[1] && !message.member.roles.find("name", "Admin")) {
+    }else if (args[1] && !isAdmin) {
       message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
     }else if(args[0]){
       message.member.setNickname(args[0]);
@@ -372,7 +356,7 @@ bot.on('message', message => {
           console.log(err);
         });
     }else {
-      message.channel.send("Indique la raison du sondage")
+      message.reply("Indique la raison du sondage")
     }
   }
 
@@ -386,7 +370,7 @@ bot.on('message', message => {
   // genre
   if(command === "genre") {
     cmd.gender(args).then(res => {
-      message.channel.send(res);
+      message.reply(res);
     });
   }
 
@@ -396,23 +380,19 @@ bot.on('message', message => {
   }
 
   // amazon search
-  if(command === "amazon" || command === "a") {
+  if(command === "amazon" || command === "a" || command === "afr") {
     if(args.length > 1){
-      message.channel.send(cmd.amazon(args.join('+')));
+      message.reply(cmd.amazon(args.join('+')));
     } else if(args.length == 0) {
-      message.channel.send('tu veux quoi ?').then(() => {
-        message.channel.awaitMessages(response => response.content.length > 0 , {
-          max: 1,
-          time: 30000,
-          errors: ['time'],
-        }).then(collected => {
-            message.channel.send(cmd.amazon(collected.first().content));
+      message.reply('tu veux quoi ?').then(() => {
+        message.channel.awaitMessages(response => response.content.length > 0 ,awaitMessagesOptions).then(collected => {
+            message.reply(cmd.amazon(collected.first().content));
         }).catch(() => {
-            message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
+            message.reply('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
         });
       });
     } else {
-      message.channel.send(cmd.amazon(args[0]));
+      message.reply(cmd.amazon(args[0]));
     }
   }
 
@@ -423,22 +403,18 @@ bot.on('message', message => {
         message.channel.send(res);
       });
     } else if(args.length == 0) {
-      message.channel.send('tu veux quoi ?').then(() => {
-        message.channel.awaitMessages(response => response.content.length > 0 , {
-          max: 1,
-          time: 30000,
-          errors: ['time'],
-        }).then(collected => {
+      message.reply('tu veux quoi ?').then(() => {
+        message.channel.awaitMessages(response => response.content.length > 0 ,awaitMessagesOptions).then(collected => {
             cmd.wikipedia(collected.first().content).then(res => {
-              message.channel.send(res)
+              message.reply(res)
             });
         }).catch(() => {
-            message.channel.send('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
+            message.reply('T\'as pas trouvé les touches sur ton clavier ou quoi ?');
         });
       });
     } else {
       cmd.wikipedia(args[0]).then(res => {
-        message.channel.send(res)
+        message.reply(res)
       });
     }
   }
@@ -446,9 +422,10 @@ bot.on('message', message => {
 
   // Demande de kick
   if (message.content.toUpperCase().includes("KICK MOI")){
-    if(message.member.roles.find("name", "Admin")){
+    if(isAdmin){
       message.channel.send("Je peux pas te kick t'es admin.");
     }else{
+      message.reply("ok.");
       message.member.kick();
     }
   }

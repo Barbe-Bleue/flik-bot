@@ -2,5 +2,10 @@
 	"token": "",
 	"prefix": "!",
 	"yandexApiKey": "",
-	"muteTime": "10000"
+	"muteTime": "10000",
+	"awaitMessagesOptions" : {
+		"max": 1,
+		"time": 30000,
+		"errors": ["time"]
+	}
 }
