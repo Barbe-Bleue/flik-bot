@@ -2,5 +2,5 @@
 	"token": "",
 	"prefix": "!",
 	"yandexApiKey": "",
-	"muteTime": ""
+	"muteTime": "10000"
 }

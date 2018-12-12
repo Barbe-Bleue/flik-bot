@@ -10,7 +10,7 @@ const yandexApiKey = config.yandexApiKey; // pour traduction
 const muteTime = config.muteTime; // pour temps de mute
 
 const google = require('google')
-const pseudoJSON = require('./json/pseudo.json');
+const pseudos = ["Bob le bricoleur","Suppoman","Voleur de crypto","Grandad Harol","Shitcoin"]
 let nbR = 1;
 
 //CONNEXION
@@ -39,6 +39,7 @@ bot.on('message', message => {
   // args & commands
   const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
+  const isAdmin = !message.author.kickable
 
   // check admin
   //var adminCommands = new Array("ban", "kick", "suicide", "mute","unmute");
@@ -103,9 +104,8 @@ bot.on('message', message => {
 
   // mute user
   if(command === "mute"){
-    if(message.member.roles.find("name", "Admin")){
-      let time = args[1] ? args[1] * 1000 : muteTime
-      muteUser( message.mentions.members.first(),time);
+    if(isAdmin){
+      muteUser(message.mentions.members.first(), args[1] ? args[1] * 1000 : muteTime);
     } else {
       message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
     }
@@ -113,7 +113,7 @@ bot.on('message', message => {
 
   // unmute user
   if(command =="unmute"){
-    if(message.member.roles.find("name", "Admin")) {
+    if(isAdmin) {
       unmuteUser(message.mentions.members.first());
     } else {
       message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
@@ -122,14 +122,14 @@ bot.on('message', message => {
 
   // kick au hasard de la part de l'admin
   if (command === "kick"){
-    if(message.member.roles.find("name", "Admin")) {
+    if(isAdmin) {
       let perdant = message.guild.members.random();
       message.channel.send("Roulette russe de l'admin ! Un kick au hasard !");
       if(perdant.kickable == false) {
         message.channel.send("Ok ça tombe sur l'admin on peut rien faire.");
       } else {
         message.channel.send(perdant.displayName+" a perdu.");
-        setInterval(function() { handleTimer(5); }, 1000);
+        setInterval(function() { handleTimer(); }, 1000);
       }
     }
   }
@@ -175,7 +175,7 @@ bot.on('message', message => {
 
   // suicide du bot
   if (command === "suicide"){
-    if(message.member.roles.find("name", "Admin")){
+    if(isAdmin){
       message.channel.send("@everyone Ah ok on me bute comme ça :tired_face: :gun:");
       setTimeout(function(){
         bot.destroy();
