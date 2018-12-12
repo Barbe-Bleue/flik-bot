@@ -1,9 +1,8 @@
-const pauseJSON = require("./pause.json");
+const pause = require("./pause.json");
 
-module.exports = async () => {	
+module.exports = async () => {
 	return await {
-		manger: pauseJSON['manger'][Math.floor(Math.random() * pauseJSON['manger'].length)],
-		boire: pauseJSON['boire'][Math.floor(Math.random() * pauseJSON['boire'].length)],
+		manger: pause['manger'][Math.floor(Math.random() * pause['manger'].length)],
+		boire: pause['boire'][Math.floor(Math.random() * pause['boire'].length)],
 	}
 }
-
