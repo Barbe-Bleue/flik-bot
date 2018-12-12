@@ -5,7 +5,7 @@ module.exports = message => {
     let kickable = message.member.kickable ? true : false
     return {
       police: ':oncoming_police_car: :rotating_light: POLICE DES GROS MOTS :rotating_light: :oncoming_police_car:',
-      msg: kickable ? "pd va" : "Ohw c'est vous admin ? Excuser moi pour le dérangement",
+      msg: kickable ? "Allez bisous maggle" : "Ohw c'est vous admin ? Excuser moi pour le dérangement",
       mutable: kickable
     }
   }

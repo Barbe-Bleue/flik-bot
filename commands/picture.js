@@ -1,6 +1,6 @@
 module.exports = () => {
 	let charset = "01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghiklmnopqrstuvwxyz";
-	let source="";
+	let source= "";
 
 	for(let i = 0; i < 5; i++ ){
 		source += charset[Math.floor(Math.random() * charset.length)];

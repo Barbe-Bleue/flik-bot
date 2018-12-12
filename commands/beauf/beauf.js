@@ -8,7 +8,7 @@ module.exports = () => {
 		let data = fs.readFileSync(beauf, 'utf8');
 		let beaufFact = data.toString().split('\n');
 
-		if(beaufFact !=''){
+		if(beaufFact !='') {
 			return(new Discord.RichEmbed()
 				.setTitle("Le beauf")
 				.setColor(0x00AE86)
@@ -19,7 +19,6 @@ module.exports = () => {
 		else {
 			return "Hey, flemme me casse pas les couilles";
 		}
-
 	} catch (e) {
 		console.log(e);
 	}
