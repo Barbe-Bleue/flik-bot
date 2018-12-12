@@ -247,6 +247,14 @@ bot.on('message', message => {
       message.channel.send(res)
     });
   }
+  
+  // fact sur les chats
+  if(command ===  "catfact") {
+    cmd.catFact().then(res => {
+      message.channel.send(res)
+    });
+  }
+  
   // apprend une phrase
   if(command === "apprends") {
     if(args != ""){
