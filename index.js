@@ -16,20 +16,20 @@ let nbR = 1;
 //CONNEXION
 bot.on('ready', () => {
   console.log('bot ok!');
-  //bot.channels..send("Salut moi c'est vag, le meilleur bot du monde :ok_hand: tape 'doc' ou 'help' pour savoir tout ce que je peux faire :sunglasses: ");
+  //bot.sendMessage("Salut moi c'est vag, le meilleur bot du monde :ok_hand: tape 'doc' ou 'help' pour savoir tout ce que je peux faire :sunglasses: ")
 });
 
 // Suppression de message
 bot.on('messageDelete', message => {
-	message.channel.send('Ohlala pas bien ! '+message.author.username+' a supprimer son message !');
-	message.member.setNickname("supprimeur");
+	message.channel.send('Ohlala pas bien ! <@'+message.author.id+'> a supprimer son message **'+message.content+'** !');
+  message.member.kickable ? message.member.setNickname("supprimeur") : null
 });
 
 // Member join
 bot.on("guildMemberAdd", member => {
   //console.log(member.user.username+member.guild.name);
   //console.log("Et maintenat on dit bonjour à "+member.user.username+" qui a rejoint"+member.guild.name+ " !" );
-  //member.guild.channel.send(member.user.username+" has joined this server");
+  //member.guild.channel.send(member.user.username+" a rejoint les cancers");
   member.send(cmd.doc());
 });
 
@@ -201,7 +201,7 @@ bot.on('message', message => {
     		.setDescription(res)
     		.setThumbnail("https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/RATP.svg/637px-RATP.svg.png")
     		.setTimestamp())
-    })
+    });
   }
 
 
@@ -489,15 +489,11 @@ bot.on('message', message => {
     }).then(() => message.channel.send("On libère "+victime+", tu peux reparler maintenant :ok_hand: :slight_smile:")).catch(console.error);
   }
 
-
-
   // Bye bye
   function byebye(perdant) {
     message.channel.send("Bye bye "+perdant+" !");
     setTimeout(function(){ perdant.kick()}, 3000);
   }
-
-
 });
 
 bot.login(token);

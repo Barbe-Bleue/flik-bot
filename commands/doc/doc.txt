@@ -14,7 +14,6 @@ Commandes utilisateur:
 **trafic** *ligne* -- état du trafic pour la ligne en question
 **trafic** *type* -- type = metros/rers
 **rename** *pseudo* -- change son nom en *pseudo*
-**sms** -- permet d'envoyer un sms
 **actu** -- dernières actualités
 **gif** *mot(s)-clé(s)* -- gif au hasard selon mot(s)-clé(s)
 **sondage** *titre sondage* -- vote oui ou non sur un sondage
@@ -27,8 +26,6 @@ Commandes utilisateur:
 **malou** -- le bot balance tout son savoir
 **savoir** -- le bot exprime une phrase qu'il connait
 
-steam *steamID ou steamID64* -- Récupère nombre de jeux & jeu le plus joué
-
 Recherches:
 **wiki** *mot* -- fait une recherche sur wikipedia du mot clé
 **amazon** *mot* -- envoie le liens amazon sur le mot clé
@@ -38,7 +35,6 @@ Interactions :
 "kick_moi" -- pas besoin d'explications
 
 Commandes autres:
-**chien** -- photo de chien
 **top** -- choix du nombre de jeux et prévisions
 **pic** -- photo au hasard
 **pause** -- choix du snack pour la pause
