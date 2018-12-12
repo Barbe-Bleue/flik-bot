@@ -76,9 +76,8 @@ bot.on('message', message => {
 
   if (command === "ban"){
     if(isAdmin) {
-      let member = message.mentions.members.first();
-      if(member) {
-        member.kick().then(victime => {
+      if(message.mentions.members.first()) {
+        message.mentions.members.first().kick().then(victime => {
           message.channel.send("@everyone :wave: **" + victime.displayName + "** a été kické :point_right: ");
         }).catch(() => {
           message.reply("On ne peut pas bannir Dieu :cross:");
@@ -305,37 +304,33 @@ bot.on('message', message => {
 
   if(command == "sondage") {
     if(args.length > 1) {
-      choix = args.join(" ");
-      message.channel.send(":apple:***SONDAGE :apple:\n"+choix+"***")
-        .then(function (message) {
-          message.react("👍")
-          message.react("👎")
-        }).catch(function(err) {
-          console.log(err);
-        });
+      message.channel.send(":apple:***SONDAGE :apple:\n"+args.join(" ")+"***")
+      .then(message => {
+        message.react("👍")
+        message.react("👎")
+      })
     }else {
       message.reply("Indique la raison du sondage")
     }
   }
 
   if(command === "amazon" || command === "afr") {
-    if(args.length > 1){
+    if(args.length >= 1){
       message.reply(cmd.amazon(args.join('+')));
     } else if(args.length == 0) {
       message.reply('tu veux quoi ?').then(() => {
-        message.channel.awaitMessages(response => response.content.length > 0 ,awaitMessagesOptions).then(collected => {
-            message.reply(cmd.amazon(collected.first().content));
+        message.channel.awaitMessages(response => response.content.length > 0 ,awaitMessagesOptions)
+        .then(collected => {
+          message.reply(cmd.amazon(collected.first().content));
         }).catch(() => {
-            message.reply(errorMessage.waitingToMuch);
+          message.reply(errorMessage.waitingToMuch);
         });
       });
-    } else {
-      message.reply(cmd.amazon(args[0]));
     }
   }
 
   if(command === "wikipedia" || command === "wiki") {
-    if(args.length > 1) {
+    if(args.length >= 1) {
       cmd.wikipedia(args.join('-')).then(res => {
         message.channel.send(res);
       });
@@ -351,10 +346,6 @@ bot.on('message', message => {
           message.reply(errorMessage.waitingToMuch);
         });
       });
-    } else {
-      cmd.wikipedia(args[0]).then(res => {
-        message.reply(res)
-      });
     }
   }
   
@@ -362,8 +353,7 @@ bot.on('message', message => {
     if(isAdmin){
       message.channel.send("Je peux pas te kick t'es admin.");
     }else{
-      message.reply("ok.");
-      message.member.kick();
+      message.reply("ok.").then(() => message.member.kick());
     }
   }
 
@@ -378,12 +368,11 @@ bot.on('message', message => {
   }
 
   function muteUser(victime,time){
-    // Overwrite permissions for a message author
     message.channel.overwritePermissions(victime, {
       SEND_MESSAGES: false
     }).then(() => {
       message.channel.send(victime+" a été mute pour "+time / 1000+" secondes. Fallait pas faire chier :kissing_heart:")
-    }).catch(console.error);
+    });
 
     // temps avant de ban
     setTimeout(function(){
@@ -392,10 +381,9 @@ bot.on('message', message => {
   }
 
   function unmuteUser(victime){
-    // Overwrite permissions for a message author
     message.channel.overwritePermissions(victime, {
       SEND_MESSAGES: true
-    }).then(() => message.channel.send("On libère "+victime+", tu peux reparler maintenant :ok_hand: :slight_smile:")).catch(console.error);
+    }).then(() => message.channel.send("On libère "+victime+", tu peux reparler maintenant :ok_hand: :slight_smile:"));
   }
 });
 
