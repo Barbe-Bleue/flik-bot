@@ -4,24 +4,16 @@ const Discord = require('discord.js');
 
 module.exports = async (args) => {
 	const ville = args[0];
-	const demain = args[1];
+	let jour = 0;
+	let annonce = "aujourd'hui la température est de ";
+	let url = "http://api.openweathermap.org/data/2.5/forecast/daily?q="+ville+"&mode=json&units=metric&cnt=2&lang=fr&appid=50d1f0d31cd8814419a3d8a06d208d4d";
 
-	if(demain != null && demain.toUpperCase() === "DEMAIN"){
-		var jour = 1;
-		var annonce = "demain la température sera de ";
-	} else {
-		var jour = 0;
-		var annonce = "aujourd'hui la température est de ";
-	}
-
-	if (/^[a-zA-Z]/.test(ville)) {
-		var url = "http://api.openweathermap.org/data/2.5/forecast/daily?q="+ville+"&mode=json&units=metric&cnt=2&lang=fr&appid=50d1f0d31cd8814419a3d8a06d208d4d";
-	}else{
-		var url = "http://api.openweathermap.org/data/2.5/forecast/daily?zip="+ville+"&mode=json&units=metric&cnt=2&lang=fr&appid=50d1f0d31cd8814419a3d8a06d208d4d";
+	if(args[1].toUpperCase() === "DEMAIN"){
+		jour = 1;
+		annonce = "demain la température sera de ";
 	}
 
 	const res = await axios.get(url)
-	console.log(res);
 	return (new Discord.RichEmbed()
 	.setTitle("Meteo à "+res.data.city.name)
 	.setColor(0x10B8FE)
