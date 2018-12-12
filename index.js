@@ -46,7 +46,7 @@ bot.on('message', message => {
       let text = message.content.split(' ').slice(1, -1).join(' ');
       let lang = message.content.split(" ").splice(-1);
       cmd.translate(text,lang).then(res => {
-        message.channel.send(res);
+        message.reply(res);
       });
     } else {
       message.reply('Que veux tu me faire traduire ?').then(() => {
@@ -57,7 +57,7 @@ bot.on('message', message => {
                 let lang = collectedLang.first().content;
                   if(text && lang){
                     cmd.translate(text,lang).then(res => {
-                      message.channel.send(res)
+                      message.reply(res)
                     });
                   }else(
                     message.reply("Il me faut un text et une langue")
