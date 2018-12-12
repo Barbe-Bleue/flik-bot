@@ -8,6 +8,7 @@ const token = config.token; // token discord
 const prefix = config.prefix; // préfix des commandes
 const muteTime = config.muteTime; // pour temps de mute
 const awaitMessagesOptions = config.awaitMessagesOptions
+let timeBeforeKick =  config.timeBeforeKick
 let nbR = 1;
 
 // Initialisation du bot
@@ -46,7 +47,7 @@ bot.on('message', message => {
       });
     } else {
       message.reply('Que veux tu me faire traduire ?').then(() => {
-        message.channel.awaitMessages(responseText => responseText.content.length > 0, awaitMessagesOptions).then((collected) => {
+        message.channel.awaitMessages(responseText => responseText.content.length > 0, awaitMessagesOptions).then(collecte => {
             let text = collected.first().content;
             message.reply('en quelle langue ?').then(() => {
               message.channel.awaitMessages(responseLang => responseLang.content.length > 0,awaitMessagesOptions).then(collectedLang => {
@@ -70,17 +71,19 @@ bot.on('message', message => {
   }
 
   if (command === "ban"){
-    if(isAdmin){
-      var member = message.mentions.members.first();
-      if(member){
-        member.kick().then((member) => {
-          message.channel.send("@everyone :wave: **" + member.displayName + "** a été kické :point_right: ");
+    if(isAdmin) {
+      let member = message.mentions.members.first();
+      if(member) {
+        member.kick().then(victime => {
+          message.channel.send("@everyone :wave: **" + victime.displayName + "** a été kické :point_right: ");
         }).catch(() => {
           message.reply("On ne peut pas bannir Dieu :cross:");
         });
-      }else{
+      } else {
         message.reply("Je peux pas bannir tout le monde ca ne se fait pas !");
       }
+    } else {
+      message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
     }
   }
 
@@ -103,25 +106,44 @@ bot.on('message', message => {
   if (command === "kick"){
     if(isAdmin) {
       let perdant = message.guild.members.random();
-      message.channel.send("Roulette russe de l'admin ! Un kick au hasard !");
-      if(perdant.kickable == false) {
-        message.channel.send("Ok ça tombe sur l'admin on peut rien faire.");
-      } else {
-        message.channel.send(perdant.displayName+" a perdu.");
-        setInterval(function() { handleTimer(); }, 1000);
-      }
-    }
-  }
-  function handleTimer(count) {
-    if(count === 0) {
-      clearInterval(timer);
-      byebye(perdant);
+      message.channel.send("Roulette russe de l'admin ! Un kick au hasard !")
+      .then(() => {
+        if(isAdmin) {
+          message.channel.send("Ok ça tombe sur l'admin on peut rien faire.");
+        } else {
+          message.channel.send(perdant.displayName+" a perdu.").then(() => {
+            wait(4000);
+            countdown(perdant)
+          });
+        }
+      });
     } else {
-      message.channel.send(count);
-      count--;
+      message.reply("Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?");
     }
   }
-
+  
+  function wait(ms) {
+    var start = new Date().getTime();
+    var end = start;
+    while(end < start + ms) {
+      end = new Date().getTime();
+    }
+  }
+  
+  function countdown(perdant) {
+    message.channel.send(timeBeforeKick)
+    if (timeBeforeKick == 1) {
+      message.channel.send("https://gph.is/29dBRmh");
+      wait(1000);
+      perdant.kick();
+      return;
+   } else {
+     timeBeforeKick--;
+   }
+   timeoutMyOswego = setTimeout(countdown, 1000);
+  } 
+ 
+  
   if(command === "roulette") {
     const pseudos = ["Bob le bricoleur","Suppoman","Voleur de crypto","Grandad Harol","Shitcoin"];
     message.channel.send("Jeu de la roulette russe : "+ nbR +"/6 chance d'avoir une punition.");
@@ -418,8 +440,7 @@ bot.on('message', message => {
   }
 
   function byebye(perdant) {
-    message.channel.send("Bye bye "+perdant+" !");
-    setTimeout(function(){ perdant.kick()}, 3000);
+   
   }
 });
 
