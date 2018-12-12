@@ -259,12 +259,12 @@ bot.on('message', message => {
 
   // savoir exprime 1 savoir
   if(command === "savoir") {
-    message.channel.send(cmd.savoir())
+    message.channel.send(cmd.knowledge())
   }
 
   // malou exprime tout le savoir
   if(command === "malou") {
-    message.channel.send(cmd.malou())
+    message.channel.send(cmd.brain())
   }
 
   // pause gouter pour chaque membres
@@ -312,7 +312,7 @@ bot.on('message', message => {
 
   // actu
   if(command === "actu") {
-    cmd.actu(bot.user).then(res => {
+    cmd.news(bot.user).then(res => {
       message.reply(res)
     });
   }
