@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require('path');
 const brain = path.join(__dirname, './cerveau.txt');
 const awaitMessagesOptions = require("../../config.json").awaitMessagesOptions
+const errorMessage = require("../../config.json").errorMessage
 
 module.exports = (message,args) => {
 	if (args != "") {

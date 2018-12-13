@@ -3,6 +3,7 @@ const flagList = require("./flag.json");
 const yandexApiKey = require("../../config.json").yandexApiKey
 const awaitMessagesOptions = require("../../config.json").awaitMessagesOptions
 const axios = require("axios");
+const errorMessage = require("../../config.json").errorMessage
 
 module.exports = (message,args) => {
 	if (args != "") {

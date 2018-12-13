@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const awaitMessagesOptions = require("../config.json").awaitMessagesOptions
+const errorMessage = require("../config.json").errorMessage
 
 module.exports = (message,args) => {
 	

@@ -1,5 +1,6 @@
 const axios = require("axios");
 const awaitMessagesOptions = require("../config.json").awaitMessagesOptions
+const errorMessage = require("../config.json").errorMessage
 
 module.exports = (message,args) => {	
 	if (args.length >= 1) {
