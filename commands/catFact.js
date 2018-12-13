@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-module.exports = async () => {
+module.exports = async message => {
 	let res = await axios.get("https://cat-fact.herokuapp.com/facts/random");
-	return res.data.text
+	message.channel.send(res.data.text)
 }

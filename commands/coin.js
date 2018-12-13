@@ -7,10 +7,11 @@ const options = {
 }
 const coinmarketcap = new CoinMarketCap(options);
 
-module.exports = async args => {
-  if(args.length == 0){
-    let coin = await coinmarketcap.get("bitcoin");
-    return ":dollar: **"+coin.price_usd+" $** :dollar:"
+module.exports = async (args,message) => {
+  if(args.length == 0) {
+    coinmarketcap.get("bitcoin", coin => {
+      message.reply(" :dollar: **"+coin.price_usd+" $** :dollar: ")
+    });
   } else if(args.length > 0) {
     coinmarketcap.multi(coins => {
       let multiCoin = "";
@@ -18,12 +19,12 @@ module.exports = async args => {
         crypto = args[i].toUpperCase();
         let coin = coins.get(crypto)
         if(coin){
-          multiCoin += crypto+" : "+coin.price_usd+" :dollar: \n";
+          multiCoin += "\n**"+crypto+"** : "+coin.price_usd+" :dollar:";
         }else {
-          multiCoin += crypto+ "Je ne connais pas la monnaie **"+crypto+"** désolé :confused: \n"
+          multiCoin += "\nJe ne connais pas la monnaie **"+crypto+"** désolé :confused: \n"
         }
       }
-      return multiCoin
+      message.reply(multiCoin)
     });
   }
 }

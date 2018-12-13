@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require('path');
 const doc = path.join(__dirname, './doc.txt');
 
-module.exports = () => {
+module.exports = message => {
 	let data = fs.readFileSync(doc, 'utf8')
   let laDoc = data.toString().split('\n');
   let cmd ='';
@@ -12,5 +12,5 @@ module.exports = () => {
 			cmd += laDoc[i]+'\n';
 		}
   }
-	return cmd
+	 message.author.send(cmd)
 }

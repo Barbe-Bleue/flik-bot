@@ -2,17 +2,17 @@ const help = require('./help.json');
 const prefix = require('../../config.json').prefix
 const Discord = require('discord.js');
 
-module.exports = (command) => {
+module.exports = (command,message) => {
   if(command){
     if(help[command]) {
-      return (new Discord.RichEmbed()
+      message.reply(new Discord.RichEmbed()
       .setAuthor(command.toUpperCase())
       .setTitle("*"+help[command].resume+"*")
       .setColor(0x39e116)
       .setDescription(help[command].exemples.map(cmd => prefix+cmd))
       .setThumbnail("https://www.supinfo.com/articles/resources/143087/5849/0.png")
       .setTimestamp())
-    } else return "Je ne connais pas la commande **"+command+"** :shrug:"
+    } else message.reply("Je ne connais pas la commande **"+command+"** :shrug:")
   } else {
     let allCmd = "";
     for (var cmd in help) {
@@ -23,7 +23,7 @@ module.exports = (command) => {
         allCmd += "\n\n**"+cmd.toUpperCase()+"**\n*"+help[cmd].resume+"*\n"+ ex
       }
     }
-    return (new Discord.RichEmbed()
+    message.reply(new Discord.RichEmbed()
     .setTitle("HELP")
     .setColor(0x39e116)
     .setDescription(allCmd)

@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require('path');
 const brain = path.join(__dirname, './cerveau.txt');
 
-module.exports = () => {	
+module.exports = message => {	
 	try {
 		let data = fs.readFileSync(brain, 'utf8')
     let grandSavoir = data.toString().split('\n');
@@ -13,7 +13,7 @@ module.exports = () => {
 				savoir += grandSavoir[i]+'\n'
 			};
     }
-		return savoir
+		message.channel.send(savoir);
 		
 	} catch (e) {
 		console.log(e);

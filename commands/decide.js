@@ -1,3 +1,3 @@
-module.exports = args => {
-	return "Le choix est : " + args[Math.floor(Math.random() * args.length)]
+module.exports = (args,message) => {
+	message.reply("Le choix est : " + args[Math.floor(Math.random() * args.length)]);
 }

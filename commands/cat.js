@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-module.exports = async () => {
+module.exports = async message => {
 	let res = await axios.get("https://aws.random.cat/meow");
-	return res.data.file
+	message.reply(res.data.file)
 }

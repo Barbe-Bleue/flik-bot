@@ -3,13 +3,13 @@ const path = require('path');
 const beauf = path.join(__dirname, './beauf.txt');
 const Discord = require('discord.js');
 
-module.exports = () => {
+module.exports = message => {
 	try {
 		let data = fs.readFileSync(beauf, 'utf8');
 		let beaufFact = data.toString().split('\n');
 
 		if(beaufFact !='') {
-			return(new Discord.RichEmbed()
+			message.channel.send(new Discord.RichEmbed()
 				.setTitle("Le beauf")
 				.setColor(0x00AE86)
 				.setDescription(  beaufFact[Math.floor(Math.random() * beaufFact.length)])

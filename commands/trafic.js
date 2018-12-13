@@ -1,7 +1,7 @@
 const axios = require("axios");
 const Discord = require('discord.js');
 
-module.exports = async args => {	
+module.exports = async (args,message) => {	
 	let infoTrafic = "";
 	let statusMessage;
 	let type;
@@ -66,7 +66,7 @@ module.exports = async args => {
  		}
 	}
 	
-	return (new Discord.RichEmbed()
+	message.reply(new Discord.RichEmbed()
 		.setTitle("Info traffic")
 		.setColor(0x4AC1AE)
 		.setDescription(infoTrafic)

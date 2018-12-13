@@ -1,9 +1,9 @@
 const axios = require("axios");
 const Discord = require('discord.js');
 
-module.exports = async () => {
+module.exports = async message => {
 	let res = await axios.get("http://www.chucknorrisfacts.fr/api/get?data=tri:alea;nb:01");
-	return (new Discord.RichEmbed()
+	message.reply(new Discord.RichEmbed()
 	.setTitle("Chuck Norris fact !")
 	.setColor(0xB87753)
 	.setDescription(res.data[0].fact)

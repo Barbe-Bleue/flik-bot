@@ -1,4 +1,4 @@
-module.exports = (args) => {
+module.exports = (args,message) => {
 	
 	let nbGame = Math.floor((Math.random() * 5) + 1);
 	if(args.length === 1) {
@@ -21,5 +21,5 @@ module.exports = (args) => {
 		}
 		prediction += "Top "+top+" "+reaction+" | "+kill+" kill :boom: \n";
 	}
-	return prediction
+	message.reply(prediction)
 }

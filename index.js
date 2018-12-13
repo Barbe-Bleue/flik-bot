@@ -34,39 +34,7 @@ bot.on('message', message => {
   const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
   const isAdmin = !message.author.kickable
-
-  if (command === "traduis") {
-    if (args != "") {
-      let text = message.content.split(' ').slice(1, -1).join(' ');
-      let lang = message.content.split(" ").splice(-1);
-      cmd.translate(text,lang).then(res => message.reply(res));
-    } else {
-      message.reply('Que veux tu me faire traduire ?').then(() => {
-        message.channel.awaitMessages(responseText => responseText.content.length > 0, awaitMessagesOptions)
-        .then(collecte => {
-            let text = collected.first().content;
-            message.reply('en quelle langue ?')
-            .then(() => {
-              message.channel.awaitMessages(responseLang => responseLang.content.length > 0,awaitMessagesOptions)
-              .then(collectedLang => {
-                let lang = collectedLang.first().content;
-                  if(text && lang){
-                    cmd.translate(text,lang)
-                    .then(res => message.reply(res));
-                  }else {
-                    message.reply("Il me faut un text et une langue")
-                  }
-                }).catch(() => {
-                  message.reply(errorMessage.waitingToMuch);
-                });
-            });
-          }).catch(() => {
-            message.reply(errorMessage.waitingToMuch);
-          });
-      });
-    }
-  }
-
+  
   if (command === "ban") {
     if (isAdmin) {
       if (message.mentions.members.first()) {
@@ -152,32 +120,7 @@ bot.on('message', message => {
       message.reply(errorMessage.notAdmin);
     }
   }
-
-  if (command === "apprends") {
-    if (args != "") {
-      message.channel.send(cmd.writeBrain(args.join(' ')));
-    } else {
-      message.channel.sendMessage('Que veux tu me faire apprendre ?').then(() => {
-        message.channel.awaitMessages(response => response.content.length > 0, awaitMessagesOptions).then(collected => {
-            message.channel.send(cmd.writeBrain(collected.first().content));
-          }).catch(() => {
-            message.channel.send(errorMessage.waitingToMuch);
-          });
-      });
-    }
-  }
-
-  if (command === "pause" || command === "break") {
-    message.channel.send('Aight c\'est l\'heure de la pause :ok_hand: :coffee: :chocolate_bar: ');
-
-    for (let member in message.guild.members.array()) {
-      let userID =  message.guild.members.array()[member]['user'].id;
-      cmd.pause().then(res => {
-        message.channel.send('<@'+userID+'> : '+res.manger+' | '+res.boire);
-      });
-    }
-  }
-
+  
   if (command === "rename") {
     if (args[1] && isAdmin) {
       message.mentions.members.first().setNickname(args[1]);
@@ -203,91 +146,78 @@ bot.on('message', message => {
       message.reply("Indique la raison du sondage")
     }
   }
-
-  if (command === "amazon" || command === "afr") {
-    if (args.length >= 1) {
-      message.reply(cmd.amazon(args.join('+')));
-    } else if (args.length == 0) {
-      message.reply('tu veux quoi ?').then(() => {
-        message.channel.awaitMessages(response => response.content.length > 0 ,awaitMessagesOptions)
-        .then(collected => {
-          message.reply(cmd.amazon(collected.first().content));
-        }).catch(() => {
-          message.reply(errorMessage.waitingToMuch);
-        });
-      });
-    }
-  }
-
-  if (command === "wikipedia" || command === "wiki") {
-    if (args.length >= 1) {
-      cmd.wikipedia(args.join('-')).then(res => message.channel.send(res));
-    } else if (args.length == 0) {
-      message.reply('tu veux quoi ?').then(() => {
-        message.channel.awaitMessages(response => response.content.length > 0 ,awaitMessagesOptions)
-        .then(collected => {
-          cmd.wikipedia(collected.first().content)
-          .then(res => message.reply(res));
-        }).catch(() => {
-          message.reply(errorMessage.waitingToMuch);
-        });
-      });
-    }
-  }
-
+  
   switch (command) {
     case "savoir":
-      message.channel.send(cmd.knowledge());
+      cmd.knowledge(message);
       break;
     case "malou":
-      message.channel.send(cmd.brain());
+      cmd.brain(message);
       break;
     case "pic":
-      message.channel.send(cmd.picture());
+      cmd.picture(message);
       break;
     case "beauf":
-      message.channel.send(cmd.beauf());
+      cmd.beauf(message);
       break;
     case "doc":
-      message.author.send(cmd.doc());
+      cmd.doc(message);
     case "help":
-      message.reply(cmd.help(args[0]));
+      cmd.help(args[0],message);
       break;
     case "h1z1":
     case "top":
-      message.reply(cmd.topGame(args));
+      cmd.topGame(args,message);
       break;
     case "decide":
-      message.reply(cmd.decide(args));
+      cmd.decide(args,message);
       break;
     case "chat":
     case "cat":
-      cmd.cat().then(res => message.channel.send(res));
+      cmd.cat(message);
       break;
     case "catfact":
-      cmd.catFact().then(res => message.channel.send(res));
+      cmd.catFact(message)
       break;
     case "chuck":
-      cmd.chuck().then(res => message.reply(res));
+      cmd.chuck(message)
       break;
     case "traffic":
     case "trafic":
-      cmd.trafic(args).then(res => message.reply(res));
+      cmd.trafic(args,message)
       break;
     case "gif":
-      cmd.gif(args[0]).then(res => message.channel.send(res));
+      cmd.gif(args[0],message)
       break;
     case "meteo":
-      cmd.meteo(args).then(res => message.reply(res));
+      cmd.meteo(args,message)
       break;
     case "actu":
-      cmd.news(bot.user).then(res => message.reply(res));
+      cmd.news(bot.user,message)
       break;
     case "coin":
-      cmd.coin(args).then(res => message.reply(res));
+      cmd.coin(args,message)
       break;
     case "genre":
-      cmd.gender(args).then(res => message.reply(res));
+      cmd.gender(args,message)
+      break;
+    case "pause":
+    case "break":
+      cmd.pause(message);
+      break;
+    case "traduis":
+      cmd.translate(args,message)
+      break;
+    case "apprends":
+      cmd.writeBrain(args,message)
+      break;
+    case "amazon":
+    case "afr":
+      cmd.amazon(args,message);
+      break;
+    case "wikipedia":
+    case "wiki":
+      cmd.wikipedia(args,message);
       break;
     default:
       return;
