@@ -30,14 +30,6 @@ bot.on('message', message => {
   const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();  
 
-  if (command === "mute") {
-    if (isAdmin){
-      muteUser(message.mentions.members.first(), args[1] ? args[1] * 1000 : muteTime);
-    } else {
-      message.reply(errorMessage.notAdmin);
-    }
-  }
-
   if (command =="unmute") {
     if(isAdmin) {
       unmuteUser(message.mentions.members.first());
@@ -72,20 +64,7 @@ bot.on('message', message => {
   if (police) {
     message.reply(police.police);
     message.reply(police.msg)
-    police.mutable ? muteUser(message.member,config.muteTime) : null;
-  }
-
-  function muteUser(victime,time){
-    message.channel.overwritePermissions(victime, {
-      SEND_MESSAGES: false
-    }).then(() => {
-      message.channel.send(victime+" a été mute pour "+time / 1000+" secondes. Fallait pas faire chier :kissing_heart:")
-    });
-
-    // temps avant de ban
-    setTimeout(function(){
-      unmuteUser(victime)
-    },time);
+    police.mutable ? cmd.mute(message,config.muteTime) : null;
   }
 
   function unmuteUser(victime){
@@ -94,8 +73,6 @@ bot.on('message', message => {
     }).then(() => message.channel.send("On libère "+victime+", tu peux reparler maintenant :ok_hand: :slight_smile:"));
   }
   
-  
-
   triggerCommand(message, args, command);
     
   function triggerCommand(message, args, command) {
@@ -189,6 +166,8 @@ bot.on('message', message => {
       case "ban":
         cmd.ban(message);
         break;
+      case "mute":
+        cmd.mute(message,args)
       default:
         return;
     }
