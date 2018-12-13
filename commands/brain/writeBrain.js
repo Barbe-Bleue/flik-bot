@@ -3,7 +3,7 @@ const path = require('path');
 const brain = path.join(__dirname, './cerveau.txt');
 const awaitMessagesOptions = require("../../config.json").awaitMessagesOptions
 
-module.exports = (args,message) => {
+module.exports = (message,args) => {
 	if (args != "") {
 		message.channel.send(write(args.join(' ')));
 	} else {

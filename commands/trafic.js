@@ -1,7 +1,7 @@
 const axios = require("axios");
 const Discord = require('discord.js');
 
-module.exports = async (args,message) => {	
+module.exports = async (message,args) => {	
 	let infoTrafic = "";
 	let statusMessage;
 	let type;

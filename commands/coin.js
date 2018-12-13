@@ -7,7 +7,7 @@ const options = {
 }
 const coinmarketcap = new CoinMarketCap(options);
 
-module.exports = async (args,message) => {
+module.exports = async (message,args) => {
   if(args.length == 0) {
     coinmarketcap.get("bitcoin", coin => {
       message.reply(" :dollar: **"+coin.price_usd+" $** :dollar: ")
@@ -19,7 +19,7 @@ module.exports = async (args,message) => {
         crypto = args[i].toUpperCase();
         let coin = coins.get(crypto)
         if(coin){
-          multiCoin += "\n**"+crypto+"** : "+coin.price_usd+" :dollar:";
+          multiCoin += "\n**"+crypto+"** : "+coin.price_usd+" $ :dollar:";
         }else {
           multiCoin += "\nJe ne connais pas la monnaie **"+crypto+"** désolé :confused: \n"
         }

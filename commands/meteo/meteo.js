@@ -2,7 +2,7 @@ const axios = require('axios');
 const meteo = require("./meteo.json");
 const Discord = require('discord.js');
 
-module.exports = async (args,message) => {
+module.exports = async (message,args) => {
 	const ville = args[0];
 	let jour = 0;
 	let annonce = "aujourd'hui la température est de ";

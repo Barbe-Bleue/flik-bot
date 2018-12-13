@@ -4,7 +4,7 @@ const yandexApiKey = require("../../config.json").yandexApiKey
 const awaitMessagesOptions = require("../../config.json").awaitMessagesOptions
 const axios = require("axios");
 
-module.exports = (args,message) => {
+module.exports = (message,args) => {
 	if (args != "") {
 		let text = message.content.split(' ').slice(1, -1).join(' ');
 		let lang = message.content.split(" ").splice(-1);

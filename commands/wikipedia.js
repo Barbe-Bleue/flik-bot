@@ -1,7 +1,7 @@
 const axios = require("axios");
 const awaitMessagesOptions = require("../config.json").awaitMessagesOptions
 
-module.exports = (args,message) => {	
+module.exports = (message,args) => {	
 	if (args.length >= 1) {
 		getLink(args.join('-'))
 	} else if (args.length == 0) {

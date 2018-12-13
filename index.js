@@ -147,81 +147,7 @@ bot.on('message', message => {
     }
   }
   
-  switch (command) {
-    case "savoir":
-      cmd.knowledge(message);
-      break;
-    case "malou":
-      cmd.brain(message);
-      break;
-    case "pic":
-      cmd.picture(message);
-      break;
-    case "beauf":
-      cmd.beauf(message);
-      break;
-    case "doc":
-      cmd.doc(message);
-    case "help":
-      cmd.help(args[0],message);
-      break;
-    case "h1z1":
-    case "top":
-      cmd.topGame(args,message);
-      break;
-    case "decide":
-      cmd.decide(args,message);
-      break;
-    case "chat":
-    case "cat":
-      cmd.cat(message);
-      break;
-    case "catfact":
-      cmd.catFact(message)
-      break;
-    case "chuck":
-      cmd.chuck(message)
-      break;
-    case "traffic":
-    case "trafic":
-      cmd.trafic(args,message)
-      break;
-    case "gif":
-      cmd.gif(args[0],message)
-      break;
-    case "meteo":
-      cmd.meteo(args,message)
-      break;
-    case "actu":
-      cmd.news(bot.user,message)
-      break;
-    case "coin":
-      cmd.coin(args,message)
-      break;
-    case "genre":
-      cmd.gender(args,message)
-      break;
-    case "pause":
-    case "break":
-      cmd.pause(message);
-      break;
-    case "traduis":
-      cmd.translate(args,message)
-      break;
-    case "apprends":
-      cmd.writeBrain(args,message)
-      break;
-    case "amazon":
-    case "afr":
-      cmd.amazon(args,message);
-      break;
-    case "wikipedia":
-    case "wiki":
-      cmd.wikipedia(args,message);
-      break;
-    default:
-      return;
-   }
+  
 
   if (message.content.toUpperCase().includes("KICK MOI")){
     if (isAdmin) {
@@ -259,7 +185,7 @@ bot.on('message', message => {
       SEND_MESSAGES: true
     }).then(() => message.channel.send("On libère "+victime+", tu peux reparler maintenant :ok_hand: :slight_smile:"));
   }
-
+  
   function countdown(perdant) {
     message.channel.send(timeBeforeKick)
     if (timeBeforeKick == 1) {
@@ -276,6 +202,86 @@ bot.on('message', message => {
     while(end < start + ms) {
       end = new Date().getTime();
     }
+  }
+  
+  triggerCommand(message, args, command);
+  
+  function triggerCommand(message, args, command) {
+    switch (command) {
+      case "savoir":
+        cmd.knowledge(message);
+        break;
+      case "malou":
+        cmd.brain(message);
+        break;
+      case "pic":
+        cmd.picture(message);
+        break;
+      case "beauf":
+        cmd.beauf(message);
+        break;
+      case "doc":
+        cmd.doc(message);
+      case "help":
+        cmd.help(message,args);
+        break;
+      case "h1z1":
+      case "top":
+        cmd.topGame(message,args);
+        break;
+      case "decide":
+        cmd.decide(message,args);
+        break;
+      case "chat":
+      case "cat":
+        cmd.cat(message);
+        break;
+      case "catfact":
+        cmd.catFact(message)
+        break;
+      case "chuck":
+        cmd.chuck(message)
+        break;
+      case "traffic":
+      case "trafic":
+        cmd.trafic(message,args)
+        break;
+      case "gif":
+        cmd.gif(message,args)
+        break;
+      case "meteo":
+        cmd.meteo(message,args)
+        break;
+      case "actu":
+        cmd.news(bot.user,message)
+        break;
+      case "coin":
+        cmd.coin(message,args)
+        break;
+      case "genre":
+        cmd.gender(message,args)
+        break;
+      case "pause":
+      case "break":
+        cmd.pause(message);
+        break;
+      case "traduis":
+        cmd.translate(message,args)
+        break;
+      case "apprends":
+        cmd.writeBrain(message,args)
+        break;
+      case "amazon":
+      case "afr":
+        cmd.amazon(message,args);
+        break;
+      case "wikipedia":
+      case "wiki":
+        cmd.wikipedia(message,args);
+        break;
+      default:
+        return;
+     }
   }
 });
 

@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const awaitMessagesOptions = require("../config.json").awaitMessagesOptions
 
-module.exports = (args,message) => {
+module.exports = (message,args) => {
 	
 	if (args.length >= 1) {
 		createLink(args.join('+'));

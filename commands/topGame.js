@@ -1,5 +1,4 @@
-module.exports = (args,message) => {
-	
+module.exports = (message,args) => {
 	let nbGame = Math.floor((Math.random() * 5) + 1);
 	if(args.length === 1) {
 		nbGame = args[0]

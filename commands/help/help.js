@@ -2,7 +2,9 @@ const help = require('./help.json');
 const prefix = require('../../config.json').prefix
 const Discord = require('discord.js');
 
-module.exports = (command,message) => {
+module.exports = (message,args) => {
+  const command = args[0];
+  
   if(command){
     if(help[command]) {
       message.reply(new Discord.RichEmbed()
