@@ -25,7 +25,7 @@ bot.on('messageDelete', message => {
 
 // Membre rejoint le discord
 bot.on("guildMemberAdd", member => {
-  member.send(cmd.doc());
+  member.send("Salut moi c'est vag, tiens jte donne la liste des commandes c'est cadeau \n\n"+cmd.doc());
 });
 
 // Message
