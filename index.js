@@ -104,12 +104,13 @@ bot.on('message', message => {
       let perdant = message.guild.members.random();
       message.channel.send("Roulette russe de l'admin ! Un kick au hasard !")
       .then(() => {
-        if(!isAdmin) {
+        if(!perdant.kickable) {
           message.channel.send("Ok ça tombe sur l'admin on peut rien faire.");
         } else {
           message.channel.send(perdant.displayName+" a perdu.").then(() => {
-            wait(4000);
-            countdown(perdant)
+            message.channel.send("https://gph.is/29dBRmh");
+            wait(2000);
+            perdant.kick()
           });
         }
       });
