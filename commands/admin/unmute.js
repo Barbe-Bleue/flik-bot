@@ -1,4 +1,4 @@
-const errorMessage = require("../config.json").errorMessage;
+const errorMessage = require("../../config.json").errorMessage;
 
 module.exports = message => {
 	const isAdmin = !message.author.kickable;

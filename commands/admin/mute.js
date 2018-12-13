@@ -1,5 +1,5 @@
-const errorMessage = require("../config.json").errorMessage;
-const muteTime =  require("../config.json").muteTime;
+const errorMessage = require("../../config.json").errorMessage;
+const muteTime =  require("../../config.json").muteTime;
 
 module.exports = (message,args) => {
 	const isAdmin = !message.author.kickable;
