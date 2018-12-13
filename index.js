@@ -35,7 +35,7 @@ bot.on('message', message => {
   const command = args.shift().toLowerCase();
   const isAdmin = !message.author.kickable
 
-  if (command === "traduis"){
+  if (command === "traduis") {
     if (args != "") {
       let text = message.content.split(' ').slice(1, -1).join(' ');
       let lang = message.content.split(" ").splice(-1);
@@ -67,7 +67,7 @@ bot.on('message', message => {
     }
   }
 
-  if (command === "ban"){
+  if (command === "ban") {
     if (isAdmin) {
       if (message.mentions.members.first()) {
         message.mentions.members.first().kick().then(victime => {
@@ -83,7 +83,7 @@ bot.on('message', message => {
     }
   }
 
-  if (command === "mute"){
+  if (command === "mute") {
     if (isAdmin){
       muteUser(message.mentions.members.first(), args[1] ? args[1] * 1000 : muteTime);
     } else {
@@ -91,7 +91,7 @@ bot.on('message', message => {
     }
   }
 
-  if (command =="unmute"){
+  if (command =="unmute") {
     if(isAdmin) {
       unmuteUser(message.mentions.members.first());
     } else {
@@ -99,7 +99,7 @@ bot.on('message', message => {
     }
   }
 
-  if (command === "kick"){
+  if (command === "kick") {
     if (isAdmin) {
       let perdant = message.guild.members.random();
       message.channel.send("Roulette russe de l'admin ! Un kick au hasard !")
