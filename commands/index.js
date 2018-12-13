@@ -26,4 +26,8 @@ exports.catFact = require("./catFact.js")
 exports.help = require("./help/help.js")
 exports.kick = require("./kick.js")
 exports.countdown = require("./countdown.js")
+exports.roulette = require("./roulette/roulette.js")
 exports.strawpall = require("./strawpall.js")
+
+
+
