@@ -1,5 +1,5 @@
 const axios = require('axios');
-const meteo = require("./meteo.json");
+const weather = require("./weather.json");
 const Discord = require('discord.js');
 
 module.exports = async (message,args) => {
@@ -17,7 +17,7 @@ module.exports = async (message,args) => {
 	message.reply(new Discord.RichEmbed()
 	.setTitle("Meteo à "+res.data.city.name)
 	.setColor(0x10B8FE)
-	.setDescription(annonce + " "+res.data.list[jour].temp.day + "°C, " + res.data.list[jour].weather[0].description + " "+ meteo[res.data.list[jour].weather[0].description])
+	.setDescription(annonce + " "+res.data.list[jour].temp.day + "°C, " + res.data.list[jour].weather[0].description + " "+ weather[res.data.list[jour].weather[0].description])
 	.setThumbnail("https://cdn.pixabay.com/photo/2016/05/20/20/20/weather-1405870_960_720.png")
 	.setTimestamp())
 }

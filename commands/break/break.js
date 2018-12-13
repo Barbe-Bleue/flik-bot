@@ -1,10 +1,10 @@
-const pause = require("./pause.json");
+const food = require("./break.json");
 
 module.exports = message => {
 	let gouter = "";
 	for (let member in message.guild.members.array()) {
-		let manger = pause['manger'][Math.floor(Math.random() * pause['manger'].length)] 
-		let boire = pause['boire'][Math.floor(Math.random() * pause['boire'].length)]
+		let manger = food['manger'][Math.floor(Math.random() * food['manger'].length)] 
+		let boire = food['boire'][Math.floor(Math.random() * food['boire'].length)]
 		
 		let userID =  message.guild.members.array()[member]['user'].id;
 	 	gouter +='<@'+userID+'> : '+manger+' | '+boire+"\n";
