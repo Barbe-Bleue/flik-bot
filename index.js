@@ -137,6 +137,10 @@ bot.on('message', message => {
         break;
       case "suicide":
         cmd.suicide(message,bot)
+        break;
+      case "google":
+        cmd.google(message,args)
+        break;
       default:
         return;
     }

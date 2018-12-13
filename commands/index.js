@@ -35,6 +35,7 @@ exports.unmute = require("./unmute.js")
 exports.suicide = require("./suicide.js")
 exports.kickMe = require("./kickMe.js")
 
+exports.google = require("./google.js")
 
 
 
