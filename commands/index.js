@@ -28,6 +28,7 @@ exports.kick = require("./kick.js")
 exports.countdown = require("./countdown.js")
 exports.roulette = require("./roulette/roulette.js")
 exports.strawpall = require("./strawpall.js")
+exports.ban = require("./ban.js")
 
 
 
