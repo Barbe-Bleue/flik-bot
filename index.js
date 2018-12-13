@@ -4,8 +4,8 @@ const cmd = require ("./commands/index.js");
 
 const config = require('./config.json');
 const token = config.token;
-const prefix = config.prefix; 
-const muteTime = config.muteTime; 
+const prefix = config.prefix;
+const muteTime = config.muteTime;
 const awaitMessagesOptions = config.awaitMessagesOptions
 const errorMessage = config.errorMessage
 
@@ -36,7 +36,7 @@ bot.on('message', message => {
   const isAdmin = !message.author.kickable
 
   if (command === "traduis"){
-    if(args != "") {
+    if (args != "") {
       let text = message.content.split(' ').slice(1, -1).join(' ');
       let lang = message.content.split(" ").splice(-1);
       cmd.translate(text,lang).then(res => message.reply(res));
@@ -68,8 +68,8 @@ bot.on('message', message => {
   }
 
   if (command === "ban"){
-    if(isAdmin) {
-      if(message.mentions.members.first()) {
+    if (isAdmin) {
+      if (message.mentions.members.first()) {
         message.mentions.members.first().kick().then(victime => {
           message.channel.send("@everyone :wave: **" + victime.displayName + "** a été kické :point_right: ");
         }).catch(() => {
@@ -83,15 +83,15 @@ bot.on('message', message => {
     }
   }
 
-  if(command === "mute"){
-    if(isAdmin){
+  if (command === "mute"){
+    if (isAdmin){
       muteUser(message.mentions.members.first(), args[1] ? args[1] * 1000 : muteTime);
     } else {
       message.reply(errorMessage.notAdmin);
     }
   }
-  
-  if(command =="unmute"){
+
+  if (command =="unmute"){
     if(isAdmin) {
       unmuteUser(message.mentions.members.first());
     } else {
@@ -100,7 +100,7 @@ bot.on('message', message => {
   }
 
   if (command === "kick"){
-    if(isAdmin) {
+    if (isAdmin) {
       let perdant = message.guild.members.random();
       message.channel.send("Roulette russe de l'admin ! Un kick au hasard !")
       .then(() => {
@@ -118,12 +118,12 @@ bot.on('message', message => {
       message.reply(errorMessage.notAdmin);
     }
   }
-  
-  if(command === "roulette") {
+
+  if (command === "roulette") {
     const pseudos = ["Bob le bricoleur","Suppoman","Voleur de crypto","Grandad Harol","Shitcoin"];
     message.channel.send("Jeu de la roulette russe : "+ nbR +"/6 chance d'avoir une punition.");
     const punitions = ["kick", "Changement de pseudo"];
-    if(Math.floor(Math.random() * (6-nbR)) == 0) {
+    if (Math.floor(Math.random() * (6-nbR)) == 0) {
       let puni = Math.floor(Math.random()*punitions.length);
       message.channel.send("PAN \nPunition : " + punitions[puni]);
       switch(puni) {
@@ -136,28 +136,27 @@ bot.on('message', message => {
       }
       message.channel.send("Chances de perdre remises à zéro.");
       nbR = 1;
-    }
-    else{
+    } else {
       message.channel.send("*Clic*");
       nbR += 1;
     }
   }
-  
-  if (command === "suicide"){
-    if(isAdmin){
+
+  if (command === "suicide") {
+    if (isAdmin) {
       message.channel.send("@everyone Ah ok on me bute comme ça :tired_face: :gun:");
       setTimeout(() => {
         bot.destroy();
       }, 2000);
-    }else {
+    } else {
       message.reply(errorMessage.notAdmin);
     }
   }
-  
-  if(command === "apprends") {
-    if(args != ""){
+
+  if (command === "apprends") {
+    if (args != "") {
       message.channel.send(cmd.writeBrain(args.join(' ')));
-    }else{
+    } else {
       message.channel.sendMessage('Que veux tu me faire apprendre ?').then(() => {
         message.channel.awaitMessages(response => response.content.length > 0, awaitMessagesOptions).then(collected => {
             message.channel.send(cmd.writeBrain(collected.first().content));
@@ -167,48 +166,48 @@ bot.on('message', message => {
       });
     }
   }
-    
-  if(command === "pause" || command === "break") {
+
+  if (command === "pause" || command === "break") {
     message.channel.send('Aight c\'est l\'heure de la pause :ok_hand: :coffee: :chocolate_bar: ');
 
-    for(let member in message.guild.members.array()){
+    for (let member in message.guild.members.array()) {
       let userID =  message.guild.members.array()[member]['user'].id;
       cmd.pause().then(res => {
         message.channel.send('<@'+userID+'> : '+res.manger+' | '+res.boire);
       });
     }
   }
-  
-  if(command === "rename") {
-    if(args[1] && isAdmin) {
+
+  if (command === "rename") {
+    if (args[1] && isAdmin) {
       message.mentions.members.first().setNickname(args[1]);
       message.channel.send("Hey @everyone ! "+message.author+" a changé le nom de "+message.mentions.members.first()+" en ***"+args[1]+"***");
-    }else if (args[1] && !isAdmin) {
+    } else if (args[1] && !isAdmin) {
       message.reply(errorMessage.notAdmin);
-    }else if(args[0]) {
+    } else if(args[0]) {
       message.member.setNickname(args[0]);
       message.channel.send("Hey @everyone ! "+message.author+" a changé son nom en ***"+args+"***");
-    }else{
+    } else {
       message.channel.send('Pseudo invalide')
     }
   }
 
-  if(command === "sondage") {
-    if(args.length > 1) {
+  if (command === "sondage") {
+    if (args.length > 1) {
       message.channel.send(":apple:***SONDAGE :apple:\n"+args.join(" ")+"***")
       .then(message => {
         message.react("👍")
         message.react("👎")
       })
-    }else {
+    } else {
       message.reply("Indique la raison du sondage")
     }
   }
 
-  if(command === "amazon" || command === "afr") {
-    if(args.length >= 1){
+  if (command === "amazon" || command === "afr") {
+    if (args.length >= 1) {
       message.reply(cmd.amazon(args.join('+')));
-    } else if(args.length == 0) {
+    } else if (args.length == 0) {
       message.reply('tu veux quoi ?').then(() => {
         message.channel.awaitMessages(response => response.content.length > 0 ,awaitMessagesOptions)
         .then(collected => {
@@ -220,10 +219,10 @@ bot.on('message', message => {
     }
   }
 
-  if(command === "wikipedia" || command === "wiki") {
-    if(args.length >= 1) {
+  if (command === "wikipedia" || command === "wiki") {
+    if (args.length >= 1) {
       cmd.wikipedia(args.join('-')).then(res => message.channel.send(res));
-    } else if(args.length == 0) {
+    } else if (args.length == 0) {
       message.reply('tu veux quoi ?').then(() => {
         message.channel.awaitMessages(response => response.content.length > 0 ,awaitMessagesOptions)
         .then(collected => {
@@ -235,8 +234,8 @@ bot.on('message', message => {
       });
     }
   }
-  
-  switch(command) {
+
+  switch (command) {
     case "savoir":
       message.channel.send(cmd.knowledge());
       break;
@@ -292,10 +291,10 @@ bot.on('message', message => {
       break;
     default:
       return;
-   } 
-   
+   }
+
   if (message.content.toUpperCase().includes("KICK MOI")){
-    if(isAdmin) {
+    if (isAdmin) {
       message.channel.send("Je peux pas te kick t'es admin.");
     } else{
       message.reply("ok.").then(() => message.member.kick());
@@ -306,7 +305,7 @@ bot.on('message', message => {
   swear ? message.reply(swear) : null
 
   let police = cmd.police(message);
-  if(police) {
+  if (police) {
     message.reply(police.police);
     message.reply(police.msg)
     police.mutable ? muteUser(message.member,config.muteTime) : null;
@@ -330,20 +329,17 @@ bot.on('message', message => {
       SEND_MESSAGES: true
     }).then(() => message.channel.send("On libère "+victime+", tu peux reparler maintenant :ok_hand: :slight_smile:"));
   }
-  
+
   function countdown(perdant) {
     message.channel.send(timeBeforeKick)
     if (timeBeforeKick == 1) {
-      message.channel.send("https://gph.is/29dBRmh");
-      wait(1000);
-      perdant.kick();
       return;
    } else {
      timeBeforeKick--;
-   } 
+   }
    timeoutMyOswego = setTimeout(countdown, 1000);
   }
-  
+
   function wait(ms) {
     var start = new Date().getTime();
     var end = start;
