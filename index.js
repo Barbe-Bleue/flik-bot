@@ -5,8 +5,6 @@ const cmd = require ("./commands/index.js");
 const config = require('./config.json');
 const token = config.token;
 const prefix = config.prefix;
-const muteTime = config.muteTime;
-const errorMessage = config.errorMessage
 
 // Initialisation du bot
 bot.on('ready', () => {
@@ -41,7 +39,7 @@ bot.on('message', message => {
   if (police) {
     message.reply(police.police);
     message.reply(police.msg)
-    police.mutable ? cmd.mute(message,config.muteTime) : null;
+    police.mutable ? cmd.mute(message) : null;
   }
    
   triggerCommand(message, args, command);
