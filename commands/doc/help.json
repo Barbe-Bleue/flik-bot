@@ -1,0 +1,115 @@
+{
+  "kick": {
+      "resume": "kick un utilisateur au hasard",
+      "exemples": ["kick @user"],
+      "admin": true
+    },
+  "suicide": {
+      "resume": "fin du bot",
+      "admin": true
+    },
+  "mute": {
+      "resume": "mute textuellement un user",
+      "exemples": ["mute @user"],
+      "admin": true
+    },
+  "unmute": {
+      "resume": "unmute textuellement un user",
+      "exemples": ["unmute @user"],
+      "admin": true
+    },
+  "ban": {
+      "resume": "banni un user",
+      "exemples": ["bran @user"],
+      "admin": true
+    },
+  "rename": {
+      "resume": "change le pseudo du user",
+      "exemples": ["rename @user newpseudo","rename newpseudo"]
+    },
+  "traduis": {
+      "resume": "traduit le texte dans la langue voulu",
+      "exemples": ["traduis chat russe","traduis"]
+    },
+  "roulette": {
+      "resume": "Jeu de la roulette russe"
+    },
+  "decide" : {
+      "resume": "le bot fait un choix",
+      "exemples": ["decide choix1 choix2"]
+    },
+  "meteo": {
+      "resume": "meteo de la ville aujourd'hui, ou demain si demain est ajouté à la fin de la phrase",
+      "exemples": ["meteo paris","meteo paris demain"]
+    },
+  "trafic" : {
+      "resume": "état du trafic pour la ligne en question",
+      "exemples": ["trafic rers","trafic rers a","trafic a","trafic metros","trafic metros 3","trafic 3"]
+    },
+  "actu": {
+      "resume": "dernières actualités"
+    },
+  "gif": {
+      "resume": "gif au hasard selon mot(s)-clé(s)",
+      "exemples": ["gif cat"]
+    },
+  "sondage": {
+      "resume": "vote oui ou non sur un sondage",
+      "exemples": ["sondage pour ou contre les memes ?"]
+    },
+  "genre": {
+      "resume": "détermine le genre du prénom",
+      "exemples": ["genre guillaume"]
+    },
+  "coin": {
+      "resume": "affiche le prix en dollars des monnaies en question ou affiche le cours du Bitcoin",
+      "exemples": ["coin", "coin eth xmr"]
+    },
+  "apprends": {
+      "resume": "le bot demande ce que tu veux qu'il apprenne",
+      "exemples": ["apprends", "apprends je ne sais pas quoi dire","apprends @user est super con"]
+    },
+  "malou": {
+      "resume": "le bot balance tout son savoir"
+    },
+  "savoir": {
+      "resume": "le bot exprime une phrase qu'il connait"
+    },
+  "wiki": {
+      "resume": "fait une recherche sur wikipedia du mot clé",
+      "exemples": ["wiki", "wiki france"]
+    },
+  "amazon": {
+      "resume": "envoie le liens amazon sur le mot clé",
+      "exemples": ["amazon", "amazon marvel"]
+    },
+  "kick_moi": {
+      "resume": "se faire kicker par le bot"
+    },
+  "top": {
+      "resume": "choix (ou aléatoire) du nombre de jeux et prévisions",
+      "exemples": ["top", "top 5"]
+    },
+  "pic": {
+      "resume": "photo au hasard"
+    },
+  "pause": {
+      "resume": "choix du snack pour la pause"
+    },
+  "beauf": {
+      "resume": "donne un élément requis pour etre beauf"
+    },
+  "chuck": {
+      "resume": "chuck norris fact"
+    },
+  "cat": {
+      "resume": "affiche une photo de chat"
+    },
+  "catdFact": {
+      "resume": "une fact sur les chats"
+    },
+    "help": {
+      "resume": "exemple pour la commande souhaité",
+      "exemples": ["help command"]
+    }
+}
