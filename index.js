@@ -27,11 +27,9 @@ bot.on('message', message => {
 
   const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();  
+ 
+  message.content.toUpperCase().includes("KICK MOI") ? cmd.kickMe(message) : null
   
-  if (message.content.toUpperCase().includes("KICK MOI")) {
-    cmd.suicide(message,bot)
-  }
-
   let swear = cmd.insult(message.content);
   swear ? message.reply(swear) : null
 
@@ -141,6 +139,8 @@ bot.on('message', message => {
       case "unmute":
         cmd.unmute(message);
         break;
+      case "suicide":
+        cmd.suicide(message,bot)
       default:
         return;
     }

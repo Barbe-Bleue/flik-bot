@@ -33,6 +33,8 @@ exports.ban = require("./ban.js")
 exports.mute = require("./mute.js")
 exports.unmute = require("./unmute.js")
 exports.suicide = require("./suicide.js")
+exports.kickMe = require("./kickMe.js")
+
 
 
 
