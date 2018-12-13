@@ -29,7 +29,6 @@ Commandes utilisateur:
 Recherches:
 **wiki** *mot* -- fait une recherche sur wikipedia du mot clé
 **amazon** *mot* -- envoie le liens amazon sur le mot clé
-**google** *recherche* -- recherche google
 
 Interactions :
 "kick_moi" -- pas besoin d'explications
