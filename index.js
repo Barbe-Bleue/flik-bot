@@ -29,32 +29,9 @@ bot.on('message', message => {
 
   const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();  
-
-  if (command =="unmute") {
-    if(isAdmin) {
-      unmuteUser(message.mentions.members.first());
-    } else {
-      message.reply(errorMessage.notAdmin);
-    }
-  }
-
-  if (command === "suicide") {
-    if (isAdmin) {
-      message.channel.send("@everyone Ah ok on me bute comme ça :tired_face: :gun:");
-      setTimeout(() => {
-        bot.destroy();
-      }, 2000);
-    } else {
-      message.reply(errorMessage.notAdmin);
-    }
-  }
   
-  if (message.content.toUpperCase().includes("KICK MOI")){
-    if (isAdmin) {
-      message.channel.send("Je peux pas te kick t'es admin.");
-    } else{
-      message.reply("ok.").then(() => message.member.kick());
-    }
+  if (message.content.toUpperCase().includes("KICK MOI")) {
+    cmd.suicide(message,bot)
   }
 
   let swear = cmd.insult(message.content);
@@ -66,13 +43,7 @@ bot.on('message', message => {
     message.reply(police.msg)
     police.mutable ? cmd.mute(message,config.muteTime) : null;
   }
-
-  function unmuteUser(victime){
-    message.channel.overwritePermissions(victime, {
-      SEND_MESSAGES: true
-    }).then(() => message.channel.send("On libère "+victime+", tu peux reparler maintenant :ok_hand: :slight_smile:"));
-  }
-  
+   
   triggerCommand(message, args, command);
     
   function triggerCommand(message, args, command) {
@@ -168,6 +139,10 @@ bot.on('message', message => {
         break;
       case "mute":
         cmd.mute(message,args)
+        break;
+      case "unmute":
+        cmd.unmute(message);
+        break;
       default:
         return;
     }
