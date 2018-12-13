@@ -6,23 +6,19 @@ const config = require('./config.json');
 const token = config.token;
 const prefix = config.prefix;
 
-// Initialisation du bot
 bot.on('ready', () => {
   console.log('bot ok!');
 });
 
-// Suppression de message
 bot.on('messageDelete', message => {
 	message.channel.send('Ohlala pas bien ! <@'+message.author.id+'> a supprimer son message **'+message.content+'** !');
   message.author.kickable ? message.member.setNickname("supprimeur") : null
 });
 
-// Membre rejoint le discord
 bot.on("guildMemberAdd", member => {
   member.send("Salut moi c'est vag, tiens jte donne la liste des commandes c'est cadeau \n\n"+cmd.doc());
 });
 
-// Message
 bot.on('message', message => {
 
   const args = message.content.slice(prefix.length).trim().split(/ +/g);
