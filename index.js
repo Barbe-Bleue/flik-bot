@@ -250,8 +250,9 @@ bot.on('message', message => {
       message.channel.send(cmd.beauf());
       break;
     case "doc":
-    case "help":
       message.author.send(cmd.doc());
+    case "help":
+      message.reply(cmd.help(args[0]));
       break;
     case "h1z1":
     case "top":
