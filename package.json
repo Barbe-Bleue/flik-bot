@@ -1,7 +1,7 @@
 {
   "name": "discordbot",
   "version": "1.0.0",
-  "description": "### Config",
+  "description": "🤖 Bot un peu troll sous discord",
   "main": "index.js",
   "devDependencies": {},
   "scripts": {
