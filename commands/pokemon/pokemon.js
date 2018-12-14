@@ -1,5 +1,4 @@
 const axios =  require("axios");
-const Discord = require('discord.js');
 const bot = require('../../config.json').bot
 const emoji = require("./type.json");
 const french = require("./fr.json");
@@ -46,15 +45,19 @@ module.exports = async (message,args) => {
 				"abilities": getAbilities(pokemon.abilities),
 				"stats": getStats(pokemon.stats)
 			}
-			
-			message.reply(new Discord.RichEmbed()
-			.setTitle(infos.name)
-			.setColor(infos.color)
-			.addField("Type", infos.type)
-			.addField("Compétences", infos.abilities)
-			.addField("Statistiques", infos.stats)
-			.setThumbnail(infos.image)
-			.setTimestamp());
+	
+			message.reply({embed : {
+				title: infos.name,
+				color: 3447003,
+				fields: [
+					{ name: "Type", value: infos.type, inline: true},
+					{ name: "Compétences", value: infos.abilities, inline: true},
+					{ name: "Statistiques", value: infos.stats, inline: true}
+				],
+				thumbnail: {
+					url: infos.image
+				}
+			}})
 			return;
 		}
 	}
