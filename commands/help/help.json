@@ -114,6 +114,6 @@
   },
   "pokemon" : {
     "resume": "infos d'un ou des pokémons",
-    "exemples": ["pokemon salamèche"," pokemon salamèche carapuce"," pokemon","poke"]
+    "exemples": ["pokemon salamèche"," pokemon salamèche carapuce","pokemon","poke"]
   }
 }

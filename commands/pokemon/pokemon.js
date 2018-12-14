@@ -48,7 +48,7 @@ module.exports = async (message,args) => {
 	
 			message.reply({embed : {
 				title: infos.name,
-				color: 3447003,
+				color: infos.color,
 				fields: [
 					{ name: "Type", value: infos.type, inline: true},
 					{ name: "Compétences", value: infos.abilities, inline: true},
@@ -64,7 +64,7 @@ module.exports = async (message,args) => {
 	
 	async function getColor(url) {
 		let species = await axios.get(url);
-		return colourNameToHex(species.data.color.name);
+		return colorNameToHex(species.data.color.name);
 	}
 	
 	function getType(types) {
@@ -91,7 +91,11 @@ module.exports = async (message,args) => {
 		return allStats;
 	}
 	
-	function colourNameToHex(name) {
-    return typeof colors[name] != 'undefined' ? colors[name].toString() : false
+	function colorNameToHex(name) {
+    return typeof colors[name] != 'undefined' ? colorHexToNumber(colors[name].toString()) : false
+	}
+	
+	function colorHexToNumber(hex) {
+		return parseInt(hex.replace('#',"0x"),16);
 	}
 }
