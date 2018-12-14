@@ -82,7 +82,7 @@ bot.on('message', message => {
         cmd.gif(message,args)
         break;
       case "meteo":
-        cmd.meteo(message,args)
+        cmd.weather(message,args)
         break;
       case "actu":
         cmd.news(message)
@@ -95,7 +95,7 @@ bot.on('message', message => {
         break;
       case "pause":
       case "break":
-        cmd.pause(message);
+        cmd.break(message);
         break;
       case "traduis":
         cmd.translate(message,args)
