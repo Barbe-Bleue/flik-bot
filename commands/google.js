@@ -17,7 +17,6 @@ module.exports = (message,args) => {
 		message.reply('tu veux quoi ?').then(() => {
 			message.channel.awaitMessages(response => response.content.length > 0 ,awaitMessagesOptions)
 			.then(collected => {
-				console.log();
 				getGoogleResults(collected.first().content)
 			}).catch(() => {
 				message.reply(errorMessage.waitingToMuch);

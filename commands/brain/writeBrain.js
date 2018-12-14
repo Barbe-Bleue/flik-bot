@@ -35,7 +35,7 @@ module.exports = (message,args) => {
 	    	return ":no_entry: Hey, je connais déjà ca ! :no_entry:";
 	    }
 		} catch (e) {
-			console.log(e);
+			return errorMessage.error
 		}		
 	}	
 }

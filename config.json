@@ -12,7 +12,8 @@
 	"timeBeforeKick": 5,
 	"errorMessage": {
 		"waitingToMuch": "T\"as pas trouvé les touches sur ton clavier ou quoi ? \n Relance la commande quand tu les auras trouvé ",
-		"notAdmin": "Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?"
+		"notAdmin": "Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?",
+		"error": "Hey, flemme me casse pas les couilles"
 	},
 	"googleResults": 3,
 	"bot": {

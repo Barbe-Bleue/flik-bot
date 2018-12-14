@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require('path');
+const errorMessage = require("../../config.json").errorMessage
 const brain = path.join(__dirname, './cerveau.txt');
 
 module.exports = message => {
@@ -9,6 +10,6 @@ module.exports = message => {
 		let res = savoir != '' ? savoir[Math.floor(Math.random() * savoir.length)] : "Hey, flemme me casse pas les couilles"
 		message.channel.send(res)
 	} catch (e) {
-		console.log(e);
+		return errorMessage.error
 	}
 }

@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require('path');
 const beauf = path.join(__dirname, './beauf.txt');
+const errorMessage = require("../../config.json").errorMessage
 
 module.exports = message => {
 	try {
@@ -17,9 +18,9 @@ module.exports = message => {
 				}
 			}});
 		} else {
-			return "Hey, flemme me casse pas les couilles";
+			return errorMessage.error
 		}
 	} catch (e) {
-		console.log(e);
+		return errorMessage.error
 	}
 }
