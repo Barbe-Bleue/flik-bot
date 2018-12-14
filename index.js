@@ -20,12 +20,11 @@ bot.on("guildMemberAdd", member => {
 });
 
 bot.on('message', message => {
-
-  const args = message.content.slice(prefix.length).trim().split(/ +/g);
-  const command = args.shift().toLowerCase();  
- 
+  
   if (message.content[0] === prefix) {
-    cmd.history(message.author.username,command,args);
+    const args = message.content.slice(prefix.length).trim().split(/ +/g);
+    const command = args.shift().toLowerCase();  
+    
     triggerCommand(message, args, command);
   } else {
     message.content.toUpperCase().includes("KICK MOI") ? cmd.kickMe(message) : null
@@ -152,6 +151,7 @@ bot.on('message', message => {
         message.reply("Je connais pas la commande **"+command+"**" )
         return;
     }
+    cmd.history(message.author.username,command,args);
   }
 });
 
