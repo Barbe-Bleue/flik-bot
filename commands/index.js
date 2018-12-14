@@ -16,7 +16,6 @@ exports.kick = require("./kick.js")
 exports.countdown = require("./countdown.js")
 exports.roulette = require("./roulette/roulette.js")
 exports.strawpall = require("./strawpall.js")
-exports.kickMe = require("./kickMe.js")
 exports.rename = require("./rename.js")
 exports.pokemon = require("./pokemon/pokemon.js")
 exports.history = require("./history.js")
@@ -29,9 +28,7 @@ exports.catFact = require("./cat/catFact.js")
 exports.help = require("./help/help.js")
 exports.doc = require("./help/doc.js")
 
-// detector
-exports.insult = require("./insult/insult.js")
-exports.police = require("./insult/police.js")
+
 
 // brain 
 exports.knowledge = require("./brain/knowledge.js")

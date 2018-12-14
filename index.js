@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const cmd = require ("./commands/index.js");
+const detector = require ("./detectors/index.js");
 
 const config = require('./config.json');
 const token = config.token;
@@ -26,18 +27,8 @@ bot.on('message', message => {
     const command = args.shift().toLowerCase();  
     
     triggerCommand(message, args, command);
-  } else {
-    message.content.toUpperCase().includes("KICK MOI") ? cmd.kickMe(message) : null
-    
-    let swear = cmd.insult(message.content);
-    swear ? message.reply(swear) : null
-    
-    let police = cmd.police(message);
-    if (police) {
-      message.reply(police.police);
-      message.reply(police.msg)
-      police.mutable ? cmd.mute(message) : null;
-    }
+  } else {    
+    detector(message)
   }
   
   function triggerCommand(message, args, command) {
