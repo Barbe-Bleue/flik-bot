@@ -24,20 +24,23 @@ bot.on('message', message => {
   const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();  
  
-  message.content.toUpperCase().includes("KICK MOI") ? cmd.kickMe(message) : null
-  
-  let swear = cmd.insult(message.content);
-  swear ? message.reply(swear) : null
-
-  let police = cmd.police(message);
-  if (police) {
-    message.reply(police.police);
-    message.reply(police.msg)
-    police.mutable ? cmd.mute(message) : null;
-  }
-   
-  triggerCommand(message, args, command);
+  if (message.content[0] === prefix) {
+    cmd.history(message.author.username,command,args);
+    triggerCommand(message, args, command);
+  } else {
+    message.content.toUpperCase().includes("KICK MOI") ? cmd.kickMe(message) : null
     
+    let swear = cmd.insult(message.content);
+    swear ? message.reply(swear) : null
+    
+    let police = cmd.police(message);
+    if (police) {
+      message.reply(police.police);
+      message.reply(police.msg)
+      police.mutable ? cmd.mute(message) : null;
+    }
+  }
+  
   function triggerCommand(message, args, command) {
     switch (command) {
       case "savoir":
@@ -146,6 +149,7 @@ bot.on('message', message => {
         cmd.pokemon(message,args)
         break;
       default:
+        message.reply("Je connais pas la commande **"+command+"**" )
         return;
     }
   }
