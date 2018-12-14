@@ -141,6 +141,10 @@ bot.on('message', message => {
       case "google":
         cmd.google(message,args)
         break;
+      case "pokemon":
+      case "poke":
+        cmd.pokemon(message,args)
+        break;
       default:
         return;
     }

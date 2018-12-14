@@ -105,11 +105,15 @@
   "cat": {
       "resume": "affiche une photo de chat"
     },
-  "catdFact": {
+  "catFact": {
       "resume": "une fact sur les chats"
     },
-    "help": {
-      "resume": "exemple pour la commande souhaité",
-      "exemples": ["help command"]
-    }
+  "help": {
+    "resume": "exemple pour la commande souhaité",
+    "exemples": ["help command"]
+  },
+  "pokemon" : {
+    "resume": "infos d'un ou des pokémons",
+    "exemples": ["pokemon salamèche"," pokemon salamèche carapuce"," pokemon","poke"]
+  }
 }

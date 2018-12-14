@@ -18,6 +18,7 @@ exports.roulette = require("./roulette/roulette.js")
 exports.strawpall = require("./strawpall.js")
 exports.kickMe = require("./kickMe.js")
 exports.rename = require("./rename.js")
+exports.pokemon = require("./pokemon/pokemon.js")
 
 // cat 
 exports.cat = require("./cat/cat.js")
