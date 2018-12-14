@@ -16,7 +16,8 @@
     "fs": "^0.0.1-security",
     "google": "^2.1.0",
     "node-coinmarketcap": "^0.2.0",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "require-all": "^3.0.0"
   },
   "repository": "git+https://github.com/Barbe-Bleue/vag-bot.git",
   "bugs": {
