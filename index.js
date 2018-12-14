@@ -85,7 +85,7 @@ bot.on('message', message => {
         cmd.meteo(message,args)
         break;
       case "actu":
-        cmd.news(bot.user,message)
+        cmd.news(message)
         break;
       case "coin":
         cmd.coin(message,args)

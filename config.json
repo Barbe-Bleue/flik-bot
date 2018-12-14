@@ -14,5 +14,9 @@
 		"waitingToMuch": "T\"as pas trouvé les touches sur ton clavier ou quoi ? \n Relance la commande quand tu les auras trouvé ",
 		"notAdmin": "Bah alors ? On essaye de lancer des commandes alors qu'on est pas admin ?"
 	},
-	"googleResults": 3
+	"googleResults": 3,
+	"bot": {
+		"name": "Vag",
+		"image": "https://cdn.discordapp.com/avatars/416388226690056195/5ce983d934963ca7c7113a9c7713dc29.png?size=32"
+	}
 }
