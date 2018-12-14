@@ -1,4 +1,4 @@
-const food = require("./break.json");
+const food = require("./snack.json");
 
 module.exports = message => {
 	let gouter = "";
