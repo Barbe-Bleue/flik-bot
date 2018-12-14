@@ -1,43 +1,46 @@
 const help = require('./help.json');
 const prefix = require('../../config.json').prefix
-const Discord = require('discord.js');
 
 module.exports = (message,args) => {
   const command = args[0];
   
   if(command){
     if(help[command]) {
-      message.reply(new Discord.RichEmbed()
-      .setAuthor(command.toUpperCase())
-      .setTitle("*"+help[command].resume+"*")
-      .setColor(0x39e116)
-      .setDescription(help[command].exemples.map(cmd => prefix+cmd))
-      .setThumbnail("https://www.supinfo.com/articles/resources/143087/5849/0.png")
-      .setTimestamp())
-    } else message.reply("Je ne connais pas la commande **"+command+"** :shrug:")
+      render(command.toUpperCase(),help[command].resume,getExemples(command))
+    } else {
+      message.reply("Je ne connais pas la commande **"+command+"** :shrug:")
+    }
   } else {
-    let allCmd = "";
     for (var cmd in help) {
       if (help.hasOwnProperty(cmd)) {
-        if(help[cmd].exemples) {
-          ex = getExemples(help[cmd])
-        } else ex = prefix+cmd
-        allCmd += "\n\n**"+cmd.toUpperCase()+"**\n*"+help[cmd].resume+"*\n"+ ex
+        render(cmd.toUpperCase(),help[cmd].resume,getExemples(cmd))
       }
     }
-    message.reply(new Discord.RichEmbed()
-    .setTitle("HELP")
-    .setColor(0x39e116)
-    .setDescription(allCmd)
-    .setThumbnail("https://www.supinfo.com/articles/resources/143087/5849/0.png")
-    .setTimestamp())
   }
-
+  
+  function render(command,resume,exemples) {
+    message.reply({embed : {
+      title: command,
+      color: 3793174,
+      fields: [
+        {name: "Description", value: resume},
+        {name: "Exemples", value: exemples}
+      ],
+      thumbnail: {
+        url: "https://www.supinfo.com/articles/resources/143087/5849/0.png"
+      }
+    }});
+  }
+  
   function getExemples(command) {
-    let aled = "";
-    command.exemples.map(ex => {
-      aled+=prefix+ex+"\n"
-    });
-    return aled
+    let exemples = "";
+    if(help[command].exemples) {
+      help[command].exemples.map(ex => {
+        exemples +=prefix+ex+"\n"
+      });
+    } else {
+      return prefix+command
+    }
+    return exemples
   }
 }

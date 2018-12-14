@@ -1,8 +1,9 @@
 const axios = require("axios");
-const Discord = require('discord.js');
+const awaitMessagesOptions = require("../config.json").awaitMessagesOptions
+const errorMessage = require("../config.json").errorMessage
 
 module.exports = async (message,args) => {	
-	let infoTrafic = "";
+	let infoTrafic = [];
 	let statusMessage;
 	let type;
 	let code;
@@ -20,32 +21,32 @@ module.exports = async (message,args) => {
 			type = "rers"
 		}
 	}
-
+	
 	let res = await axios.get("https://api-ratp.pierre-grimaud.fr/v3/traffic/"+type);
 	
 	if(args.length === 1) {
 		if(code) {
 			let res = await axios.get("https://api-ratp.pierre-grimaud.fr/v3/traffic/"+type+"/"+code);
-			infoTrafic = getCodeTrafic(res,type,code);
+			infoTrafic.push(getCodeTrafic(res,type,code));
 		} else if(type === "metros") {
 			res.data.result.metros.forEach(item => {
 				statusMessage = getStatusMessage(item.title,item.message);
-				infoTrafic += "Ligne **"+item.line+"**: "+statusMessage+"\n";
+				infoTrafic.push({ name: "Ligne **"+item.line+"**: ", value: statusMessage})
 			})
 		} else if(type === "rers") {
 			res.data.result.rers.forEach(item => {
 				statusMessage = getStatusMessage(item.title,item.message);
-				infoTrafic += "Ligne **"+item.line+"**: "+statusMessage+"\n";
+				infoTrafic.push({ name: "Ligne **"+item.line+"**: ", value: statusMessage})
 			})
 		}
 	} else if(args.length == 2) {
 		let res = await axios.get("https://api-ratp.pierre-grimaud.fr/v3/traffic/"+type+"/"+args[1]);
-		infoTrafic = getCodeTrafic(res,type,code);
+		infoTrafic.push(getCodeTrafic(res,type,code));
 	}
 	
 	function getCodeTrafic(res,type,code) {
 		let status = getStatusMessage(res.data.result.title,res.data.result.message);
-		return  "Ligne **"+	res.data.result.line+"**: "+status+"\n";
+		return { name: "Ligne **"+res.data.result.line+"**: ", value: status}
 	}
 	
 	function getStatusMessage(title, message) {
@@ -66,11 +67,12 @@ module.exports = async (message,args) => {
  		}
 	}
 	
-	message.reply(new Discord.RichEmbed()
-		.setTitle("Info traffic")
-		.setColor(0x4AC1AE)
-		.setDescription(infoTrafic)
-		.setThumbnail("https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/RATP.svg/637px-RATP.svg.png")
-		.setTimestamp()
-	);
+	message.reply({embed : {
+		title: "Info traffic",
+		color: 4899246,
+		fields: infoTrafic,
+		thumbnail: {
+			url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/RATP.svg/637px-RATP.svg.png"
+		}
+	}});
 }

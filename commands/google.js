@@ -1,4 +1,3 @@
-const Discord = require('discord.js');
 const awaitMessagesOptions = require("../config.json").awaitMessagesOptions
 const errorMessage = require("../config.json").errorMessage
 const google = require("google");
@@ -26,19 +25,23 @@ module.exports = (message,args) => {
 		});
 	}
 	
- 	 async function getGoogleResults(search) {
-		 await google(search, (err,data ) => {
-		 data.links.forEach(link => {
-			 console.log(link);
-			 if(link.href) {
-				 message.reply(new Discord.RichEmbed()
-				 .setTitle(link.title)
-				 .setColor(0x4285F4)
-				 .setDescription(link.description)
-				 .setThumbnail("http://diylogodesigns.com/blog/wp-content/uploads/2016/04/google-logo-icon-PNG-Transparent-Background.png")
-				 .setURL(link.href))
-			 }		 
-		 });
-	 })	
+	async function getGoogleResults(search) {
+		await google(search, (err,data ) => {
+			data.links.forEach(link => {
+			 	if(link.href) {
+					message.reply({embed : {
+	  				title: link.title,
+	  				color: 4359668,
+						url: link.href,
+	          fields: [
+	            {name: "Description", value: link.description},
+	          ],
+	  				thumbnail: {
+	  					url: "https://www.supinfo.com/articles/resources/143087/5849/0.png"
+	  				}
+  				}});
+				}
+	 		})	
+ 		})
 	}
 }

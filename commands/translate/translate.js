@@ -1,4 +1,3 @@
-const Discord = require('discord.js');
 const flagList = require("./flag.json");
 const yandexApiKey = require("../../config.json").yandexApiKey
 const awaitMessagesOptions = require("../../config.json").awaitMessagesOptions
@@ -35,8 +34,6 @@ module.exports = (message,args) => {
 		});
 	}
 	
-	
-	
 	async function trad(text,lang) {
 		let country = lang.toString();
 		let flag = flagList["default"].flag;
@@ -46,14 +43,16 @@ module.exports = (message,args) => {
 			tradLang = flagList[country].code;
 			flag = flagList[country].flag;
 		}
+		
 		let res = await axios.get("https://translate.yandex.net/api/v1.5/tr.json/translate?key="+yandexApiKey+"&text="+text+"&lang="+tradLang+"&format=plain")
-
-		message.reply(new Discord.RichEmbed()
-			.setTitle("Traduction")
-			.setColor(0xFF0000)
-			.setDescription(res.data.text)
-			.setThumbnail(flag)
-			.setTimestamp()
-		);
+		
+		message.reply({embed : {
+			title: "Traduction",
+			color: 16711680,
+			description: res.data.text[0],
+			thumbnail: {
+				url: flag
+			}
+		}});
 	}
 }
