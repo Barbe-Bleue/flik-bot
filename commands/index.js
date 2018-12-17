@@ -128,6 +128,10 @@ module.exports = (message,args,command) => {
 		case "poke":
 			cmd.pokemon.pokemon(message,args)
 			break;
+    case "monster":
+    case "monstre":
+      cmd.monster(message);
+      break;
 		default:
 			message.reply("Je connais pas la commande **"+command+"**" )
 			return;
