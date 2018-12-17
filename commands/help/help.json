@@ -115,5 +115,13 @@
   "pokemon" : {
     "resume": "infos d'un ou des pokémons",
     "exemples": ["pokemon salamèche"," pokemon salamèche carapuce","pokemon","poke"]
+  },
+  "monster": {
+    "resume": "affiche un avatar aléatoire",
+    "exemples": ["monster","monstre"]
+  },
+  "identity": {
+    "resume": "génère une nouvelle identitée",
+    "exemples": ["identity"]
   }
 }

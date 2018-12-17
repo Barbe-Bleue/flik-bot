@@ -132,6 +132,9 @@ module.exports = (message,args,command) => {
     case "monstre":
       cmd.monster(message);
       break;
+    case "identity":
+      cmd.identity(message);
+      break;
 		default:
 			message.reply("Je connais pas la commande **"+command+"**" )
 			return;
