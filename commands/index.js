@@ -6,6 +6,21 @@ const cmd = require('require-all')({
 });
 
 module.exports = (message,args,command) => {
+  
+  // alternative to the switch, but can't trigger if command not exist
+  // function searchFunctionInObject(obj, value) {
+  //   Object.keys(obj).forEach(async x => {
+  //     if(typeof obj[x] === "function") {
+  //       if(x === value ) {
+  //         obj[x](message,args);
+  //       }
+  //     } else if(typeof obj[x] === "object") { 
+  //       searchFunctionInObject(obj[x], value);
+  //     }
+  //   });
+  // }
+  // searchFunctionInObject(cmd, command);
+  
 	switch (command) {
 		case "savoir":
 			cmd.brain.knowledge(message);
