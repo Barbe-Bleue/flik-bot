@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
+
 const cmd = require ("./commands/index.js");
 const detector = require ("./detectors/index.js");
 
@@ -21,9 +22,9 @@ bot.on("guildMemberAdd", member => {
 });
 
 bot.on('message', message => {
-  if (message.content[0] === prefix) {
+  if (message.content.startsWith(prefix)) {
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
-    const command = args.shift().toLowerCase();   
+    const command = args.shift().toLowerCase();  
     cmd(message,args,command);
   } else {    
     detector(message)
