@@ -16,7 +16,7 @@ Enter your token into the `config.json` file
 - add this code to `/commands/foo.js`
 	
 		module.exports = message => {
-			message.reply("foo")
+			message.reply("bar")
 		}
 
 - add the `foo` option into the `switch` function into `/commands/index.js`
@@ -25,5 +25,5 @@ Enter your token into the `config.json` file
 			cmd.foo(message);
 			break;
 
-Go to discord and type `!foo` and you should see the message `foo`
+Go to discord and type `!foo` and you should see the message `bar`
 	
